@@ -1,0 +1,53 @@
+{
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "editor.wordWrap": "on",
+  "editor.fontSize": 16,
+  "files.autoSave": "afterDelay",
+  //"Bearded Theme Vivid Black"
+  "workbench.colorTheme": "Bearded Theme Vivid Black",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll": "explicit"
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  //autocomplete JSX
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "extensions.ignoreRecommendations": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "files.associations": {
+    "*.html": "html"
+  },
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    "css": false,
+    "python": false,
+    "javascript": false,
+    "typescriptreact": false
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "code-runner.executorMap": {
+    "typescript": "npx ts-node --files"
+  },
+  "workbench.editor.empty.hint": "hidden",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": false,
+  "editor.tabCompletion": "on",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
+}
