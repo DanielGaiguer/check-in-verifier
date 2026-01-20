@@ -1,0 +1,37 @@
+checkin-bancada/
+├── app/
+│   ├── api/
+│   │   ├── checkins/
+│   │   │   └── route.ts        ← API de check-in
+│   │   ├── bancadas/
+│   │   │   └── route.ts        ← (opcional) listar bancadas
+│   │
+│   ├── page.tsx                ← Tela principal (wizard)
+│   ├── layout.tsx
+│
+├── src/
+│   ├── db/
+│   │   ├── schema.ts           ← Drizzle schema
+│   │   └── index.ts            ← Conexão com o banco (Neon)
+│   │
+│   ├── components/
+│   │   └── checkin/
+│   │       ├── CheckinWizard.tsx
+│   │       ├── StepStatus.tsx
+│   │       ├── StepBancadas.tsx
+│   │       ├── StepProblemas.tsx
+│   │       └── StepFotos.tsx
+│   │
+│   ├── services/
+│   │   └── checkinService.ts   ← Lógica de negócio (opcional)
+│   │
+│   └── types/
+│       └── checkin.ts          ← Tipos compartilhados
+│
+├── drizzle/
+│   └── *.sql                   ← Migrations
+│
+├── .env.local
+├── drizzle.config.ts
+├── package.json
+└── tsconfig.json
