@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { checkins } from "@/db/schema";
+import { users } from "@/db/schema";
 
 export async function GET() {
-  const data = await db.select().from(checkins);
+  const data = await db.select().from(users);
   return NextResponse.json(data);
 }
