@@ -68,7 +68,7 @@ export const checkinWorkbenchIssues = pgTable("checkin_workbench_issues ", {
 ================================ */
 export const photos = pgTable("photos", {
   id: serial("id").primaryKey(),
-  checkinWorkbenchIssues: integer("checkin_workbench_issues_id")
+  checkinWorkbenchIssuesId: integer("checkin_workbench_issues_id")
     .references(() => checkinWorkbenchIssues.id)
     .notNull(),
   url: text("url").notNull(),
