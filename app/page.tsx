@@ -15,8 +15,8 @@ export default async function Home() {
         Bem-vindo ao Check-in Verifier!
         </h1>
 
-        {data[0].id ? (
-          <h1>Check in de Hoje: {data[0].id}</h1>
+        {data[0].checkins ? (
+          <h1>Check in de hoje feito por {data[0].users.name}</h1>
         ) : (
           <h1>Nenhum check-in realizado Hoje</h1>
         )}
