@@ -49,12 +49,12 @@ export const checkins = pgTable("checkins", {
 /* ================================
    PROBLEMAS POR LOCAL
 ================================ */
-export const checkinWorkbenchIssues = pgTable("checkin_workbench_issues ", {
+export const checkinPlacesIssues = pgTable("checkin_places_issues", {
   id: serial("id").primaryKey(),
   checkinId: integer("checkin_id")
     .references(() => checkins.id)
     .notNull(),
-  workbenchId: integer("workbench_id")
+  placeId: integer("place_id")
     .references(() => places.id)
     .notNull(),
   issueId: integer("issue_id")
@@ -68,8 +68,8 @@ export const checkinWorkbenchIssues = pgTable("checkin_workbench_issues ", {
 ================================ */
 export const photos = pgTable("photos", {
   id: serial("id").primaryKey(),
-  checkinWorkbenchIssuesId: integer("checkin_workbench_issues_id")
-    .references(() => checkinWorkbenchIssues.id)
+  checkinPlacesIssuesId: integer("checkin_places_issues_id")
+    .references(() => checkinPlacesIssues.id)
     .notNull(),
   url: text("url").notNull(),
 });

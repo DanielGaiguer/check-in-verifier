@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { checkins, checkinWorkbenchIssues, photos } from "@/db/schema";
+import { checkins, checkinPlacesIssues, photos } from "@/db/schema";
 
 export async function GET() {
   const data = await db.select().from(checkins);
@@ -23,10 +23,10 @@ export async function POST(req: Request) {
   // 2. insert issues
   for (const item of body.issues ?? []) {
     const [issue] = await db
-      .insert(checkinWorkbenchIssues)
+      .insert(checkinPlacesIssues)
       .values({
         checkinId: checkin.id,
-        workbenchId: item.workbenchId,
+        placeId: item.placeId,
         issueId: item.issueId,
         observation: item.observation,
       })
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     // 3. insert photos
     for (const url of item.photos ?? []) {
       await db.insert(photos).values({
-        checkinWorkbenchIssuesId: issue.id,
+        checkinPlacesIssuesId: issue.id,
         url,
       });
     }
