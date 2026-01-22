@@ -35,3 +35,109 @@ checkin-bancada/
 ├── drizzle.config.ts
 ├── package.json
 └── tsconfig.json
+
+Perfeito! Vamos destrinchar isso passo a passo, porque essa parte de **services** e **lógica de negócio** é central em qualquer projeto bem organizado, mas muita gente se confunde com ela.
+
+---
+
+### 1️⃣ O que é um **Service**?
+
+No contexto de aplicações web (React, Next.js, Node, etc.):
+
+* Um **service** é um módulo/função que encapsula a **lógica de negócio** da aplicação.
+* Ele **não se preocupa com a interface** (UI) nem com a API do banco diretamente, mas sim **com o que a aplicação precisa fazer**.
+* Ele age como um intermediário entre:
+
+  * **API / banco de dados**
+  * **Componentes / controllers / rotas**
+
+Basicamente, ele responde à pergunta:
+
+> "O que o sistema precisa fazer para atingir determinado objetivo?"
+
+---
+
+### 2️⃣ O que é **lógica de negócio**?
+
+A **lógica de negócio** é o conjunto de regras que definem **como os dados devem ser processados e manipulados para gerar o resultado esperado**.
+
+Exemplo simples: você tem um sistema de check-in de bancadas. Algumas regras de negócio podem ser:
+
+1. Não permitir check-in em uma bancada ocupada.
+2. Validar que todas as informações obrigatórias foram preenchidas antes de salvar.
+3. Calcular um status de check-in baseado nos problemas reportados.
+
+Tudo isso **não é responsabilidade do banco nem da UI**, mas sim da **lógica de negócio**.
+
+---
+
+### 3️⃣ Exemplo de service (`checkinService.ts`)
+
+```ts
+// src/services/checkinService.ts
+import { db } from "@/src/db";
+import { checkins } from "@/src/db/schema";
+import { CheckinData } from "@/src/types/checkin";
+
+export async function createCheckin(data: CheckinData) {
+  // 1. Validação (lógica de negócio)
+  if (!data.bancadaId) {
+    throw new Error("Bancada é obrigatória.");
+  }
+  if (data.problemas.length > 5) {
+    throw new Error("Não é possível registrar mais de 5 problemas.");
+  }
+
+  // 2. Processamento (lógica de negócio)
+  const status = data.problemas.length > 0 ? "pendente" : "ok";
+
+  // 3. Persistência (salvar no banco)
+  const newCheckin = await db.insert(checkins).values({
+    bancada_id: data.bancadaId,
+    usuario: data.usuario,
+    problemas: JSON.stringify(data.problemas),
+    status,
+    created_at: new Date(),
+  }).returning();
+
+  return newCheckin;
+}
+```
+
+✅ Nesse exemplo:
+
+* O **service** valida os dados (`validação`)
+* Calcula o `status` do check-in (`processamento`)
+* Salva no banco (`persistência`)
+* Retorna o resultado pronto para a API ou componente (`interface limpa`)
+
+---
+
+### 4️⃣ Como ele é usado na rota da API
+
+```ts
+// app/api/checkins/route.ts
+import { NextResponse } from "next/server";
+import { createCheckin } from "@/src/services/checkinService";
+
+export async function POST(req: Request) {
+  const data = await req.json();
+
+  try {
+    const newCheckin = await createCheckin(data);
+    return NextResponse.json(newCheckin);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 400 });
+  }
+}
+```
+
+* O **route.ts** só chama o service.
+* Ele **não precisa saber nada** sobre regras de validação, status ou processamento.
+* Isso mantém o código **limpo, organizado e fácil de testar**.
+
+---
+
+Se você quiser, posso fazer um **diagrama visual simples mostrando a diferença entre UI → Service → Banco** para você ver claramente como o fluxo funciona. Isso ajuda muito a entender “quem faz o quê”.
+
+Quer que eu faça?
