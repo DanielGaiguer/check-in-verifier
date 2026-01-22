@@ -1,6 +1,6 @@
 
 export default async function Home() {
-  const response = await fetch(process.env.URL + "/api/checkins", {
+  const response = await fetch(process.env.URL + "/api/checkins/today", {
     //headers: { "Content-Type": "application/json" },
     //body: JSON.stringify(data),
   });
@@ -11,10 +11,15 @@ export default async function Home() {
 
   return (
     <main className="p-4">
-      <h1 className="flex items-center justify-between p-4">
+      <h1 className="flex items-center p-4">
         Bem-vindo ao Check-in Verifier!
-        {data[0].id}
-      </h1>
+        </h1>
+
+        {data[0].id ? (
+          <h1>Check in de Hoje: {data[0].id}</h1>
+        ) : (
+          <h1>Nenhum check-in realizado Hoje</h1>
+        )}
       {/* <CheckinWizard /> Client Component */}
     </main>
   )

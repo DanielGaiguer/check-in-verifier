@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { checkins, checkinPlacesIssues, photos } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function GET() {
   const data = await db.select().from(checkins);
@@ -42,6 +43,10 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ ok: true });
+}
+
+export async function DELETE() {
+  await db.delete(checkins).where(eq(checkins.id, 3))
 }
 
 // export async function POST(req: Request) {
