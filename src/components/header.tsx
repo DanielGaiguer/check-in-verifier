@@ -15,11 +15,11 @@ const Header = () => {
         </Link>
         <Sheet>
           <SheetTrigger asChild >
-            <Button size="default" variant="outline" className="p-4 min-w-18 min-h-16 flex items-center justify-center" asChild>
+            <Button size="default" variant="outline" className="p-4 min-w-20 min-h-19 flex items-center justify-center mr-4" asChild>
               <MenuIcon />
             </Button>
           </SheetTrigger>
-          {/* <SidebarSheet /> */}
+          <SidebarSheet />
         </Sheet>
       </CardContent>
     </Card>
