@@ -1,22 +1,14 @@
 'use client'
 
-import Image from 'next/image'
 import { Button } from './ui/button'
 import {
   CalendarIcon,
   ChartNoAxesCombined,
   HistoryIcon,
-  HomeIcon,
-  LogInIcon,
-  LogOutIcon,
+  HomeIcon
 } from 'lucide-react'
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from './ui/sheet'
-// import { quickSearchOptions } from "../_constants/search"
-// import { Avatar, AvatarImage } from "./ui/avatar"
 import Link from 'next/link'
-// import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
-// import { signOut, useSession } from "next-auth/react"
-// import SignInDialog from "./sign-in-dialog"
 
 const SidebarSheet = () => {
   return (
@@ -45,7 +37,7 @@ const SidebarSheet = () => {
             variant="ghost"
             asChild
           >
-            <Link href="/bookings">
+            <Link href="/checkins/create">
               <CalendarIcon size={18} />
               Fazer Check-in
             </Link>
