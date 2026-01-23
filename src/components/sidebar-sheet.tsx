@@ -5,22 +5,23 @@ import {
   CalendarIcon,
   ChartNoAxesCombined,
   HistoryIcon,
-  HomeIcon
+  HomeIcon,
 } from 'lucide-react'
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from './ui/sheet'
 import Link from 'next/link'
+import { X } from 'lucide-react'
 
 const SidebarSheet = () => {
   return (
-    <SheetContent className="overflow-y-auto">
-      <SheetHeader>
+    <SheetContent className="overflow-y-auto [&>button]:scale-125 [&>button]:p-2 [&>button>svg]:h-7 [&>button>svg]:w-7 ">
+      <SheetHeader className="mt-2 pr-12">
         <SheetTitle className="text-left text-2xl">Menu</SheetTitle>
       </SheetHeader>
 
       <div className="flex flex-col gap-1 border-b border-solid py-5">
         <SheetClose asChild>
           <Button
-            className="mb-2 justify-start gap-4 text-xl font-light text-gray-600 [&_svg]:size-6!"
+            className="mb-2 justify-start gap-4 text-xl text-gray-600 [&_svg]:size-6!"
             variant="ghost"
             asChild
           >
@@ -33,7 +34,7 @@ const SidebarSheet = () => {
 
         <SheetClose asChild>
           <Button
-            className="mb-2 justify-start gap-4 text-xl font-light text-gray-600 [&_svg]:size-6!"
+            className="mb-2 justify-start gap-4 text-xl text-gray-600 [&_svg]:size-6!"
             variant="ghost"
             asChild
           >
@@ -46,7 +47,7 @@ const SidebarSheet = () => {
 
         <SheetClose asChild>
           <Button
-            className="mb-2 justify-start gap-4 text-xl font-light text-gray-600 [&_svg]:size-6!"
+            className="mb-2 justify-start gap-4 text-xl text-gray-600 [&_svg]:size-6!"
             variant="ghost"
             asChild
           >
@@ -59,13 +60,13 @@ const SidebarSheet = () => {
 
         <SheetClose asChild>
           <Button
-            className="mb-2 justify-start gap-4 text-xl font-light text-gray-600 [&_svg]:size-6!"
+            className="mb-2 justify-start gap-4 text-xl text-gray-600 [&_svg]:size-6!"
             variant="ghost"
             asChild
           >
             <Link href="/bookings">
               <ChartNoAxesCombined size={18} />
-              Relátorios de Check-ins
+              Relatórios de Check-ins
             </Link>
           </Button>
         </SheetClose>
