@@ -1,4 +1,4 @@
-import { getTodayCheckin } from '@/services/checkins/getTodayCheckin'
+import { getTodayCheckin } from '@/services/apiCheckinService'
 import {
   Item,
   ItemActions,
