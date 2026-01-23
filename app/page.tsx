@@ -1,4 +1,4 @@
-import { TodayCheckin } from "@/components/checkin/TodayCheckin"
+import { TodayCheckin } from "@/components/checkins/TodayCheckin"
 
 export default async function Home() {
   return (
