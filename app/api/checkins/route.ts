@@ -7,8 +7,6 @@ import { switchWhereClause } from '@/services/checkinService'
 // Padrao para a requisicao: 
 //http://localhost:3000/api/checkins?range=today
 //http://localhost:3000/api/checkins?from=2026-01-10&to=2026-01-15
-
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
 
