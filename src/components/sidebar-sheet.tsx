@@ -39,7 +39,7 @@ const SidebarSheet = () => {
           >
             <Link href="/checkins/create">
               <CalendarIcon size={18} />
-              Fazer Check-in
+              Realizar Check-in
             </Link>
           </Button>
         </SheetClose>
@@ -65,7 +65,7 @@ const SidebarSheet = () => {
           >
             <Link href="/bookings">
               <ChartNoAxesCombined size={18} />
-              Relátorio de Check-ins
+              Relátorios de Check-ins
             </Link>
           </Button>
         </SheetClose>
