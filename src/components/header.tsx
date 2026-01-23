@@ -5,15 +5,10 @@ import { MenuIcon } from 'lucide-react'
 import { Sheet, SheetTrigger } from './ui/sheet'
 import { Button } from './ui/button'
 import Link from 'next/link'
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from './ui/navigation-menu'
+import NavigationMenuBar from './navigation-menu-bar'
 
 const Header = () => {
+
   return (
     <>
       <Card>
@@ -43,30 +38,7 @@ const Header = () => {
         </CardContent>
       </Card>
       <div className="flex flex-row items-center justify-center mt-2">
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link href="/">Inicío</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link href="/">Realizar Check-in</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link href="/">Histórico de Check-ins</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link href="/">Relátorios de Check-ins</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+        <NavigationMenuBar />
       </div>
     </>
   )
