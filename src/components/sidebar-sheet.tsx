@@ -9,7 +9,6 @@ import {
 } from 'lucide-react'
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from './ui/sheet'
 import Link from 'next/link'
-import { X } from 'lucide-react'
 
 const SidebarSheet = () => {
   return (

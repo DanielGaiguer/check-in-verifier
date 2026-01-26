@@ -36,18 +36,20 @@ const SelectDateForm = () => {
     if (value === 'customDate') {
       openCustomDate(true)
       return
-    }
-		
+    } else {
+			openCustomDate(false)
+		}
+
   }
 
 	const handleClickCustomDate = () => {
-
+		console.log(date)
 	}
 
   return (
     <>
-      <div className="flex w-[30%] flex-row justify-between p-5">
-        <h1 className="mt-1 text-lg">Histórico de Check-ins</h1>
+      <div className="flex w-[75%] flex-row justify-between p-5">
+        <h1 className="mt-1 text-lg mr-[22%]">Histórico de Check-ins</h1>
         <Select onValueChange={handleChangeDate} defaultValue="week">
           <SelectTrigger>
             <SelectValue />
