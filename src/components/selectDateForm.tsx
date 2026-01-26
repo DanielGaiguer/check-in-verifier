@@ -33,9 +33,16 @@ const SelectDateForm = () => {
   const [customDateState, openCustomDate] = useState<boolean>(false)
 
   const handleChangeDate = (value: DateFilter) => {
-    if (value === 'customDate') openCustomDate(true)
-    if (value !== 'customDate') openCustomDate(false)
+    if (value === 'customDate') {
+      openCustomDate(true)
+      return
+    }
+		
   }
+
+	const handleClickCustomDate = () => {
+
+	}
 
   return (
     <>
@@ -58,7 +65,7 @@ const SelectDateForm = () => {
         </Select>
       </div>
       {customDateState && (
-        <div>
+        <div className='flex flex-row'>
           <Field className="mx-auto w-60">
             <FieldLabel htmlFor="date-picker-range">Escolha a Data</FieldLabel>
             <Popover>
@@ -94,6 +101,7 @@ const SelectDateForm = () => {
               </PopoverContent>
             </Popover>
           </Field>
+          <Button className='m-3 mt-8' variant='default' onClick={handleClickCustomDate}>Confirmar</Button>
         </div>
       )}
     </>
