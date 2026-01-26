@@ -3,20 +3,8 @@ import { format } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 
 interface DateProtocol {
-  defaultDate: 'today' | 'week' | 'month'
+  defaultDate?: 'today' | 'week' | 'month'
   customDate?: DateRange 
-}
-
-export async function getTodayCheckin(): Promise<TodayCheckinResponse> {
-  const response = await fetch(`${process.env.URL}/api/checkins?range=today`, {
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    throw new Error('Erro ao buscar check-in de hoje')
-  }
-
-  return response.json()
 }
 
 export async function getCheckinForDate(
@@ -24,23 +12,27 @@ export async function getCheckinForDate(
 ): Promise<TodayCheckinResponse> {
   let response: Response
 
+  // 🔹 Caso 1: range padrão (today, week, month)
   if (date.defaultDate) {
+    console.log(date.defaultDate)
     response = await fetch(
-      `${process.env.URL}/api/checkins?range=${date.defaultDate}`,
+      `/api/checkins?range=${date.defaultDate}`,
       { cache: 'no-store' }
     )
   }
 
+  // 🔹 Caso 2: intervalo customizado
   else if (date.customDate?.from && date.customDate?.to) {
     const fromParam = format(date.customDate.from, 'yyyy-MM-dd')
     const toParam = format(date.customDate.to, 'yyyy-MM-dd')
 
     response = await fetch(
-      `${process.env.URL}/api/checkins?from=${fromParam}&to=${toParam}`,
+      `/api/checkins?from=${fromParam}&to=${toParam}`,
       { cache: 'no-store' }
     )
   }
 
+  // 🔹 Caso inválido
   else {
     throw new Error('Parâmetros de data inválidos')
   }

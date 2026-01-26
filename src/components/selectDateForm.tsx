@@ -21,8 +21,9 @@ import { CalendarIcon } from 'lucide-react'
 import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { ptBR } from 'date-fns/locale'
+import { getCheckinForDate } from '@/services/apiCheckinService'
 
-type DateFilter = 'today' | 'week' | 'mount' | 'customDate'
+type DateFilter = 'today' | 'week' | 'month' | 'customDate'
 
 const SelectDateForm = () => {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -37,13 +38,13 @@ const SelectDateForm = () => {
       openCustomDate(true)
       return
     } else {
+			getCheckinForDate({defaultDate: value})
 			openCustomDate(false)
 		}
-
-  }//
+  }
 
 	const handleClickCustomDate = () => {
-		console.log(date)
+		getCheckinForDate({customDate: date})
 	}
 
   return (
@@ -60,7 +61,7 @@ const SelectDateForm = () => {
             <SelectGroup>
               <SelectItem value="today">Hoje</SelectItem>
               <SelectItem value="week">7 Dias</SelectItem>
-              <SelectItem value="mount">30 Dias</SelectItem>
+              <SelectItem value="month">30 Dias</SelectItem>
               <SelectItem value="customDate">Personalizado</SelectItem>
             </SelectGroup>
           </SelectContent>

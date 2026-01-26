@@ -1,4 +1,4 @@
-import { getTodayCheckin } from '@/services/apiCheckinService'
+import { getCheckinForDate } from '@/services/apiCheckinService'
 import {
   Item,
   ItemActions,
@@ -12,7 +12,7 @@ import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
 export async function TodayCheckin() {
-  const data = await getTodayCheckin()
+  const data = await getCheckinForDate({defaultDate: 'today'})
 
   return (
     <>
