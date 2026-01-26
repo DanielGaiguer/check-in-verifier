@@ -9,12 +9,11 @@ interface DateProtocol {
 
 export async function getCheckinForDate(
   date: DateProtocol
-): Promise<TodayCheckinResponse> {
+): Promise<TodayCheckinResponse[]> {
   let response: Response
 
   // 🔹 Caso 1: range padrão (today, week, month)
   if (date.defaultDate) {
-    console.log(date.defaultDate)
     response = await fetch(
       `/api/checkins?range=${date.defaultDate}`,
       { cache: 'no-store' }

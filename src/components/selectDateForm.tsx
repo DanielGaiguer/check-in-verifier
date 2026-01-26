@@ -10,7 +10,7 @@ import {
   SelectValue,
   SelectGroup,
 } from '@/components/ui/select'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Popover,
   PopoverContent,
@@ -22,6 +22,7 @@ import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { ptBR } from 'date-fns/locale'
 import { getCheckinForDate } from '@/services/apiCheckinService'
+import { TodayCheckinResponse } from '@/types/checkin'
 
 type DateFilter = 'today' | 'week' | 'month' | 'customDate'
 
@@ -33,25 +34,42 @@ const SelectDateForm = () => {
 
   const [customDateState, openCustomDate] = useState<boolean>(false)
 
-  const handleChangeDate = (value: DateFilter) => {
+  const [checkins, setCheckins] = useState<TodayCheckinResponse[]>([])
+
+  const handleChangeDate = async (value: DateFilter) => {
     if (value === 'customDate') {
       openCustomDate(true)
       return
-    } else {
-			getCheckinForDate({defaultDate: value})
-			openCustomDate(false)
-		}
+    }
+
+    const data = await getCheckinForDate({ defaultDate: value })
+    setCheckins(data)
+    openCustomDate(false)
   }
 
-	const handleClickCustomDate = () => {
-		getCheckinForDate({customDate: date})
-	}
+  const handleClickCustomDate = async () => {
+    const data = await getCheckinForDate({ customDate: date })
+    setCheckins(data)
+  }
+
+  useEffect(() => {
+    try {
+      const fetchData = async () => {
+        const data = await getCheckinForDate({ defaultDate: 'today' })
+        setCheckins(data)
+      }
+      fetchData()
+    } catch (err) {
+      console.log(err)
+    }
+  }, [])
 
   return (
     <>
+      {/* <h1>{checkins ? JSON.stringify(checkins) : 'Carregando...'}</h1> */}
       <div className="flex w-[75%] flex-row justify-between p-5">
-        <h1 className="mt-1 text-lg mr-[22%]">Histórico de Check-ins</h1>
-        <Select onValueChange={handleChangeDate} defaultValue="week">
+        <h1 className="mt-1 mr-[22%] text-lg">Histórico de Check-ins</h1>
+        <Select onValueChange={handleChangeDate} defaultValue="today">
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -68,7 +86,7 @@ const SelectDateForm = () => {
         </Select>
       </div>
       {customDateState && (
-        <div className='flex flex-row'>
+        <div className="flex flex-row">
           <Field className="mx-auto w-60">
             <FieldLabel htmlFor="date-picker-range">Escolha a Data</FieldLabel>
             <Popover>
@@ -104,7 +122,24 @@ const SelectDateForm = () => {
               </PopoverContent>
             </Popover>
           </Field>
-          <Button className='m-3 mt-8' variant='default' onClick={handleClickCustomDate}>Confirmar</Button>
+          <Button
+            className="m-3 mt-8"
+            variant="default"
+            onClick={handleClickCustomDate}
+          >
+            Confirmar
+          </Button>
+        </div>
+      )}
+      {checkins && (
+        <div>
+          {checkins.map(({ checkins, users }) => (
+            <div key={checkins.id} className="border-b p-2">
+              <p>Usuário: {users.name}</p>
+              <p>Data: {checkins.date}</p>
+              <p>Status: {checkins.overallStatus ? 'Ok' : 'Problema'}</p>
+            </div>
+          ))}
         </div>
       )}
     </>

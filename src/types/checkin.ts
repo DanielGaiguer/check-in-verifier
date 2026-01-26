@@ -14,4 +14,4 @@ export type Checkin = {
 export type TodayCheckinResponse = {
   checkins: Checkin
   users: User
-}[]
+}
