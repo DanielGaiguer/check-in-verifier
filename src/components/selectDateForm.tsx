@@ -40,7 +40,7 @@ const SelectDateForm = () => {
 			openCustomDate(false)
 		}
 
-  }
+  }//
 
 	const handleClickCustomDate = () => {
 		console.log(date)
