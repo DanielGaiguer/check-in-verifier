@@ -18,11 +18,8 @@ import {
 } from '@/components/ui/popover'
 import { addDays, format } from 'date-fns'
 import {
-  AlertCircle,
   CalendarIcon,
   CalendarX,
-  ChevronRightIcon,
-  CircleCheckIcon,
 } from 'lucide-react'
 import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
@@ -30,15 +27,14 @@ import { ptBR } from 'date-fns/locale'
 import { TodayCheckinResponse } from '@/types/checkin'
 import {
   Item,
-  ItemActions,
   ItemContent,
   ItemDescription,
   ItemMedia,
   ItemTitle,
 } from '@/components/ui/item'
 import Link from 'next/link'
-import { Badge } from '../ui/badge'
 import { getCheckinClient } from '@/services/checkins.client'
+import CardCheckin from './cardCheckin'
 
 type DateFilter = 'today' | 'week' | 'month' | 'customDate'
 
@@ -84,7 +80,7 @@ const SelectDateForm = () => {
     <>
       {/* <h1>{checkins ? JSON.stringify(checkins) : 'Carregando...'}</h1> */}
       <div className="flex w-[75%] flex-row justify-between p-5">
-        <h1 className="font-title mt-1 mr-[22%] text-xl font-semibold tracking-tight">
+        <h1 className="font-title mt-1 mr-[22%] text-lg font-semibold tracking-tight">
           Histórico de Check-ins
         </h1>
         <Select onValueChange={handleChangeDate} defaultValue="today">
@@ -104,7 +100,7 @@ const SelectDateForm = () => {
         </Select>
       </div>
       {customDateState && (
-        <div className="flex flex-row bg-gray-300 p-3 rounded-lg mb-3">
+        <div className="mb-3 flex flex-row rounded-lg bg-gray-300 p-3">
           <Field className="mx-auto w-60">
             <FieldLabel htmlFor="date-picker-range">Escolha a Data</FieldLabel>
             <Popover>
@@ -125,7 +121,7 @@ const SelectDateForm = () => {
                       format(date.from, 'dd MMM, y', { locale: ptBR })
                     )
                   ) : (
-                    <span>Pick a date</span> //
+                    <span>Selecione a Data</span> //
                   )}
                 </Button>
               </PopoverTrigger>
@@ -150,46 +146,7 @@ const SelectDateForm = () => {
         </div>
       )}
       {checkins && (
-        <div className="flex w-[90%] flex-col items-center">
-          {checkins.map(({ checkins, users }) => (
-            <div key={checkins.id} className="flex w-full flex-col gap-2 mb-1">
-              <div className="w-[90%] self-center">
-                <Badge variant="ghost" className="w-fit">
-                  {checkins.date}
-                </Badge>
-              </div>
-              <div className="flex justify-center gap-6 border-b">
-                <Item
-                  asChild
-                  className={`w-[90%] rounded-md border transition-colors ${
-                    checkins.overallStatus
-                      ? 'border-green-400 bg-green-50 hover:border-green-600 hover:bg-green-100'
-                      : 'border-red-400 bg-red-50 hover:border-red-600 hover:bg-red-100'
-                  }`}
-                >
-                  <Link href="#">
-                    <ItemMedia>
-                      {checkins.overallStatus ? (
-                        <CircleCheckIcon className="h-6 w-6 text-green-600" />
-                      ) : (
-                        <AlertCircle className="h-6 w-6 text-red-600" />
-                      )}
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>Check-in feito por {users.name}</ItemTitle>
-                      <ItemDescription>
-                        Toque aqui para conferir informações do check-in
-                      </ItemDescription>
-                    </ItemContent>
-                    <ItemActions>
-                      <ChevronRightIcon className="size-4" />
-                    </ItemActions>
-                  </Link>
-                </Item>
-              </div>
-            </div>
-          ))}
-        </div>
+        <CardCheckin checkins={checkins}/>
       )}
       {!checkins[0] && (
         <div className="flex w-[90%] flex-col items-center">
