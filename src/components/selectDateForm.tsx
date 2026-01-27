@@ -21,7 +21,6 @@ import { AlertCircle, CalendarIcon, ChevronRightIcon } from 'lucide-react'
 import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { ptBR } from 'date-fns/locale'
-import { getCheckinForDate } from '@/services/apiCheckinService'
 import { TodayCheckinResponse } from '@/types/checkin'
 import {
   Item,
@@ -33,7 +32,7 @@ import {
 } from '@/components/ui/item'
 import Link from 'next/link'
 import { Badge } from './ui/badge'
-import { TodayCheckin } from './checkins/TodayCheckin'
+import { getCheckinClient } from '@/services/checkins.client'
 
 type DateFilter = 'today' | 'week' | 'month' | 'customDate'
 
@@ -53,20 +52,20 @@ const SelectDateForm = () => {
       return
     }
 
-    const data = await getCheckinForDate({ defaultDate: value })
+    const data = await getCheckinClient({ defaultDate: value })
     setCheckins(data)
     openCustomDate(false)
   }
 
   const handleClickCustomDate = async () => {
-    const data = await getCheckinForDate({ customDate: date })
+    const data = await getCheckinClient({ customDate: date })
     setCheckins(data)
   }
 
   useEffect(() => {
     try {
       const fetchData = async () => {
-        const data = await getCheckinForDate({ defaultDate: 'today' })
+        const data = await getCheckinClient({ defaultDate: 'today' })
         setCheckins(data)
       }
       fetchData()

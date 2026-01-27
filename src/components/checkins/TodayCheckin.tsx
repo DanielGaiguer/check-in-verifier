@@ -1,4 +1,3 @@
-import { getCheckinForDate } from '@/services/apiCheckinService'
 import {
   Item,
   ItemActions,
@@ -10,9 +9,10 @@ import {
 import { Button } from '../ui/button'
 import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import { getCheckinServer } from '@/services/checkins.server'
 
 export async function TodayCheckin() {
-  const data = await getCheckinForDate({defaultDate: 'today'})
+  const data = await getCheckinServer({defaultDate: 'today'})
 
   return (
     <>

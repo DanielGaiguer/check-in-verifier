@@ -1,9 +1,9 @@
 import { TodayCheckin } from '@/components/checkins/TodayCheckin'
 import SelectDateForm from '@/components/selectDateForm'
-import { getCheckinForDate } from '@/services/apiCheckinService'
+import { getCheckinServer } from '@/services/checkins.server'
 
 export default async function Checkins() {
-  const todayCheckin = await getCheckinForDate({ defaultDate: 'today' })
+  const todayCheckin = await getCheckinServer({ defaultDate: 'today' })
 
   return (
     <main className="flex flex-col items-center justify-center">
