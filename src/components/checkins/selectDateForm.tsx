@@ -17,7 +17,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { addDays, format } from 'date-fns'
-import { AlertCircle, CalendarIcon, CalendarX, ChevronRightIcon } from 'lucide-react'
+import {
+  AlertCircle,
+  CalendarIcon,
+  CalendarX,
+  ChevronRightIcon,
+  CircleCheckIcon,
+} from 'lucide-react'
 import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { ptBR } from 'date-fns/locale'
@@ -78,7 +84,9 @@ const SelectDateForm = () => {
     <>
       {/* <h1>{checkins ? JSON.stringify(checkins) : 'Carregando...'}</h1> */}
       <div className="flex w-[75%] flex-row justify-between p-5">
-        <h1 className="font-title mt-1 mr-[22%] tracking-tight text-xl font-semibold">Histórico de Check-ins</h1>
+        <h1 className="font-title mt-1 mr-[22%] text-xl font-semibold tracking-tight">
+          Histórico de Check-ins
+        </h1>
         <Select onValueChange={handleChangeDate} defaultValue="today">
           <SelectTrigger>
             <SelectValue />
@@ -151,15 +159,26 @@ const SelectDateForm = () => {
                 </Badge>
               </div>
               <div className="flex justify-center gap-6 border-b">
-                <Item asChild className="w-[90%] border-red-400 bg-red-50">
+                <Item
+                  asChild
+                  className={`w-[90%] rounded-md border transition-colors ${
+                    checkins.overallStatus
+                      ? 'border-green-400 bg-green-50 hover:border-green-600 hover:bg-green-100'
+                      : 'border-red-400 bg-red-50 hover:border-red-600 hover:bg-red-100'
+                  }`}
+                >
                   <Link href="#">
                     <ItemMedia>
-                      <AlertCircle className="h-6 w-6 text-red-600" />
+                      {checkins.overallStatus ? (
+                        <CircleCheckIcon className="h-6 w-6 text-green-600" />
+                      ) : (
+                        <AlertCircle className="h-6 w-6 text-red-600" />
+                      )}
                     </ItemMedia>
                     <ItemContent>
-                      <ItemTitle>Visit our documentation</ItemTitle>
+                      <ItemTitle>Check-in feito por {users.name}</ItemTitle>
                       <ItemDescription>
-                        Learn how to get started with our components.
+                        Toque aqui para conferir informações do check-in
                       </ItemDescription>
                     </ItemContent>
                     <ItemActions>
@@ -168,34 +187,30 @@ const SelectDateForm = () => {
                   </Link>
                 </Item>
               </div>
-              <p>Usuário: {users.name}</p>
-              <p>Data: {checkins.date}</p>
-              <p>Status: {checkins.overallStatus ? 'Ok' : 'Problema'}</p>
             </div>
           ))}
         </div>
       )}
-   {!checkins[0] && (
+      {!checkins[0] && (
         <div className="flex w-[90%] flex-col items-center">
-            <div className="flex w-full flex-col gap-2">
-              <div className="w-[90%] self-center">
-              </div>
-              <div className="flex justify-center gap-6 border-b">
-                <Item asChild className="w-[90%] border-gray-400 bg-gray-50">
-                  <Link href="#">
-                    <ItemMedia>
-                      <CalendarX className="h-6 w-6 text-gray-600" />
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>Check-in não encontrado</ItemTitle>
-                      <ItemDescription>
-                        Não foi encontrado nenhum Check-in nesta data
-                      </ItemDescription>
-                    </ItemContent>
-                  </Link>
-                </Item>
-              </div>
+          <div className="flex w-full flex-col gap-2">
+            <div className="w-[90%] self-center"></div>
+            <div className="flex justify-center gap-6 border-b">
+              <Item asChild className="w-[90%] border-gray-400 bg-gray-50">
+                <Link href="#">
+                  <ItemMedia>
+                    <CalendarX className="h-6 w-6 text-gray-600" />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle>Check-in não encontrado</ItemTitle>
+                    <ItemDescription>
+                      Não foi encontrado nenhum Check-in nesta data
+                    </ItemDescription>
+                  </ItemContent>
+                </Link>
+              </Item>
             </div>
+          </div>
         </div>
       )}
     </>
