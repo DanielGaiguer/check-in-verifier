@@ -107,7 +107,7 @@ const SelectDateForm = () => {
                       format(date.from, 'dd MMM, y', { locale: ptBR })
                     )
                   ) : (
-                    <span>Pick a date</span>
+                    <span>Pick a date</span>//
                   )}
                 </Button>
               </PopoverTrigger>
