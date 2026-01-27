@@ -1,15 +1,12 @@
-import { TodayCheckin } from '@/components/checkins/TodayCheckin'
-import SelectDateForm from '@/components/selectDateForm'
-import { getCheckinServer } from '@/services/checkins.server'
+import SelectDateForm from '@/components/checkins/selectDateForm'
 
 export default async function Checkins() {
-  const todayCheckin = await getCheckinServer({ defaultDate: 'today' })
 
   return (
     <main className="flex flex-col items-center justify-center">
-      <div className='flex flex-col items-center justify-center p-4 w-full lg:w-[45%]'>
+      <div className="flex w-full flex-col items-center justify-center p-4 lg:w-[45%]">
         <SelectDateForm />
-        {!todayCheckin.length && <TodayCheckin />}
+        {/* {!todayCheckin.length && <TodayCheckin />} */}
       </div>
     </main>
   )

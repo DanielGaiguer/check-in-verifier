@@ -8,7 +8,12 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {
+    extend: {      
+      fontFamily: {
+        title: ['Inter Tight', 'sans-serif'], // 🔹 referência global
+        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+      },
+      
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

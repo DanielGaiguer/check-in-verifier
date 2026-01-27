@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { addDays, format } from 'date-fns'
-import { AlertCircle, CalendarIcon, ChevronRightIcon } from 'lucide-react'
+import { AlertCircle, CalendarIcon, CalendarX, ChevronRightIcon } from 'lucide-react'
 import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { ptBR } from 'date-fns/locale'
@@ -31,7 +31,7 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import Link from 'next/link'
-import { Badge } from './ui/badge'
+import { Badge } from '../ui/badge'
 import { getCheckinClient } from '@/services/checkins.client'
 
 type DateFilter = 'today' | 'week' | 'month' | 'customDate'
@@ -78,7 +78,7 @@ const SelectDateForm = () => {
     <>
       {/* <h1>{checkins ? JSON.stringify(checkins) : 'Carregando...'}</h1> */}
       <div className="flex w-[75%] flex-row justify-between p-5">
-        <h1 className="mt-1 mr-[22%] text-lg">Histórico de Check-ins</h1>
+        <h1 className="font-title mt-1 mr-[22%] tracking-tight text-xl font-semibold">Histórico de Check-ins</h1>
         <Select onValueChange={handleChangeDate} defaultValue="today">
           <SelectTrigger>
             <SelectValue />
@@ -145,19 +145,16 @@ const SelectDateForm = () => {
         <div className="flex w-[90%] flex-col items-center">
           {checkins.map(({ checkins, users }) => (
             <div key={checkins.id} className="flex w-full flex-col gap-2">
-              <div className='w-[90%] self-center'>
+              <div className="w-[90%] self-center">
                 <Badge variant="ghost" className="w-fit">
                   {checkins.date}
                 </Badge>
               </div>
               <div className="flex justify-center gap-6 border-b">
-                <Item
-                  asChild
-                  className="w-[90%] border-yellow-400 bg-yellow-50"
-                >
+                <Item asChild className="w-[90%] border-red-400 bg-red-50">
                   <Link href="#">
                     <ItemMedia>
-                      <AlertCircle className="h-6 w-6 text-yellow-600" />
+                      <AlertCircle className="h-6 w-6 text-red-600" />
                     </ItemMedia>
                     <ItemContent>
                       <ItemTitle>Visit our documentation</ItemTitle>
@@ -176,6 +173,29 @@ const SelectDateForm = () => {
               <p>Status: {checkins.overallStatus ? 'Ok' : 'Problema'}</p>
             </div>
           ))}
+        </div>
+      )}
+   {!checkins[0] && (
+        <div className="flex w-[90%] flex-col items-center">
+            <div className="flex w-full flex-col gap-2">
+              <div className="w-[90%] self-center">
+              </div>
+              <div className="flex justify-center gap-6 border-b">
+                <Item asChild className="w-[90%] border-gray-400 bg-gray-50">
+                  <Link href="#">
+                    <ItemMedia>
+                      <CalendarX className="h-6 w-6 text-gray-600" />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>Check-in não encontrado</ItemTitle>
+                      <ItemDescription>
+                        Não foi encontrado nenhum Check-in nesta data
+                      </ItemDescription>
+                    </ItemContent>
+                  </Link>
+                </Item>
+              </div>
+            </div>
         </div>
       )}
     </>

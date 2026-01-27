@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
+import { Inter_Tight } from 'next/font/google'
+
+export const interTight = Inter_Tight({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-title', // variável CSS
+})
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="bg-background text-foreground">
+    <html lang="pt-BR" className={` ${interTight.variable} bg-background text-foreground`}>
       <body
         className="antialiased min-h-screen bg-background text-foreground"
         suppressHydrationWarning
