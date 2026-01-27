@@ -104,7 +104,7 @@ const SelectDateForm = () => {
         </Select>
       </div>
       {customDateState && (
-        <div className="flex flex-row">
+        <div className="flex flex-row bg-gray-300 p-3 rounded-lg mb-3">
           <Field className="mx-auto w-60">
             <FieldLabel htmlFor="date-picker-range">Escolha a Data</FieldLabel>
             <Popover>
