@@ -152,7 +152,7 @@ const SelectDateForm = () => {
       {checkins && (
         <div className="flex w-[90%] flex-col items-center">
           {checkins.map(({ checkins, users }) => (
-            <div key={checkins.id} className="flex w-full flex-col gap-2">
+            <div key={checkins.id} className="flex w-full flex-col gap-2 mb-1">
               <div className="w-[90%] self-center">
                 <Badge variant="ghost" className="w-fit">
                   {checkins.date}
