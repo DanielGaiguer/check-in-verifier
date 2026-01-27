@@ -17,12 +17,23 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { addDays, format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
+import { AlertCircle, CalendarIcon, ChevronRightIcon } from 'lucide-react'
 import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { ptBR } from 'date-fns/locale'
 import { getCheckinForDate } from '@/services/apiCheckinService'
 import { TodayCheckinResponse } from '@/types/checkin'
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from '@/components/ui/item'
+import Link from 'next/link'
+import { Badge } from './ui/badge'
+import { TodayCheckin } from './checkins/TodayCheckin'
 
 type DateFilter = 'today' | 'week' | 'month' | 'customDate'
 
@@ -107,7 +118,7 @@ const SelectDateForm = () => {
                       format(date.from, 'dd MMM, y', { locale: ptBR })
                     )
                   ) : (
-                    <span>Pick a date</span>//
+                    <span>Pick a date</span> //
                   )}
                 </Button>
               </PopoverTrigger>
@@ -132,9 +143,35 @@ const SelectDateForm = () => {
         </div>
       )}
       {checkins && (
-        <div>
+        <div className="flex w-[90%] flex-col items-center">
           {checkins.map(({ checkins, users }) => (
-            <div key={checkins.id} className="border-b p-2">
+            <div key={checkins.id} className="flex w-full flex-col gap-2">
+              <div className='w-[90%] self-center'>
+                <Badge variant="ghost" className="w-fit">
+                  {checkins.date}
+                </Badge>
+              </div>
+              <div className="flex justify-center gap-6 border-b">
+                <Item
+                  asChild
+                  className="w-[90%] border-yellow-400 bg-yellow-50"
+                >
+                  <Link href="#">
+                    <ItemMedia>
+                      <AlertCircle className="h-6 w-6 text-yellow-600" />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>Visit our documentation</ItemTitle>
+                      <ItemDescription>
+                        Learn how to get started with our components.
+                      </ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                      <ChevronRightIcon className="size-4" />
+                    </ItemActions>
+                  </Link>
+                </Item>
+              </div>
               <p>Usuário: {users.name}</p>
               <p>Data: {checkins.date}</p>
               <p>Status: {checkins.overallStatus ? 'Ok' : 'Problema'}</p>

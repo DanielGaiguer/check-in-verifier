@@ -27,7 +27,7 @@ export async function TodayCheckin() {
 							</ItemMedia>
               <ItemContent>
                 <ItemTitle className="text-yellow-800 text-lg">Check-in diário pendente</ItemTitle>
-                <ItemDescription className=''>Realizar Check-in de Hoje</ItemDescription>
+                <ItemDescription >Realizar Check-in de Hoje</ItemDescription>
               </ItemContent>
               <ItemActions>
                 <Link href="checkins/create">
