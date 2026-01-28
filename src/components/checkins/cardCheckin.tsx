@@ -20,7 +20,7 @@ const CardCheckin = ({checkins}: CardCheckinProps) => {
 	return (
 		<div className="flex w-[90%] flex-col items-center">
           {checkins.map(({ checkins, users }) => (
-            <div key={checkins.id} className="mb-1 flex w-full flex-col gap-2">
+            <div key={checkins.id} className="mb-1 flex w-full flex-col">
               <div className="w-[90%] self-center">
                 <Badge variant="ghost" className="w-fit">
                   {checkins.date}
@@ -55,7 +55,6 @@ const CardCheckin = ({checkins}: CardCheckinProps) => {
                   </Link>
                 </Item>
               </div>
-                <Separator />
             </div>
           ))}
         </div>
