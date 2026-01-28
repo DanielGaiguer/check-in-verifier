@@ -42,7 +42,7 @@ const NavigationMenuBar = () => {
               asChild
               className={navLinkClass(pathname.startsWith('/checkins'))}
             >
-              <Link href="/">Histórico de Check-ins</Link>
+              <Link href="/checkins">Histórico de Check-ins</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
