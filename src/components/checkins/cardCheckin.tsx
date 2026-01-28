@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/item'
 import Link from 'next/link'
 import { Badge } from '../ui/badge'
-import { Separator } from '../ui/separator'
 import { AlertCircle, ChevronRightIcon, CircleCheckIcon } from "lucide-react";
 
 interface CardCheckinProps {
