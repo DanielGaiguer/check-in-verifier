@@ -1,4 +1,5 @@
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
+import { Item } from '@/components/ui/item'
 import {
   Select,
   SelectContent,
@@ -24,15 +25,15 @@ export default async function CreateCheckins() {
             Quem está realizando o Check-in?
           </FieldLabel>
           <Select>
-            <SelectTrigger>
+            <SelectTrigger className="bg-gray-900 text-white border-gray-700">
               {/* aria-invalid */}
-              <SelectValue placeholder="Select a fruit" />
+              <SelectValue placeholder="Selecione um usuário" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel className='text-sm text-gray-600 p-1'>Usuários</SelectLabel>
                 {users.map((user) => (
-                  <SelectItem value="apple" key={user.name}>
+                  <SelectItem value={user.name} key={user.name}>
                     {user.name}
                   </SelectItem>
                 ))}
@@ -41,6 +42,10 @@ export default async function CreateCheckins() {
           </Select>
           {/* <FieldError>Please select a fruit.</FieldError> */}
         </Field>
+        <h1 className="font-title mt-1 font-medium tracking-tight">
+          Checar os Seguintes Locais
+        </h1>
+        <Item></Item>
       </div>
     </main>
   )
