@@ -16,13 +16,21 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
 });
 
+  /* ================================
+     SALAS / LABORATORIOS
+  ================================ */
+
+export const lab = pgTable("lab", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+});
 /* ================================
    LOCAIS (BANCADAS / GAVETEIROS)
 ================================ */
 export const places = pgTable("places", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(), // Ex: Bancada 1, Gaveteiro A
-  lab: text("lab").notNull(),
+  lab: integer("lab").references(() => lab.id).notNull()
 });
 
 /* ================================

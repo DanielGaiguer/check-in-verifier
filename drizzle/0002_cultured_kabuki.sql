@@ -1,3 +1,0 @@
-ALTER TABLE "places" ADD COLUMN "lab" text NOT NULL;
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;

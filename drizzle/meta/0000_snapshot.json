@@ -1,11 +1,11 @@
 {
-  "id": "b48be514-0ae7-4b99-96d7-9402918c93d0",
+  "id": "64544811-b750-481f-bab6-3367cc896449",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.checkin_workbench_issues ": {
-      "name": "checkin_workbench_issues ",
+    "public.checkin_places_issues": {
+      "name": "checkin_places_issues",
       "schema": "",
       "columns": {
         "id": {
@@ -20,8 +20,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "workbench_id": {
-          "name": "workbench_id",
+        "place_id": {
+          "name": "place_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -41,9 +41,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "checkin_workbench_issues _checkin_id_checkins_id_fk": {
-          "name": "checkin_workbench_issues _checkin_id_checkins_id_fk",
-          "tableFrom": "checkin_workbench_issues ",
+        "checkin_places_issues_checkin_id_checkins_id_fk": {
+          "name": "checkin_places_issues_checkin_id_checkins_id_fk",
+          "tableFrom": "checkin_places_issues",
           "tableTo": "checkins",
           "columnsFrom": [
             "checkin_id"
@@ -54,12 +54,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "checkin_workbench_issues _workbench_id_places_id_fk": {
-          "name": "checkin_workbench_issues _workbench_id_places_id_fk",
-          "tableFrom": "checkin_workbench_issues ",
+        "checkin_places_issues_place_id_places_id_fk": {
+          "name": "checkin_places_issues_place_id_places_id_fk",
+          "tableFrom": "checkin_places_issues",
           "tableTo": "places",
           "columnsFrom": [
-            "workbench_id"
+            "place_id"
           ],
           "columnsTo": [
             "id"
@@ -67,9 +67,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "checkin_workbench_issues _issue_id_issues_id_fk": {
-          "name": "checkin_workbench_issues _issue_id_issues_id_fk",
-          "tableFrom": "checkin_workbench_issues ",
+        "checkin_places_issues_issue_id_issues_id_fk": {
+          "name": "checkin_places_issues_issue_id_issues_id_fk",
+          "tableFrom": "checkin_places_issues",
           "tableTo": "issues",
           "columnsFrom": [
             "issue_id"
@@ -184,6 +184,31 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.lab": {
+      "name": "lab",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.photos": {
       "name": "photos",
       "schema": "",
@@ -194,8 +219,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "checkin_workbench_issues_id": {
-          "name": "checkin_workbench_issues_id",
+        "checkin_places_issues_id": {
+          "name": "checkin_places_issues_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -209,12 +234,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "photos_checkin_workbench_issues_id_checkin_workbench_issues _id_fk": {
-          "name": "photos_checkin_workbench_issues_id_checkin_workbench_issues _id_fk",
+        "photos_checkin_places_issues_id_checkin_places_issues_id_fk": {
+          "name": "photos_checkin_places_issues_id_checkin_places_issues_id_fk",
           "tableFrom": "photos",
-          "tableTo": "checkin_workbench_issues ",
+          "tableTo": "checkin_places_issues",
           "columnsFrom": [
-            "checkin_workbench_issues_id"
+            "checkin_places_issues_id"
           ],
           "columnsTo": [
             "id"
@@ -244,10 +269,30 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "lab": {
+          "name": "lab",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "places_lab_lab_id_fk": {
+          "name": "places_lab_lab_id_fk",
+          "tableFrom": "places",
+          "tableTo": "lab",
+          "columnsFrom": [
+            "lab"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
