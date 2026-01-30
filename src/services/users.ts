@@ -1,4 +1,5 @@
-import { User,  } from "@/types/checkin"
+import { User } from "@/types/checkin"
+// import { Places } from "@/types/places"
 
 export async function getDataForCheckin() {
 	
@@ -11,4 +12,6 @@ export async function getUsers(): Promise<User[]> {
 	return response.json()
 }
 
-// async function getPlaces(): Promise<places
+// async function getPlaces(): Promise<Places[]> {
+// 	const 
+// }
