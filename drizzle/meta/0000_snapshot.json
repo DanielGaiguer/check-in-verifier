@@ -1,94 +1,11 @@
 {
-  "id": "64544811-b750-481f-bab6-3367cc896449",
+  "id": "149bf7f0-aac7-4682-a256-031c5036d566",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.checkin_places_issues": {
-      "name": "checkin_places_issues",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "checkin_id": {
-          "name": "checkin_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "place_id": {
-          "name": "place_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "issue_id": {
-          "name": "issue_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "observation": {
-          "name": "observation",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "checkin_places_issues_checkin_id_checkins_id_fk": {
-          "name": "checkin_places_issues_checkin_id_checkins_id_fk",
-          "tableFrom": "checkin_places_issues",
-          "tableTo": "checkins",
-          "columnsFrom": [
-            "checkin_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "checkin_places_issues_place_id_places_id_fk": {
-          "name": "checkin_places_issues_place_id_places_id_fk",
-          "tableFrom": "checkin_places_issues",
-          "tableTo": "places",
-          "columnsFrom": [
-            "place_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "checkin_places_issues_issue_id_issues_id_fk": {
-          "name": "checkin_places_issues_issue_id_issues_id_fk",
-          "tableFrom": "checkin_places_issues",
-          "tableTo": "issues",
-          "columnsFrom": [
-            "issue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.checkins": {
-      "name": "checkins",
+    "public.checkin": {
+      "name": "checkin",
       "schema": "",
       "columns": {
         "id": {
@@ -125,10 +42,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "checkins_user_id_users_id_fk": {
-          "name": "checkins_user_id_users_id_fk",
-          "tableFrom": "checkins",
-          "tableTo": "users",
+        "checkin_user_id_user_id_fk": {
+          "name": "checkin_user_id_user_id_fk",
+          "tableFrom": "checkin",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
@@ -141,8 +58,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "checkins_date_unique": {
-          "name": "checkins_date_unique",
+        "checkin_date_unique": {
+          "name": "checkin_date_unique",
           "nullsNotDistinct": false,
           "columns": [
             "date"
@@ -153,8 +70,91 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.issues": {
-      "name": "issues",
+    "public.checkin_places_issue": {
+      "name": "checkin_places_issue",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "checkin_id": {
+          "name": "checkin_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "place_id": {
+          "name": "place_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "issue_id": {
+          "name": "issue_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "observation": {
+          "name": "observation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "checkin_places_issue_checkin_id_checkin_id_fk": {
+          "name": "checkin_places_issue_checkin_id_checkin_id_fk",
+          "tableFrom": "checkin_places_issue",
+          "tableTo": "checkin",
+          "columnsFrom": [
+            "checkin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "checkin_places_issue_place_id_place_id_fk": {
+          "name": "checkin_places_issue_place_id_place_id_fk",
+          "tableFrom": "checkin_places_issue",
+          "tableTo": "place",
+          "columnsFrom": [
+            "place_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "checkin_places_issue_issue_id_issue_id_fk": {
+          "name": "checkin_places_issue_issue_id_issue_id_fk",
+          "tableFrom": "checkin_places_issue",
+          "tableTo": "issue",
+          "columnsFrom": [
+            "issue_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.issue": {
+      "name": "issue",
       "schema": "",
       "columns": {
         "id": {
@@ -209,8 +209,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.photos": {
-      "name": "photos",
+    "public.photo": {
+      "name": "photo",
       "schema": "",
       "columns": {
         "id": {
@@ -219,8 +219,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "checkin_places_issues_id": {
-          "name": "checkin_places_issues_id",
+        "checkin_places_issue_id": {
+          "name": "checkin_places_issue_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -234,12 +234,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "photos_checkin_places_issues_id_checkin_places_issues_id_fk": {
-          "name": "photos_checkin_places_issues_id_checkin_places_issues_id_fk",
-          "tableFrom": "photos",
-          "tableTo": "checkin_places_issues",
+        "photo_checkin_places_issue_id_checkin_places_issue_id_fk": {
+          "name": "photo_checkin_places_issue_id_checkin_places_issue_id_fk",
+          "tableFrom": "photo",
+          "tableTo": "checkin_places_issue",
           "columnsFrom": [
-            "checkin_places_issues_id"
+            "checkin_places_issue_id"
           ],
           "columnsTo": [
             "id"
@@ -254,8 +254,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.places": {
-      "name": "places",
+    "public.place": {
+      "name": "place",
       "schema": "",
       "columns": {
         "id": {
@@ -279,9 +279,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "places_lab_lab_id_fk": {
-          "name": "places_lab_lab_id_fk",
-          "tableFrom": "places",
+        "place_lab_lab_id_fk": {
+          "name": "place_lab_lab_id_fk",
+          "tableFrom": "place",
           "tableTo": "lab",
           "columnsFrom": [
             "lab"
@@ -299,8 +299,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users": {
-      "name": "users",
+    "public.user": {
+      "name": "user",
       "schema": "",
       "columns": {
         "id": {

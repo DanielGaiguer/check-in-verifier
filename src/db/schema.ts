@@ -47,7 +47,7 @@ export const issue = pgTable("issue", {
 ================================ */
 export const checkin = pgTable("checkin", {
   id: serial("id").primaryKey(),
-  date: date("date").notNull().unique(),
+  date: date("date").notNull(),
   overallStatus: boolean("overall_status").notNull(),
   userId: integer("user_id")
     .references(() => user.id)
