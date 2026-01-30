@@ -33,7 +33,7 @@ export default async function CreateCheckins() {
               <SelectGroup>
                 <SelectLabel className='text-sm text-gray-600 p-1'>Usuários</SelectLabel>
                 {users.map((user) => (
-                  <SelectItem value={user.name} key={user.name}>
+                  <SelectItem value={user.name} key={user.id}>
                     {user.name}
                   </SelectItem>
                 ))}

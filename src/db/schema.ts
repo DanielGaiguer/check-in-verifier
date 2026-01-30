@@ -22,6 +22,7 @@ export const users = pgTable("users", {
 export const places = pgTable("places", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(), // Ex: Bancada 1, Gaveteiro A
+  lab: text("lab").notNull(),
 });
 
 /* ================================
