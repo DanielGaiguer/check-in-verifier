@@ -1,12 +1,12 @@
 import { db } from "@/db";
-import { issues, lab, places, users } from "@/db/schema";
+import { issue, lab, place, user } from "@/db/schema";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-	const dataUsers = await db.select().from(users)
-	const dataLabs = await db.select().from(lab)
-	const dataPlaces = await db.select().from(places)
-	const dataIssues = await db.select().from(issues)
+	const users = await db.select().from(user)
+	const labs = await db.select().from(lab)
+	const places = await db.select().from(place)
+	const issues = await db.select().from(issue)
 	
-	return NextResponse.json({dataUsers, dataLabs, dataPlaces, dataIssues})
+	return NextResponse.json({users, labs, places, issues})
 }

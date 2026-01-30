@@ -11,7 +11,7 @@ import {
 /* ================================
    RESPONSÁVEIS
 ================================ */
-export const users = pgTable("users", {
+export const user = pgTable("user", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
 });
@@ -27,7 +27,7 @@ export const lab = pgTable("lab", {
 /* ================================
    LOCAIS (BANCADAS / GAVETEIROS)
 ================================ */
-export const places = pgTable("places", {
+export const place = pgTable("place", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(), // Ex: Bancada 1, Gaveteiro A
   lab: integer("lab").references(() => lab.id).notNull()
@@ -36,7 +36,7 @@ export const places = pgTable("places", {
 /* ================================
    TIPOS DE PROBLEMAS / CHECKS
 ================================ */
-export const issues = pgTable("issues", {
+export const issue = pgTable("issue", {
   id: serial("id").primaryKey(),
   code: text("code").notNull(),
   description: text("description").notNull(),
@@ -45,12 +45,12 @@ export const issues = pgTable("issues", {
 /* ================================
    CHECK-INS
 ================================ */
-export const checkins = pgTable("checkins", {
+export const checkin = pgTable("checkin", {
   id: serial("id").primaryKey(),
   date: date("date").notNull().unique(),
   overallStatus: boolean("overall_status").notNull(),
   userId: integer("user_id")
-    .references(() => users.id)
+    .references(() => user.id)
     .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -58,16 +58,16 @@ export const checkins = pgTable("checkins", {
 /* ================================
    PROBLEMAS POR LOCAL
 ================================ */
-export const checkinPlacesIssues = pgTable("checkin_places_issues", {
+export const checkinPlacesIssue = pgTable("checkin_places_issue", {
   id: serial("id").primaryKey(),
   checkinId: integer("checkin_id")
-    .references(() => checkins.id)
+    .references(() => checkin.id)
     .notNull(),
   placeId: integer("place_id")
-    .references(() => places.id)
+    .references(() => place.id)
     .notNull(),
   issueId: integer("issue_id")
-    .references(() => issues.id)
+    .references(() => issue.id)
     .notNull(),
   observation: text("observation"),
 });
@@ -75,10 +75,10 @@ export const checkinPlacesIssues = pgTable("checkin_places_issues", {
 /* ================================
    FOTOS
 ================================ */
-export const photos = pgTable("photos", {
+export const photo = pgTable("photo", {
   id: serial("id").primaryKey(),
-  checkinPlacesIssuesId: integer("checkin_places_issues_id")
-    .references(() => checkinPlacesIssues.id)
+  checkinPlacesIssuesId: integer("checkin_places_issue_id")
+    .references(() => checkinPlacesIssue.id)
     .notNull(),
   url: text("url").notNull(),
 });

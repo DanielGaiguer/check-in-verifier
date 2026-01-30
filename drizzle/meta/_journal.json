@@ -8,6 +8,13 @@
       "when": 1769784049073,
       "tag": "0000_damp_sleepwalker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769788825277,
+      "tag": "0001_wide_songbird",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,5 @@
 import { db } from './index'
-import { users, places, issues, lab } from './schema'
+import { user, place, issue, lab } from './schema'
 //import {dropTables} from './dropTables';
 
 
@@ -11,7 +11,7 @@ export async function seed() {
      RESPONSÁVEIS
   ================================ */
   await db
-    .insert(users)
+    .insert(user)
     .values([{ name: 'João' }, { name: 'Maria' }, { name: 'Carlos' }])
 
   /* ================================
@@ -23,9 +23,9 @@ export async function seed() {
   ])
 
   /* ================================
-     places (BANCADAS + GAVETEIROS)
+     place (BANCADAS + GAVETEIROS)
   ================================ */
-  await db.insert(places).values([
+  await db.insert(place).values([
     { name: 'Bancada 1', lab: 1 },
     { name: 'Bancada 2', lab: 1 },
     { name: 'Bancada 3', lab: 1 },
@@ -36,7 +36,7 @@ export async function seed() {
   /* ================================
      PROBLEMAS / CHECKS
   ================================ */
-  await db.insert(issues).values([
+  await db.insert(issue).values([
     {
       code: 'FERRAMENTA_FALTANDO',
       description: 'Ferramenta faltando no local',
