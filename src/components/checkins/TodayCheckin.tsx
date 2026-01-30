@@ -9,7 +9,7 @@ import {
 import { Button } from '../ui/button'
 import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
-import { getCheckinServer } from '@/services/checkins.server'
+import { getCheckinServer } from '@/services/checkins/checkins.server-side'
 import CardCheckin from './cardCheckin'
 
 export async function TodayCheckin() {

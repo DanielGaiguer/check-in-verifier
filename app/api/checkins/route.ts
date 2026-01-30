@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { checkins, users, checkinPlacesIssues, photos  } from '@/db/schema'
 import { eq } from 'drizzle-orm'
-import { switchWhereClause } from '@/services/checkinService'
+import { switchWhereClause } from '@/services/checkins/checkinUtils'
 
 // Padrao para a requisicao: 
 //http://localhost:3000/api/checkins?range=today

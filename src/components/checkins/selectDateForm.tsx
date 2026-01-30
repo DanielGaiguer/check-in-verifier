@@ -33,7 +33,7 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import Link from 'next/link'
-import { getCheckinClient } from '@/services/checkins.client'
+import { getCheckinClient } from '@/services/checkins/checkins.client-side'
 import CardCheckin from './cardCheckin'
 
 type DateFilter = 'today' | 'week' | 'month' | 'customDate'
