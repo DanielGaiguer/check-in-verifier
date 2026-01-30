@@ -8,11 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { getUsers } from '@/services/users'
+import { getDataForCheckin } from '@/services/checkins/checkinsServices'
 import { SelectLabel } from '@radix-ui/react-select'
 
 export default async function CreateCheckins() {
-  const users = await getUsers()
+  const data = await getDataForCheckin()
   return (
     <main className="flex flex-col items-center justify-center">
       <div className="flex w-full flex-col items-center justify-center p-4 lg:w-[45%]">
@@ -32,7 +32,7 @@ export default async function CreateCheckins() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel className='text-sm text-gray-600 p-1'>Usuários</SelectLabel>
-                {users.map((user) => (
+                {data.users?.map((user) => (
                   <SelectItem value={user.name} key={user.id}>
                     {user.name}
                   </SelectItem>
