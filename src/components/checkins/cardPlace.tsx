@@ -31,7 +31,7 @@ const CardPlace = (place: PlaceProtocol) => {
           status === 'organized'
             ? 'border-white bg-green-300'
             : status === 'disorganized'
-              ? 'border-2 bg-red-300 rounded-b-none'
+              ? 'border-2 border-b-0 bg-red-300 rounded-b-none'
               : 'bg-gray-300'
         }`}
       >
@@ -68,7 +68,7 @@ const CardPlace = (place: PlaceProtocol) => {
       {/* Collapsible fora do Item, mas colado */}
       <Collapsible open={status === 'disorganized'}>
         <CollapsibleContent className="w-full -mt-1">
-          <div className="w-full bg-red-800 p-2 rounded-b-md border-x border-b border-black">
+          <div className="w-full bg-red-300 p-2 rounded-b-md border-2 border-t-0 border-black">
             <Select>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecione os problemas" />
