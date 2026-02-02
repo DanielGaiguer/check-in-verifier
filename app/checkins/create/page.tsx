@@ -1,5 +1,14 @@
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
-import { Item } from '@/components/ui/item'
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
+} from '@/components/ui/item'
 import {
   Select,
   SelectContent,
@@ -25,13 +34,15 @@ export default async function CreateCheckins() {
             Quem está realizando o Check-in?
           </FieldLabel>
           <Select>
-            <SelectTrigger className="bg-gray-900 border-gray-700">
+            <SelectTrigger className="border-gray-700 bg-gray-900">
               {/* aria-invalid */}
               <SelectValue placeholder="Selecione um usuário" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel className='text-sm text-gray-600 p-1'>Usuários</SelectLabel>
+                <SelectLabel className="p-1 text-sm text-gray-600">
+                  Usuários
+                </SelectLabel>
                 {data.users?.map((user) => (
                   <SelectItem value={user.name} key={user.id}>
                     {user.name}
@@ -42,10 +53,49 @@ export default async function CreateCheckins() {
           </Select>
           {/* <FieldError>Please select a fruit.</FieldError> */}
         </Field>
-        <h1 className="font-title mt-1 font-medium tracking-tight">
+        <h1 className="font-title mt-1 font-medium tracking-tight mb-3">
           Checar os Seguintes Locais
         </h1>
-        <Item></Item>
+        <div className="space-y-4">
+          {data.labs?.map((lab) => (
+            <div key={lab.id}>
+              <Badge variant="default" className="w-fit mb-2">
+                {lab.name}
+              </Badge>
+
+              <div className="mt-2 ml-4 flex flex-col gap-1 w-full">
+                {data.places
+                  ?.filter((place) => place.labId === lab.id)
+                  .map((place) => (
+                    <Item variant="outline" key={place.id} className='rounded-e-sm bg-gray-300 border-black mb-3'>
+                      <ItemContent>
+                        <ItemTitle>{place.name}</ItemTitle>
+                        <ItemDescription>
+                          Selecione se o local está organizado ou não
+                        </ItemDescription>
+                      </ItemContent>
+                      <ItemActions>
+                        <Checkbox
+                          id={`organized-${place.id}`}
+                        />{' '}
+                        {/* marcado = organizado */}
+                        <label className='mr-3' htmlFor={`organized-${place.id}`}>
+                          Organizado
+                        </label>
+                        <Checkbox
+                          id={`disorganized-${place.id}`}
+                        />{' '}
+                        {/* marcado = desorganizado */}
+                        <label htmlFor={`disorganized-${place.id}`}>
+                          Desorganizado
+                        </label>
+                      </ItemActions>
+                    </Item>
+                  ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   )
