@@ -1,14 +1,8 @@
+import CardPlace from '@/components/checkins/cardPlace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemTitle,
-} from '@/components/ui/item'
 import {
   Select,
   SelectContent,
@@ -53,44 +47,21 @@ export default async function CreateCheckins() {
           </Select>
           {/* <FieldError>Please select a fruit.</FieldError> */}
         </Field>
-        <h1 className="font-title mt-1 font-medium tracking-tight mb-3">
+        <h1 className="font-title mt-1 mb-3 font-medium tracking-tight">
           Checar os Seguintes Locais
         </h1>
         <div className="space-y-4">
           {data.labs?.map((lab) => (
             <div key={lab.id}>
-              <Badge variant="default" className="w-fit mb-2">
+              <Badge variant="default" className="mb-2 w-fit">
                 {lab.name}
               </Badge>
 
-              <div className="mt-2 ml-4 flex flex-col gap-1 w-full">
+              <div className="mt-2 ml-4 flex w-full flex-col gap-1">
                 {data.places
                   ?.filter((place) => place.labId === lab.id)
                   .map((place) => (
-                    <Item variant="outline" key={place.id} className='rounded-e-sm bg-gray-300 border-black mb-3'>
-                      <ItemContent>
-                        <ItemTitle>{place.name}</ItemTitle>
-                        <ItemDescription>
-                          Selecione se o local está organizado ou não
-                        </ItemDescription>
-                      </ItemContent>
-                      <ItemActions>
-                        <Checkbox
-                          id={`organized-${place.id}`}
-                        />{' '}
-                        {/* marcado = organizado */}
-                        <label className='mr-3' htmlFor={`organized-${place.id}`}>
-                          Organizado
-                        </label>
-                        <Checkbox
-                          id={`disorganized-${place.id}`}
-                        />{' '}
-                        {/* marcado = desorganizado */}
-                        <label htmlFor={`disorganized-${place.id}`}>
-                          Desorganizado
-                        </label>
-                      </ItemActions>
-                    </Item>
+                    <CardPlace key={place.id} {...place} />
                   ))}
               </div>
             </div>
