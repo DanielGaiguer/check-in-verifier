@@ -61,7 +61,7 @@ export default async function CreateCheckins() {
                 {data.places
                   ?.filter((place) => place.labId === lab.id)
                   .map((place) => (
-                    <CardPlace key={place.id} {...place} />
+                    <CardPlace key={place.id} place={place} issues={data.issues}/>
                   ))}
               </div>
             </div>

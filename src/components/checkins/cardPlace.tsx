@@ -11,15 +11,29 @@ import { useState } from 'react'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 import { Select, SelectContent, SelectItem } from '../ui/select'
 import { SelectTrigger, SelectValue } from '@radix-ui/react-select'
-import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from '../ui/field'
 
 interface PlaceProtocol {
-  id: string
-  name: string
-  labId: string
+  place: {
+    id: string
+    name: string
+    labId: string
+  }
+  issues: {
+    id: string
+    code: string
+    description: string
+  }[]
 }
 
-export const CardPlace = (place: PlaceProtocol) => {
+export const CardPlace = ({ place, issues }: PlaceProtocol) => {
   const [status, setStatus] = useState<'organized' | 'disorganized' | null>(
     null
   )
@@ -32,13 +46,15 @@ export const CardPlace = (place: PlaceProtocol) => {
           status === 'organized'
             ? 'border-white bg-green-300'
             : status === 'disorganized'
-              ? 'rounded-b-none border-2 border-b-0 bg-red-300 mb-0'
+              ? 'mb-0 rounded-b-none border-2 border-b-0 bg-red-300'
               : 'bg-gray-300'
         }`}
       >
         <ItemContent>
-          <ItemTitle className='mt-1 text-lg font-semibold tracking-tight'>{place.name}</ItemTitle>
-          <ItemDescription className='text-gray-700'>
+          <ItemTitle className="mt-1 text-lg font-semibold tracking-tight">
+            {place.name}
+          </ItemTitle>
+          <ItemDescription className="text-gray-700">
             Selecione se o local está organizado ou não
           </ItemDescription>
         </ItemContent>
@@ -69,47 +85,22 @@ export const CardPlace = (place: PlaceProtocol) => {
       {/* Collapsible fora do Item, mas colado */}
       <Collapsible open={status === 'disorganized'}>
         <CollapsibleContent className="-mt-1 max-h-0 w-full overflow-hidden transition-all duration-500 ease-out data-[state=open]:max-h-96">
-          <div className="w-full rounded-b-md border-2 border-t-0 border-black bg-red-300 p-2 mt-0">
+          <div className="mt-0 w-full rounded-b-md border-2 border-t-0 border-black bg-red-300 p-2">
             <FieldGroup className="w-full max-w-xs p-2">
               <FieldSet>
                 <FieldGroup className="gap-3">
-                  <Field orientation="horizontal">
-                    <Checkbox id="finder-pref-9k2-hard-disks-ljj" />
-                    <FieldLabel
-                      htmlFor="finder-pref-9k2-hard-disks-ljj"
-                      className="font-normal"
-                      defaultChecked
-                    >
-                      Hard disks
-                    </FieldLabel>
-                  </Field>
-                  <Field orientation="horizontal">
-                    <Checkbox id="finder-pref-9k2-external-disks-1yg" />
-                    <FieldLabel
-                      htmlFor="finder-pref-9k2-external-disks-1yg"
-                      className="font-normal"
-                    >
-                      External disks
-                    </FieldLabel>
-                  </Field>
-                  <Field orientation="horizontal">
-                    <Checkbox id="finder-pref-9k2-cds-dvds-fzt" />
-                    <FieldLabel
-                      htmlFor="finder-pref-9k2-cds-dvds-fzt"
-                      className="font-normal"
-                    >
-                      CDs, DVDs, and iPods
-                    </FieldLabel>
-                  </Field>
-                  <Field orientation="horizontal">
-                    <Checkbox id="finder-pref-9k2-connected-servers-6l2" />
-                    <FieldLabel
-                      htmlFor="finder-pref-9k2-connected-servers-6l2"
-                      className="font-normal"
-                    >
-                      Connected servers
-                    </FieldLabel>
-                  </Field>
+                  {issues.map((issue) => (
+                      <Field orientation="horizontal" key={issue.id}>
+                        <Checkbox id={issue.id} />
+                        <FieldLabel
+                          htmlFor={issue.id}
+                          className="font-normal"
+                          defaultChecked
+                        >
+                          {issue.description}
+                        </FieldLabel>
+                      </Field>
+                  ))}
                 </FieldGroup>
               </FieldSet>
             </FieldGroup>
