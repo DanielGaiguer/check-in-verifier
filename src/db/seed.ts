@@ -1,42 +1,47 @@
 import { db } from './index'
-import { user, place, issue, lab } from './schema'
-//import {dropTables} from './dropTables';
-
+import { users, places, issues, lab } from './schema'
 
 export async function seed() {
-  //await dropTables();
   console.log('🌱 Iniciando seed...')
 
   /* ================================
-     RESPONSÁVEIS
+     LABS
   ================================ */
-  await db
-    .insert(user)
-    .values([{ name: 'João' }, { name: 'Maria' }, { name: 'Carlos' }])
+  const insertedLabs = await db
+    .insert(lab)
+    .values([
+      { name: 'lab 30' },
+      { name: 'lab 31' },
+    ])
+    .returning()
+
+  const lab30 = insertedLabs.find(l => l.name === 'lab 30')!
+  const lab31 = insertedLabs.find(l => l.name === 'lab 31')!
 
   /* ================================
-     SALAS / LABORATORIOS
+     USERS
   ================================ */
-  await db.insert(lab).values([
-    { name: 'lab 30' },
-    { name: 'lab 31' },
+  await db.insert(users).values([
+    { name: 'João' },
+    { name: 'Maria' },
+    { name: 'Carlos' },
   ])
 
   /* ================================
-     place (BANCADAS + GAVETEIROS)
+     PLACES
   ================================ */
-  await db.insert(place).values([
-    { name: 'Bancada 1', lab: 1 },
-    { name: 'Bancada 2', lab: 1 },
-    { name: 'Bancada 3', lab: 1 },
-    { name: 'Gaveteiro A', lab: 2 },
-    { name: 'Gaveteiro B', lab: 2 },
+  await db.insert(places).values([
+    { name: 'Bancada 1', labId: lab30.id },
+    { name: 'Bancada 2', labId: lab30.id },
+    { name: 'Bancada 3', labId: lab30.id },
+    { name: 'Gaveteiro A', labId: lab31.id },
+    { name: 'Gaveteiro B', labId: lab31.id },
   ])
 
   /* ================================
-     PROBLEMAS / CHECKS
+     ISSUES
   ================================ */
-  await db.insert(issue).values([
+  await db.insert(issues).values([
     {
       code: 'FERRAMENTA_FALTANDO',
       description: 'Ferramenta faltando no local',

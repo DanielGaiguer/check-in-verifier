@@ -1,100 +1,35 @@
 {
-  "id": "149bf7f0-aac7-4682-a256-031c5036d566",
+  "id": "97e4b8a2-3f03-4508-8bec-5e2ae461b431",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.checkin": {
-      "name": "checkin",
+    "public.checkin_places_issues": {
+      "name": "checkin_places_issues",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
-        },
-        "date": {
-          "name": "date",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "overall_status": {
-          "name": "overall_status",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
           "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "checkin_user_id_user_id_fk": {
-          "name": "checkin_user_id_user_id_fk",
-          "tableFrom": "checkin",
-          "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "checkin_date_unique": {
-          "name": "checkin_date_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "date"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.checkin_places_issue": {
-      "name": "checkin_places_issue",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
+          "default": "gen_random_uuid()"
         },
         "checkin_id": {
           "name": "checkin_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
         "place_id": {
           "name": "place_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
         "issue_id": {
           "name": "issue_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -107,10 +42,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "checkin_places_issue_checkin_id_checkin_id_fk": {
-          "name": "checkin_places_issue_checkin_id_checkin_id_fk",
-          "tableFrom": "checkin_places_issue",
-          "tableTo": "checkin",
+        "checkin_places_issues_checkin_id_checkins_id_fk": {
+          "name": "checkin_places_issues_checkin_id_checkins_id_fk",
+          "tableFrom": "checkin_places_issues",
+          "tableTo": "checkins",
           "columnsFrom": [
             "checkin_id"
           ],
@@ -120,10 +55,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "checkin_places_issue_place_id_place_id_fk": {
-          "name": "checkin_places_issue_place_id_place_id_fk",
-          "tableFrom": "checkin_places_issue",
-          "tableTo": "place",
+        "checkin_places_issues_place_id_places_id_fk": {
+          "name": "checkin_places_issues_place_id_places_id_fk",
+          "tableFrom": "checkin_places_issues",
+          "tableTo": "places",
           "columnsFrom": [
             "place_id"
           ],
@@ -133,10 +68,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "checkin_places_issue_issue_id_issue_id_fk": {
-          "name": "checkin_places_issue_issue_id_issue_id_fk",
-          "tableFrom": "checkin_places_issue",
-          "tableTo": "issue",
+        "checkin_places_issues_issue_id_issues_id_fk": {
+          "name": "checkin_places_issues_issue_id_issues_id_fk",
+          "tableFrom": "checkin_places_issues",
+          "tableTo": "issues",
           "columnsFrom": [
             "issue_id"
           ],
@@ -153,15 +88,83 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.issue": {
-      "name": "issue",
+    "public.checkins": {
+      "name": "checkins",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
           "notNull": true
+        },
+        "overall_status": {
+          "name": "overall_status",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "checkins_user_id_users_id_fk": {
+          "name": "checkins_user_id_users_id_fk",
+          "tableFrom": "checkins",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "checkins_date_unique": {
+          "name": "checkins_date_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "date"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.issues": {
+      "name": "issues",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "code": {
           "name": "code",
@@ -190,9 +193,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -209,19 +213,20 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.photo": {
-      "name": "photo",
+    "public.photos": {
+      "name": "photos",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
-        "checkin_places_issue_id": {
-          "name": "checkin_places_issue_id",
-          "type": "integer",
+        "checkin_places_issues_id": {
+          "name": "checkin_places_issues_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -234,12 +239,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "photo_checkin_places_issue_id_checkin_places_issue_id_fk": {
-          "name": "photo_checkin_places_issue_id_checkin_places_issue_id_fk",
-          "tableFrom": "photo",
-          "tableTo": "checkin_places_issue",
+        "photos_checkin_places_issues_id_checkin_places_issues_id_fk": {
+          "name": "photos_checkin_places_issues_id_checkin_places_issues_id_fk",
+          "tableFrom": "photos",
+          "tableTo": "checkin_places_issues",
           "columnsFrom": [
-            "checkin_places_issue_id"
+            "checkin_places_issues_id"
           ],
           "columnsTo": [
             "id"
@@ -254,15 +259,16 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.place": {
-      "name": "place",
+    "public.places": {
+      "name": "places",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -270,21 +276,21 @@
           "primaryKey": false,
           "notNull": true
         },
-        "lab": {
-          "name": "lab",
-          "type": "integer",
+        "lab_id": {
+          "name": "lab_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "place_lab_lab_id_fk": {
-          "name": "place_lab_lab_id_fk",
-          "tableFrom": "place",
+        "places_lab_id_lab_id_fk": {
+          "name": "places_lab_id_lab_id_fk",
+          "tableFrom": "places",
           "tableTo": "lab",
           "columnsFrom": [
-            "lab"
+            "lab_id"
           ],
           "columnsTo": [
             "id"
@@ -299,15 +305,16 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.user": {
-      "name": "user",
+    "public.users": {
+      "name": "users",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",

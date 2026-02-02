@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
-import { checkin, user, checkinPlacesIssue, photo  } from '@/db/schema'
+import { checkins, users, checkinPlacesIssues, photos  } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { switchWhereClause } from '@/services/checkins/checkinUtils'
 
@@ -14,8 +14,8 @@ export async function GET(req: Request) {
 
   const data = await db
     .select()
-    .from(checkin)
-    .innerJoin(user, eq(user.id, checkin.userId))
+    .from(checkins)
+    .innerJoin(users, eq(users.id, checkins.userId))
     .where(whereClause)
 
   return NextResponse.json(data)
@@ -25,8 +25,8 @@ export async function POST(req: Request) {
   const body = await req.json();
 
   // 1. create check-in
-  const [createCheckin] = await db
-    .insert(checkin)
+  const [checkin] = await db
+    .insert(checkins)
     .values({
       date: body.date,
       overallStatus: body.overallStatus,
@@ -37,18 +37,18 @@ export async function POST(req: Request) {
   // 2. insert issues
   for (const item of body.issues ?? []) {
     const [issue] = await db
-      .insert(checkinPlacesIssue)
+      .insert(checkinPlacesIssues)
       .values({
-        checkinId: createCheckin.id,
+        checkinId: checkin.id,
         placeId: item.placeId,
         issueId: item.issueId,
         observation: item.observation,
       })
       .returning();
 
-    // 3. insert photo
-    for (const url of item.photo ?? []) {
-      await db.insert(photo).values({
+    // 3. insert photos
+    for (const url of item.photos ?? []) {
+      await db.insert(photos).values({
         checkinPlacesIssuesId: issue.id,
         url,
       });
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE() {
-  await db.delete(checkin).where(eq(checkin.id, 4))
+  await db.delete(checkins).where(eq(checkins.id, 4))
 }
 
 // export async function POST(req: Request) {

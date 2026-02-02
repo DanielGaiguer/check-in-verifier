@@ -6,13 +6,14 @@ import {
   timestamp,
   date,
   integer,
+  uuid, 
 } from "drizzle-orm/pg-core";
 
 /* ================================
    RESPONSÁVEIS
 ================================ */
-export const user = pgTable("user", {
-  id: serial("id").primaryKey(),
+export const users = pgTable("users", {
+  id: uuid('id').defaultRandom().primaryKey(),
   name: text("name").notNull(),
 });
 
@@ -21,23 +22,23 @@ export const user = pgTable("user", {
   ================================ */
 
 export const lab = pgTable("lab", {
-  id: serial("id").primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
   name: text("name").notNull(),
 });
 /* ================================
    LOCAIS (BANCADAS / GAVETEIROS)
 ================================ */
-export const place = pgTable("place", {
-  id: serial("id").primaryKey(),
+export const places = pgTable("places", {
+  id: uuid('id').defaultRandom().primaryKey(),
   name: text("name").notNull(), // Ex: Bancada 1, Gaveteiro A
-  lab: integer("lab").references(() => lab.id).notNull()
+  labId: uuid("lab_id").references(() => lab.id).notNull()
 });
 
 /* ================================
    TIPOS DE PROBLEMAS / CHECKS
 ================================ */
-export const issue = pgTable("issue", {
-  id: serial("id").primaryKey(),
+export const issues = pgTable("issues", {
+  id: uuid('id').defaultRandom().primaryKey(),
   code: text("code").notNull(),
   description: text("description").notNull(),
 });
@@ -45,12 +46,12 @@ export const issue = pgTable("issue", {
 /* ================================
    CHECK-INS
 ================================ */
-export const checkin = pgTable("checkin", {
-  id: serial("id").primaryKey(),
-  date: date("date").notNull(),
+export const checkins = pgTable("checkins", {
+  id: uuid('id').defaultRandom().primaryKey(),
+  date: date("date").notNull().unique(),
   overallStatus: boolean("overall_status").notNull(),
-  userId: integer("user_id")
-    .references(() => user.id)
+  userId: uuid("user_id")
+    .references(() => users.id)
     .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -58,16 +59,16 @@ export const checkin = pgTable("checkin", {
 /* ================================
    PROBLEMAS POR LOCAL
 ================================ */
-export const checkinPlacesIssue = pgTable("checkin_places_issue", {
-  id: serial("id").primaryKey(),
-  checkinId: integer("checkin_id")
-    .references(() => checkin.id)
+export const checkinPlacesIssues = pgTable("checkin_places_issues", {
+  id: uuid('id').defaultRandom().primaryKey(),
+  checkinId: uuid("checkin_id")
+    .references(() => checkins.id)
     .notNull(),
-  placeId: integer("place_id")
-    .references(() => place.id)
+  placeId: uuid("place_id")
+    .references(() => places.id)
     .notNull(),
-  issueId: integer("issue_id")
-    .references(() => issue.id)
+  issueId: uuid("issue_id")
+    .references(() => issues.id)
     .notNull(),
   observation: text("observation"),
 });
@@ -75,10 +76,10 @@ export const checkinPlacesIssue = pgTable("checkin_places_issue", {
 /* ================================
    FOTOS
 ================================ */
-export const photo = pgTable("photo", {
-  id: serial("id").primaryKey(),
-  checkinPlacesIssuesId: integer("checkin_places_issue_id")
-    .references(() => checkinPlacesIssue.id)
+export const photos = pgTable("photos", {
+  id: uuid('id').defaultRandom().primaryKey(),
+  checkinPlacesIssuesId: uuid("checkin_places_issues_id")
+    .references(() => checkinPlacesIssues.id)
     .notNull(),
   url: text("url").notNull(),
 });

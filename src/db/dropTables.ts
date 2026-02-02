@@ -12,6 +12,11 @@ export async function dropTables() {
     DROP TABLE IF EXISTS users CASCADE;
     DROP TABLE IF EXISTS issues CASCADE;
   `);
+  await db.execute(`
+    DROP SCHEMA public CASCADE;
+    CREATE SCHEMA public;
+  `)
+
 
   console.log('✅ Banco limpo. Agora rode migrate e depois seed.');
 }
