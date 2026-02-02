@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 import { Select, SelectContent, SelectItem } from '../ui/select'
 import { SelectTrigger, SelectValue } from '@radix-ui/react-select'
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
 
 interface PlaceProtocol {
   id: string
@@ -18,7 +19,7 @@ interface PlaceProtocol {
   labId: string
 }
 
-const CardPlace = (place: PlaceProtocol) => {
+export const CardPlace = (place: PlaceProtocol) => {
   const [status, setStatus] = useState<'organized' | 'disorganized' | null>(
     null
   )
@@ -31,13 +32,13 @@ const CardPlace = (place: PlaceProtocol) => {
           status === 'organized'
             ? 'border-white bg-green-300'
             : status === 'disorganized'
-              ? 'border-2 border-b-0 bg-red-300 rounded-b-none'
+              ? 'rounded-b-none border-2 border-b-0 bg-red-300 mb-0'
               : 'bg-gray-300'
         }`}
       >
         <ItemContent>
-          <ItemTitle>{place.name}</ItemTitle>
-          <ItemDescription>
+          <ItemTitle className='mt-1 text-lg font-semibold tracking-tight'>{place.name}</ItemTitle>
+          <ItemDescription className='text-gray-700'>
             Selecione se o local está organizado ou não
           </ItemDescription>
         </ItemContent>
@@ -67,17 +68,51 @@ const CardPlace = (place: PlaceProtocol) => {
 
       {/* Collapsible fora do Item, mas colado */}
       <Collapsible open={status === 'disorganized'}>
-        <CollapsibleContent className="w-full -mt-1">
-          <div className="w-full bg-red-300 p-2 rounded-b-md border-2 border-t-0 border-black">
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecione os problemas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="problema1">Problema 1</SelectItem>
-                <SelectItem value="problema2">Problema 2</SelectItem>
-              </SelectContent>
-            </Select>
+        <CollapsibleContent className="-mt-1 max-h-0 w-full overflow-hidden transition-all duration-500 ease-out data-[state=open]:max-h-96">
+          <div className="w-full rounded-b-md border-2 border-t-0 border-black bg-red-300 p-2 mt-0">
+            <FieldGroup className="w-full max-w-xs p-2">
+              <FieldSet>
+                <FieldGroup className="gap-3">
+                  <Field orientation="horizontal">
+                    <Checkbox id="finder-pref-9k2-hard-disks-ljj" />
+                    <FieldLabel
+                      htmlFor="finder-pref-9k2-hard-disks-ljj"
+                      className="font-normal"
+                      defaultChecked
+                    >
+                      Hard disks
+                    </FieldLabel>
+                  </Field>
+                  <Field orientation="horizontal">
+                    <Checkbox id="finder-pref-9k2-external-disks-1yg" />
+                    <FieldLabel
+                      htmlFor="finder-pref-9k2-external-disks-1yg"
+                      className="font-normal"
+                    >
+                      External disks
+                    </FieldLabel>
+                  </Field>
+                  <Field orientation="horizontal">
+                    <Checkbox id="finder-pref-9k2-cds-dvds-fzt" />
+                    <FieldLabel
+                      htmlFor="finder-pref-9k2-cds-dvds-fzt"
+                      className="font-normal"
+                    >
+                      CDs, DVDs, and iPods
+                    </FieldLabel>
+                  </Field>
+                  <Field orientation="horizontal">
+                    <Checkbox id="finder-pref-9k2-connected-servers-6l2" />
+                    <FieldLabel
+                      htmlFor="finder-pref-9k2-connected-servers-6l2"
+                      className="font-normal"
+                    >
+                      Connected servers
+                    </FieldLabel>
+                  </Field>
+                </FieldGroup>
+              </FieldSet>
+            </FieldGroup>
           </div>
         </CollapsibleContent>
       </Collapsible>
