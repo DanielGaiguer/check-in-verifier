@@ -25,7 +25,7 @@ export default async function CreateCheckins() {
             Quem está realizando o Check-in?
           </FieldLabel>
           <Select>
-            <SelectTrigger className="bg-gray-900 text-white border-gray-700">
+            <SelectTrigger className="bg-gray-900 border-gray-700">
               {/* aria-invalid */}
               <SelectValue placeholder="Selecione um usuário" />
             </SelectTrigger>

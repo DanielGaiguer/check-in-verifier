@@ -58,9 +58,9 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE() {
-  await db.delete(checkins).where(eq(checkins.id, 4))
-}
+// export async function DELETE() {
+//   await db.delete(checkins).where(eq(checkins.id, 4))
+// }
 
 // export async function POST(req: Request) {
 //   const body = await req.json();
