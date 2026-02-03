@@ -24,12 +24,7 @@ import {
 import { FileUploadCircularProgress } from '../drop-files'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
-import {
-  CheckCheckIcon,
-  CheckCircle,
-  CheckIcon,
-  ChevronDownIcon,
-} from 'lucide-react'
+import { CheckCircle, ChevronDownIcon } from 'lucide-react'
 
 interface PlaceProtocol {
   place: {
@@ -80,6 +75,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
         <ItemActions className="flex items-center gap-2">
           {/* Organizado */}
           <Checkbox
+            className="h-7 w-7"
             id={`organized-${place.id}`}
             checked={status === 'organized'}
             onCheckedChange={(checked) =>
@@ -90,6 +86,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
 
           {/* Desorganizado */}
           <Checkbox
+            className='h-7 w-7'
             id={`disorganized-${place.id}`}
             checked={status === 'disorganized'}
             onCheckedChange={(checked) => {
@@ -97,7 +94,12 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
               setOpen(!!checked)
             }}
           />
-          <label htmlFor={`disorganized-${place.id}`}>Desorganizado</label>
+          <label
+            className={`${!status ? 'mr-10' : ''}`}
+            htmlFor={`disorganized-${place.id}`}
+          >
+            Desorganizado
+          </label>
 
           {status === 'disorganized' && (
             <Button
