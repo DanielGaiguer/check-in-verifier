@@ -9,8 +9,6 @@ import {
 import { Checkbox } from '../ui/checkbox'
 import { useState } from 'react'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
-import { Select, SelectContent, SelectItem } from '../ui/select'
-import { SelectTrigger, SelectValue } from '@radix-ui/react-select'
 import {
   Field,
   FieldDescription,
@@ -19,6 +17,7 @@ import {
   FieldLegend,
   FieldSet,
 } from '../ui/field'
+import { FileUploadCircularProgress } from '../drop-files'
 
 interface PlaceProtocol {
   place: {
@@ -90,20 +89,23 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
               <FieldSet>
                 <FieldGroup className="gap-3">
                   {issues.map((issue) => (
-                      <Field orientation="horizontal" key={issue.id}>
-                        <Checkbox id={issue.id} />
-                        <FieldLabel
-                          htmlFor={issue.id}
-                          className="font-normal"
-                          defaultChecked
-                        >
-                          {issue.description}
-                        </FieldLabel>
-                      </Field>
+                    <Field orientation="horizontal" key={issue.id}>
+                      <Checkbox id={issue.id} />
+                      <FieldLabel
+                        htmlFor={issue.id}
+                        className="font-normal"
+                        defaultChecked
+                      >
+                        {issue.description}
+                      </FieldLabel>
+                    </Field>
                   ))}
                 </FieldGroup>
               </FieldSet>
             </FieldGroup>
+            <div className="flex flex-col items-center">
+              <FileUploadCircularProgress />
+            </div>
           </div>
         </CollapsibleContent>
       </Collapsible>
