@@ -51,7 +51,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
       <Item
         variant="outline"
         key={place.id}
-        className={`rounded-e-sm border-black ${
+        className={`rounded-e-sm border-black h-21 ${
           status === 'organized'
             ? 'border-white bg-green-300'
             : status === 'disorganized'
@@ -105,7 +105,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
             <Button
               variant="ghost"
               size="icon"
-              className="ml-1 h-6 w-6"
+              className="ml-1 h-6 w-7"
               onClick={() => setOpen((prev) => !prev)}
             >
               <ChevronDownIcon
