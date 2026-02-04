@@ -1,7 +1,6 @@
 import CardPlace from '@/components/checkins/cardPlace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import {
   Select,
@@ -50,23 +49,28 @@ export default async function CreateCheckins() {
         <h1 className="font-title mt-1 mb-3 font-medium tracking-tight">
           Checar os Seguintes Locais
         </h1>
-        <div className="space-y-4">
+        <div className="space-y-4 w-[95%]">
           {data.labs?.map((lab) => (
-            <div key={lab.id}>
-              <Badge variant="default" className="mb-2 w-fit">
-                {lab.name}
-              </Badge>
+              <div key={lab.id}>
+                <Badge variant="default" className="mb-2 w-fit">
+                  {lab.name}
+                </Badge>
 
-              <div className="mt-2 ml-4 flex w-full flex-col gap-1">
-                {data.places
-                  ?.filter((place) => place.labId === lab.id)
-                  .map((place) => (
-                    <CardPlace key={place.id} place={place} issues={data.issues}/>
-                  ))}
+                <div className="mt-2 ml-4 flex w-full flex-col gap-1">
+                  {data.places
+                    ?.filter((place) => place.labId === lab.id)
+                    .map((place) => (
+                      <CardPlace
+                        key={place.id}
+                        place={place}
+                        issues={data.issues}
+                      />
+                    ))}
+                </div>
               </div>
-            </div>
           ))}
         </div>
+        <Button className='mt-5 mb-5'>Salvar Check-in</Button>
       </div>
     </main>
   )

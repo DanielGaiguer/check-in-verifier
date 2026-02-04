@@ -7,11 +7,10 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import { Checkbox } from '../ui/checkbox'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger,
 } from '../ui/collapsible'
 import {
   Field,
@@ -62,7 +61,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
         }`}
       >
         <ItemContent>
-          <ItemTitle className="mt-1 text-lg font-semibold tracking-tight">
+          <ItemTitle className="mt-1 text-lg font-semibold tracking-tight ">
             {place.name}
           </ItemTitle>
           <ItemDescription className="text-gray-700">
@@ -72,7 +71,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
           </ItemDescription>
         </ItemContent>
 
-        <ItemActions className="flex items-center gap-2">
+        <ItemActions className="flex items-center gap-2 mb-1">
           {/* Organizado */}
           <Checkbox
             className="h-7 w-7"
@@ -95,7 +94,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
             }}
           />
           <label
-            className={`${!status ? 'mr-10' : ''}`}
+            className={`${!status ? 'mr-11' : ''}`}
             htmlFor={`disorganized-${place.id}`}
           >
             Desorganizado
@@ -137,10 +136,10 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
                 <FieldGroup className="gap-3 pl-3">
                   {issues.map((issue) => (
                     <Field orientation="horizontal" key={issue.id}>
-                      <Checkbox id={issue.id} />
+                      <Checkbox id={issue.id} className='h-8 w-8'/>
                       <FieldLabel
                         htmlFor={issue.id}
-                        className="font-normal"
+                        className="font-normal text-lg"
                         defaultChecked
                       >
                         {issue.description}
@@ -152,7 +151,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
             </FieldGroup>
             <div className="flex flex-col items-center">
               <Field className="p-4 pl-5">
-                <FieldLabel htmlFor="textarea-message" className="mt-2 -mb-2">
+                <FieldLabel htmlFor="textarea-message" className="mt-2 -mb-2 text-lg">
                   Adicionar descrição
                 </FieldLabel>
                 {/* <FieldDescription>Enter your message below.</FieldDescription> */}
@@ -165,18 +164,13 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
             </div>
             <div className="mb-2 flex flex-col items-center pl-5">
               <Field>
-                <FieldLabel>Adicionar Arquivos</FieldLabel>
+                <FieldLabel className='text-lg'>Adicionar Arquivos</FieldLabel>
               </Field>
               <FileUploadCircularProgress />
             </div>
           </div>
         </CollapsibleContent>
       </Collapsible>
-
-      {/* Collapsible fora do Item, mas colado */}
-      {/* <Collapsible open={status === 'disorganized'}>
-        
-      </Collapsible> */}
     </>
   )
 }
