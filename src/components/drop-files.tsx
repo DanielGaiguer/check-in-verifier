@@ -1,9 +1,9 @@
-"use client";
- 
-import { Upload, X } from "lucide-react";
-import * as React from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+'use client'
+
+import { Upload, X } from 'lucide-react'
+import * as React from 'react'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -14,11 +14,23 @@ import {
   FileUploadItemProgress,
   FileUploadList,
   FileUploadTrigger,
-} from "@/components/ui/file-upload";
- 
-export function FileUploadCircularProgress() {
-  const [files, setFiles] = React.useState<File[]>([]);
- 
+} from '@/components/ui/file-upload'
+
+type UploadedFile = {
+  file: File
+  url: string
+  tempId: string
+}
+
+type FileUploadCircularProgressProps = {
+  onFileUploaded?: (file: UploadedFile) => void
+}
+
+export function FileUploadCircularProgress({
+  onFileUploaded,
+}: FileUploadCircularProgressProps) {
+  const [files, setFiles] = React.useState<File[]>([])
+
   const onUpload = React.useCallback(
     async (
       files: File[],
@@ -27,66 +39,56 @@ export function FileUploadCircularProgress() {
         onSuccess,
         onError,
       }: {
-        onProgress: (file: File, progress: number) => void;
-        onSuccess: (file: File) => void;
-        onError: (file: File, error: Error) => void;
-      },
-    ) => {
-      try {
-        // Process each file individually
-        const uploadPromises = files.map(async (file) => {
-          try {
-            // Simulate file upload with progress
-            const totalChunks = 10;
-            let uploadedChunks = 0;
- 
-            // Simulate chunk upload with delays
-            for (let i = 0; i < totalChunks; i++) {
-              // Simulate network delay (100-300ms per chunk)
-              await new Promise((resolve) =>
-                setTimeout(resolve, Math.random() * 200 + 100),
-              );
- 
-              // Update progress for this specific file
-              uploadedChunks++;
-              const progress = (uploadedChunks / totalChunks) * 100;
-              onProgress(file, progress);
-            }
- 
-            // Simulate server processing delay
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            onSuccess(file);
-          } catch (error) {
-            onError(
-              file,
-              error instanceof Error ? error : new Error("Upload failed"),
-            );
-          }
-        });
- 
-        // Wait for all uploads to complete
-        await Promise.all(uploadPromises);
-      } catch (error) {
-        // This handles any error that might occur outside the individual upload processes
-        console.error("Unexpected error during upload:", error);
+        onProgress: (file: File, progress: number) => void
+        onSuccess: (file: File) => void
+        onError: (file: File, error: Error) => void
       }
+    ) => {
+      // Process each file individually
+      const uploadPromises = files.map(async (file) => {
+        try {
+          for (let i = 0; i <= 10; i++) {
+            await new Promise((r) => setTimeout(r, 150))
+            onProgress(file, i * 10)
+          }
+
+          // 🔥 resultado simulado do servidor
+          const result = {
+            url: URL.createObjectURL(file),
+            id: crypto.randomUUID(),
+          }
+
+          onSuccess(file)
+
+          // 🔥 avisa o componente pai
+          onFileUploaded?.({
+            file,
+            url: result.url,
+            tempId: result.id,
+          })
+        } catch (err) {
+          onError(file, err as Error)
+        }
+      })
+
+      await Promise.all(uploadPromises)
     },
-    [],
-  );
- 
+    [onFileUploaded]
+  )
+
   const onFileReject = React.useCallback((file: File, message: string) => {
     toast(message, {
       description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
-    });
-  }, []);
- 
+    })
+  }, [])
+
   return (
     <FileUpload
       value={files}
       onValueChange={setFiles}
       maxFiles={10}
       maxSize={5 * 1024 * 1024}
-      className="w-full max-w-md bg-red-300 rounded-xl mt-2"
+      className="mt-2 w-full max-w-md rounded-xl bg-red-300"
       onUpload={onUpload}
       onFileReject={onFileReject}
       multiple
@@ -94,9 +96,11 @@ export function FileUploadCircularProgress() {
       <FileUploadDropzone>
         <div className="flex flex-col items-center gap-1 text-center">
           <div className="flex items-center justify-center rounded-full border p-2.5">
-            <Upload className="size-6 text-muted-foreground" />
+            <Upload className="text-muted-foreground size-6" />
           </div>
-          <p className="font-medium text-sm">Arraste e solte os Arquivos aqui</p>
+          <p className="text-sm font-medium">
+            Arraste e solte os Arquivos aqui
+          </p>
           <p className="text-muted-foreground text-xs">
             Ou clique em Carregar (max 10 arquivos, até 5MB cada)
           </p>
@@ -127,5 +131,5 @@ export function FileUploadCircularProgress() {
         ))}
       </FileUploadList>
     </FileUpload>
-  );
+  )
 }

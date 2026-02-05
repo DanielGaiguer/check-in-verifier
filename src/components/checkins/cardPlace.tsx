@@ -7,7 +7,7 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import { Checkbox } from '../ui/checkbox'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,6 +24,7 @@ import { FileUploadCircularProgress } from '../drop-files'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 import { CheckCircle, ChevronDownIcon } from 'lucide-react'
+import { photos } from '@/db/schema'
 
 interface PlaceProtocol {
   place: {
@@ -38,12 +39,23 @@ interface PlaceProtocol {
   }[]
 }
 
+type UploadedImage = {
+  url: string
+  tempId: string
+}
+
 export const CardPlace = ({ place, issues }: PlaceProtocol) => {
   const [status, setStatus] = useState<'organized' | 'disorganized' | null>(
     null
   )
 
   const [open, setOpen] = useState(false)
+
+  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
+
+  useEffect(() => {
+    console.log(uploadedImages)
+  }, [uploadedImages])
 
   return (
     <>
@@ -166,7 +178,10 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
               <Field>
                 <FieldLabel className='text-lg'>Adicionar Arquivos</FieldLabel>
               </Field>
-              <FileUploadCircularProgress />
+              <FileUploadCircularProgress onFileUploaded={(data) => {
+                setUploadedImages((prev) => [...prev, data])
+              }}/> 
+              {/*Aqui vai o estado das fotos */}
             </div>
           </div>
         </CollapsibleContent>
