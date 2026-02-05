@@ -60,7 +60,7 @@ export function FileUploadCircularProgress({
 
           onSuccess(file)
 
-          // 🔥 avisa o componente pai
+          // Personalizacao de componente daqui pra baixo
           onFileUploaded?.({
             file,
             url: result.url,

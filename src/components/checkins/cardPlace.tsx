@@ -50,9 +50,9 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
   )
 
   const [open, setOpen] = useState(false)
-
+  //estado das fotos
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
-
+  //Debug
   useEffect(() => {
     console.log(uploadedImages)
   }, [uploadedImages])
