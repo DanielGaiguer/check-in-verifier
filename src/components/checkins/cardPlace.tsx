@@ -35,6 +35,8 @@ interface PlaceProtocol {
     code: string
     description: string
   }[]
+  //“Uma função (Dispatch) que recebe ou um array de UploadedImage 
+  // ou uma função que recebe o array anterior e devolve um novo array”
   setImageState: Dispatch<SetStateAction<UploadedImage[]>>
 }
 
