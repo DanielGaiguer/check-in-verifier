@@ -7,17 +7,15 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import { Checkbox } from '../ui/checkbox'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import {
   Collapsible,
   CollapsibleContent,
 } from '../ui/collapsible'
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
   FieldSet,
 } from '../ui/field'
 import { FileUploadCircularProgress } from '../drop-files'
@@ -37,25 +35,15 @@ interface PlaceProtocol {
     code: string
     description: string
   }[]
+  setImageState: Dispatch<SetStateAction<UploadedImage[]>>
 }
 
-type UploadedImage = {
-  url: string
-  tempId: string
-}
-
-export const CardPlace = ({ place, issues }: PlaceProtocol) => {
+export const CardPlace = ({ place, issues, setImageState }: PlaceProtocol) => {
   const [status, setStatus] = useState<'organized' | 'disorganized' | null>(
     null
   )
 
   const [open, setOpen] = useState(false)
-  //estado das fotos
-  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
-  //Debug
-  useEffect(() => {
-    console.log(uploadedImages)
-  }, [uploadedImages])
 
   return (
     <>
@@ -179,7 +167,7 @@ export const CardPlace = ({ place, issues }: PlaceProtocol) => {
                 <FieldLabel className='text-lg'>Adicionar Arquivos</FieldLabel>
               </Field>
               <FileUploadCircularProgress onFileUploaded={(data) => {
-                setUploadedImages((prev) => [...prev, data])
+                setImageState((prev) => [...prev, data])
               }}/> 
               {/*Aqui vai o estado das fotos */}
             </div>
