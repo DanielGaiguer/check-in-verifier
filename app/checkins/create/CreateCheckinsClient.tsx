@@ -21,11 +21,6 @@ interface CreateCheckinProps {
   data: GetDataForCheckinProtocol
 }
 
-interface PayloadCheckin {
-  user: User 
-  date: Date
-
-}
 
 export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
@@ -67,7 +62,7 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
           {/* <FieldError>Please select a fruit.</FieldError> */}
           <SelectDateToday textLabel='Qual a data do check-in?' date={date} setDate={setDate}/>
         </Field>
-        <h1 className="font-title mt-1 mb-3 font-medium tracking-tight">
+        <h1 className="font-title mt-2 mb-3 font-medium tracking-tight">
           Checar os Seguintes Locais
         </h1>
         <div className="w-[95%] space-y-4">
