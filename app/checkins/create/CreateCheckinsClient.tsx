@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { SelectDateToday }  from '@/components/checkins/selectDateToday';
 import { User } from '@/types/checkin'
 import { GetDataForCheckinProtocol } from '@/types/dataForCheckinProtocol'
 import { SelectLabel } from '@radix-ui/react-select'
@@ -28,6 +29,7 @@ interface PayloadCheckin {
 
 export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
+  const [date, setDate] = useState<Date | undefined>(undefined)
 
   const handleSubmit = () => {
     console.log(uploadedImages);
@@ -63,6 +65,7 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
             </SelectContent>
           </Select>
           {/* <FieldError>Please select a fruit.</FieldError> */}
+          <SelectDateToday textLabel='Qual a data do check-in?' date={date} setDate={setDate}/>
         </Field>
         <h1 className="font-title mt-1 mb-3 font-medium tracking-tight">
           Checar os Seguintes Locais
