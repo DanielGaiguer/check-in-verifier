@@ -12,23 +12,26 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { SelectDateToday }  from '@/components/checkins/selectDateToday';
-import { User } from '@/types/checkin'
 import { GetDataForCheckinProtocol } from '@/types/dataForCheckinProtocol'
 import { SelectLabel } from '@radix-ui/react-select'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface CreateCheckinProps {
   data: GetDataForCheckinProtocol
 }
 
-
 export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [date, setDate] = useState<Date | undefined>(undefined)
+  const [checkinPlacesState, setCheckinPlacesState] = useState<Record<string, CheckinPlaceSubmit>>({});
 
   const handleSubmit = () => {
     console.log(uploadedImages);
   }
+
+  useEffect(() => {
+    console.log(checkinPlacesState)
+  }, [checkinPlacesState])
 
   return (
     <main className="flex flex-col items-center justify-center">
@@ -80,7 +83,15 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
                       key={place.id}
                       place={place}
                       issues={data.issues}
-                      setImageState={setUploadedImages}
+                      setPlaceState={(placeId, data) =>
+                        setCheckinPlacesState((prev) => ({
+                          ...prev,
+                          [placeId]:
+                            typeof data === 'function'
+                              ? { ...prev[placeId], ...data(prev[placeId] || {}) }
+                              : { ...prev[placeId], ...data },
+                        }))
+                      }
                     />
                   ))}
               </div>

@@ -7,7 +7,7 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import { Checkbox } from '../ui/checkbox'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   Collapsible,
   CollapsibleContent,
@@ -37,10 +37,10 @@ interface PlaceProtocol {
   }[]
   //“Uma função (Dispatch) que recebe ou um array de UploadedImage 
   // ou uma função que recebe o array anterior e devolve um novo array”
-  setImageState: Dispatch<SetStateAction<UploadedImage[]>>
+  setPlaceState: (placeId: string, data: Partial<CheckinPlaceSubmit> | ((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>)) => void;
 }
 
-export const CardPlace = ({ place, issues, setImageState }: PlaceProtocol) => {
+export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
   const [status, setStatus] = useState<'organized' | 'disorganized' | null>(
     null
   )
@@ -79,9 +79,11 @@ export const CardPlace = ({ place, issues, setImageState }: PlaceProtocol) => {
             className="h-7 w-7"
             id={`organized-${place.id}`}
             checked={status === 'organized'}
-            onCheckedChange={(checked) =>
-              setStatus(checked ? 'organized' : null)
-            }
+            onCheckedChange={(checked) => {
+              const newStatus = checked ? 'organized' : null
+              setStatus(newStatus)
+              setPlaceState(place.id, { status: newStatus || undefined })
+            }}
           />
           <label htmlFor={`organized-${place.id}`}>Organizado</label>
 
@@ -168,8 +170,10 @@ export const CardPlace = ({ place, issues, setImageState }: PlaceProtocol) => {
               <Field>
                 <FieldLabel className='text-lg'>Adicionar Arquivos</FieldLabel>
               </Field>
-              <FileUploadCircularProgress onFileUploaded={(data) => {
-                setImageState((prev) => [...prev, data])
+              <FileUploadCircularProgress onFileUploaded={(photo) => {
+                setPlaceState(place.id, (prev) => ({
+                  photos: [...(prev.photos || []), photo]
+                }))
               }}/> 
               {/*Aqui vai o estado das fotos */}
             </div>
