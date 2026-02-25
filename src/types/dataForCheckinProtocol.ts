@@ -11,3 +11,8 @@ export interface GetDataForCheckinProtocol {
   labs: Lab[]
   issues: Issue[]
 }
+
+export interface SetDataForCheckinProtocol {
+  user: User
+  
+}

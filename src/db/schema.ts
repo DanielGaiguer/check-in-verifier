@@ -1,3 +1,4 @@
+
 import {
   pgTable,
   serial,
@@ -5,9 +6,15 @@ import {
   boolean,
   timestamp,
   date,
-  integer,
-  uuid, 
+  uuid,
+  unique, 
 } from "drizzle-orm/pg-core";
+import { pgEnum } from "drizzle-orm/pg-core";
+
+export const checkinStatusEnum = pgEnum("checkin_status", [
+  "organized",
+  "disorganized",
+]);
 
 /* ================================
    RESPONSÁVEIS
@@ -49,7 +56,6 @@ export const issues = pgTable("issues", {
 export const checkins = pgTable("checkins", {
   id: uuid('id').defaultRandom().primaryKey(),
   date: date("date").notNull().unique(),
-  overallStatus: boolean("overall_status").notNull(),
   userId: uuid("user_id")
     .references(() => users.id)
     .notNull(),
@@ -59,7 +65,37 @@ export const checkins = pgTable("checkins", {
 /* ================================
    PROBLEMAS POR LOCAL
 ================================ */
-export const checkinPlacesIssues = pgTable("checkin_places_issues", {
+export const checkinPlaceIssues = pgTable("checkin_place_issues", {
+    id: uuid('id').defaultRandom().primaryKey(),
+
+    checkinPlaceId: uuid("checkin_places_id")
+      .references(() => checkinPlaces.id)
+      .notNull(),
+
+    issueId: uuid("issue_id")
+      .references(() => issues.id)
+      .notNull(),
+  },
+  (table) => ({
+    uniqueIssuePerPlace: unique().on(
+      table.checkinPlaceId,
+      table.issueId
+    ),
+  })
+);
+
+/* ================================
+   FOTOS
+================================ */
+export const photos = pgTable("photos", {
+  id: uuid('id').defaultRandom().primaryKey(),
+  checkinPlaceId: uuid("checkin_place_id")
+    .references(() => checkinPlaces.id)
+    .notNull(),
+  url: text("url").notNull(),
+});
+
+export const checkinPlaces = pgTable("checkin_places", {
   id: uuid('id').defaultRandom().primaryKey(),
   checkinId: uuid("checkin_id")
     .references(() => checkins.id)
@@ -67,19 +103,10 @@ export const checkinPlacesIssues = pgTable("checkin_places_issues", {
   placeId: uuid("place_id")
     .references(() => places.id)
     .notNull(),
-  issueId: uuid("issue_id")
-    .references(() => issues.id)
-    .notNull(),
-  observation: text("observation"),
-});
-
-/* ================================
-   FOTOS
-================================ */
-export const photos = pgTable("photos", {
-  id: uuid('id').defaultRandom().primaryKey(),
-  checkinPlacesIssuesId: uuid("checkin_places_issues_id")
-    .references(() => checkinPlacesIssues.id)
-    .notNull(),
-  url: text("url").notNull(),
-});
+  status: checkinStatusEnum("status").notNull(),
+  observation: text("observation")
+}, 
+  (table) => ({
+    uniqueCheckinPlace: unique().on(table.checkinId, table.placeId)
+  })
+)

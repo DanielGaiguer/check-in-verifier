@@ -21,6 +21,7 @@ interface CreateCheckinProps {
 
 export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
+  
 
   const handleSubmit = () => {
     console.log(uploadedImages);
