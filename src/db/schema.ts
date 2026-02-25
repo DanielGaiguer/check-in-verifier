@@ -1,9 +1,7 @@
 
 import {
   pgTable,
-  serial,
   text,
-  boolean,
   timestamp,
   date,
   uuid,

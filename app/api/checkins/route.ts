@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
-import { checkins, users, checkinPlacesIssues, photos  } from '@/db/schema'
+import { checkins, users, checkinPlaceIssues, photos  } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { switchWhereClause } from '@/services/checkins/checkinUtils'
 
@@ -29,7 +29,6 @@ export async function POST(req: Request) {
     .insert(checkins)
     .values({
       date: body.date,
-      overallStatus: body.overallStatus,
       userId: body.userId,
     })
     .returning();
@@ -37,19 +36,17 @@ export async function POST(req: Request) {
   // 2. insert issues
   for (const item of body.issues ?? []) {
     const [issue] = await db
-      .insert(checkinPlacesIssues)
+      .insert(checkinPlaceIssues)
       .values({
-        checkinId: checkin.id,
-        placeId: item.placeId,
+        checkinPlaceId: checkin.id,
         issueId: item.issueId,
-        observation: item.observation,
       })
       .returning();
 
     // 3. insert photos
     for (const url of item.photos ?? []) {
       await db.insert(photos).values({
-        checkinPlacesIssuesId: issue.id,
+        checkinPlaceId: issue.id,
         url,
       });
     }

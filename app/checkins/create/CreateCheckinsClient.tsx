@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { User } from '@/types/checkin'
 import { GetDataForCheckinProtocol } from '@/types/dataForCheckinProtocol'
 import { SelectLabel } from '@radix-ui/react-select'
 import { useState } from 'react'
@@ -19,9 +20,14 @@ interface CreateCheckinProps {
   data: GetDataForCheckinProtocol
 }
 
+interface PayloadCheckin {
+  user: User 
+  date: Date
+
+}
+
 export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
-  
 
   const handleSubmit = () => {
     console.log(uploadedImages);
