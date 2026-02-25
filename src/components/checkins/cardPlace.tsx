@@ -35,8 +35,25 @@ interface PlaceProtocol {
     code: string
     description: string
   }[]
-  //“Uma função (Dispatch) que recebe ou um array de UploadedImage 
-  // ou uma função que recebe o array anterior e devolve um novo array”
+  
+  //placeId: o id do lugar que quer atualizar, tanto no backend quanto no estado
+  // data: os dados que voce quer aplicar no estado daquele lugar do ID
+
+  //Partial<CheckinPlaceSubmit>:
+  // CheckinPlaceSubmit é provavelmente um objeto com vários campos, Partial<CheckinPlaceSubmit> significa que você não precisa enviar todos os campos, apenas os que quer atualizar:
+
+  //((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>) 
+  // Alternativamente, data pode ser uma função que recebe o estado atual (prev) do lugar e retorna os dados que devem ser atualizados.
+  // Isso é útil quando você quer atualizar algo baseado no valor atual do lugar, como adicionar uma foto sem sobrescrever as antigas:
+
+  //Resumindo em palavras simples
+    // O setPlaceState é uma função que:
+    // Recebe o ID de um lugar.
+    // Recebe os dados a atualizar, que podem ser:
+    // Um objeto direto com os campos que você quer mudar.
+    // Uma função que calcula os campos a mudar usando o estado atual.
+    // Atualiza o estado do lugar sem retornar nada.
+
   setPlaceState: (placeId: string, data: Partial<CheckinPlaceSubmit> | ((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>)) => void;
 }
 
