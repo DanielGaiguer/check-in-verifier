@@ -79,6 +79,7 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
       <Item
         variant="outline"
         key={place.id}
+        onClick={handleClickCard}
         className={`rounded-e-sm border-black h-21 ${
           status === 'organized'
             ? 'border-white bg-green-300'
@@ -89,7 +90,7 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
               : 'bg-gray-300'
         }`}
       >
-        <ItemContent onClick={handleClickCard}>
+        <ItemContent>
           <ItemTitle className="mt-1 text-lg font-semibold tracking-tight ">
             {place.name}
           </ItemTitle>

@@ -20,19 +20,19 @@ export function SelectDateToday({textLabel, date, setDate}: SelectDateTodayProps
   const [open, setOpen] = React.useState(false)
 
   return (
-    <Field className="mx-auto w-44">
-      <FieldLabel htmlFor="date" className="text-md">{textLabel}</FieldLabel>
-      <Popover open={open} onOpenChange={setOpen}>
+    <Field className="mx-auto w-44 ">
+      <FieldLabel htmlFor="date" className="text-m">{textLabel}</FieldLabel>
+      <Popover open={open} onOpenChange={setOpen} >
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             id="date"
-            className="justify-start font-normal"
+            className="justify-start font-normal border-black! border bg-gray-900"
           >
             {date ? date.toLocaleDateString() : "Selecionar data"}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+        <PopoverContent className="w-auto overflow-hidden p-0 " align="start">
           <Calendar
             mode="single"
             selected={date}
