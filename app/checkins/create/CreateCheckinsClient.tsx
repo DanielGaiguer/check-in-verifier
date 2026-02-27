@@ -35,11 +35,11 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
 
   return (
     <main className="flex flex-col items-center justify-center">
-      <div className="flex w-full flex-col items-center justify-center p-4 lg:w-[45%]">
+      <div className="flex w-full flex-col items-center justify-center p-4 lg:w-[60%]">
         <h1 className="font-title mt-1 text-lg font-semibold tracking-tight">
           Criar um Novo Check-in
         </h1>
-        <Field className="w-full max-w-120 p-3">
+        <Field className="w-full max-w-150 p-3">
           {/* data-invalid */}
           <FieldLabel className="text-md">
             Quem está realizando o Check-in?

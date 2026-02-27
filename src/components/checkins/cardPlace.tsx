@@ -121,8 +121,9 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
             id={`disorganized-${place.id}`}
             checked={status === 'disorganized'}
             onCheckedChange={(checked) => {
-              setStatus(checked ? 'disorganized' : null)
-              setOpen(!!checked)
+              const newStatus = checked ? 'disorganized' : null
+              setStatus(newStatus)
+              setPlaceState(place.id, { status: newStatus || undefined})
             }}
           />
           <label

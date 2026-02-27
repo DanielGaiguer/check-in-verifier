@@ -21,7 +21,7 @@ export function SelectDateToday({textLabel, date, setDate}: SelectDateTodayProps
 
   return (
     <Field className="mx-auto w-44 ">
-      <FieldLabel htmlFor="date" className="text-m">{textLabel}</FieldLabel>
+      <FieldLabel htmlFor="date" className="text-md">{textLabel}</FieldLabel>
       <Popover open={open} onOpenChange={setOpen} >
         <PopoverTrigger asChild>
           <Button
