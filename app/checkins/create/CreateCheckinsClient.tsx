@@ -34,18 +34,33 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
   >(undefined)
 
   const handleSubmit = () => {
-    if (selectUserId && date && Object.keys(checkinPlacesState).length == data.places.length) {
+    if (!selectUserId) {
+      //Alerta
+    }
+
+    if (selectUserId && date ) {
       setCheckinSubmitPayload({
         userId: selectUserId,
         date: formattedDate,
-        places: Object.values(checkinPlacesState)
+        places: Object.entries(checkinPlacesState).map(
+          ([placeId, placeData]) => ( placeData.status == 'disorganized' ? {
+            placeId,
+            status: placeData.status,
+            issues: placeData.issues,
+            photos: placeData.photos,
+            observation: placeData.observation,
+          } : {
+            placeId,
+            status: placeData.status,
+          })
+        )
       })
     }
   }
 
   useEffect(() => {
-    console.log(checkinPlacesState)
-  }, [checkinPlacesState])
+    console.log(checkinSubmitPayload)
+  }, [checkinSubmitPayload])
 
   const formattedDate = date?.toLocaleDateString('pt-BR', {
     day: '2-digit',

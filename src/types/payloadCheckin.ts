@@ -7,8 +7,8 @@ interface CheckinPlaceSubmit {
 	placeId: string
 	status: 'organized' | 'disorganized'
 	observation?: string
-	issues: string[]
-	photos: UploadedImage[]
+	issues?: string[]
+	photos?: UploadedImage[]
 }
 
 interface CheckinSubmit {

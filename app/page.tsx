@@ -1,4 +1,5 @@
 import { TodayCheckin } from "@/components/checkins/TodayCheckin"
+import { ToastContainer } from 'react-toastify'
 
 export default async function Home() {
   return (
@@ -8,6 +9,7 @@ export default async function Home() {
         </h1>
         <TodayCheckin />
       {/* <CheckinWizard /> Client Component */}
+      <ToastContainer />
     </main>
   )
 }
