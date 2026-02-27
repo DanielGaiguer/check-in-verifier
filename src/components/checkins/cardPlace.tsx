@@ -64,6 +64,16 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
 
   const [open, setOpen] = useState(false)
 
+  const handleClickCard = () => {
+    if (status === 'disorganized'){
+      if (open){
+        setOpen(false)
+        return
+      }
+      setOpen(true);
+    } 
+  } 
+
   return (
     <>
       <Item
@@ -79,7 +89,7 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
               : 'bg-gray-300'
         }`}
       >
-        <ItemContent>
+        <ItemContent onClick={handleClickCard}>
           <ItemTitle className="mt-1 text-lg font-semibold tracking-tight ">
             {place.name}
           </ItemTitle>
