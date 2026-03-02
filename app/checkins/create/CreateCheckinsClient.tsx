@@ -16,12 +16,15 @@ import { GetDataForCheckinProtocol } from '@/types/dataForCheckinProtocol'
 import { SelectLabel } from '@radix-ui/react-select'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { postDataForCheckin } from '@/services/checkins/checkinsServices'
 
 interface CreateCheckinProps {
   data: GetDataForCheckinProtocol
 }
 
-export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
+export default function CreateCheckinsClient({
+  data,
+}: CreateCheckinProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [checkinPlacesState, setCheckinPlacesState] = useState<
@@ -34,7 +37,7 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
     CheckinSubmit['userId'] | undefined
   >(undefined)
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectUserId) {
       toast.error('Preencha o campo usuário para continuar.')
       return
@@ -53,9 +56,9 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
       return
     }
 
-    setCheckinSubmitPayload({
+    const payload: Partial<CheckinSubmit> = {
       userId: selectUserId,
-      date: formattedDate,
+      date: formattedDate(date),
       places: Object.entries(checkinPlacesState).map(([placeId, placeData]) =>
         placeData.status == 'disorganized'
           ? {
@@ -70,18 +73,25 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
               status: placeData.status,
             }
       ),
-    })
+    }
+
+    await postDataForCheckin(payload)
+    toast.success('Check-in salvo com sucesso!')
+    // setCheckinPlacesState({})
+    // setCheckinSubmitPayload({})
+    // setSelectUserId(undefined)
   }
 
   useEffect(() => {
     console.log(checkinSubmitPayload)
   }, [checkinSubmitPayload])
 
-  const formattedDate = date?.toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
+  const formattedDate = (date: Date): string =>
+    date?.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
 
   return (
     <main className="flex flex-col items-center justify-center">

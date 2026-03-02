@@ -24,34 +24,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
 
-  // 1. create check-in
-  const [checkin] = await db
-    .insert(checkins)
-    .values({
-      date: body.date,
-      userId: body.userId,
-    })
-    .returning();
-
-  // 2. insert issues
-  for (const item of body.issues ?? []) {
-    const [issue] = await db
-      .insert(checkinPlaceIssues)
-      .values({
-        checkinPlaceId: checkin.id,
-        issueId: item.issueId,
-      })
-      .returning();
-
-    // 3. insert photos
-    for (const url of item.photos ?? []) {
-      await db.insert(photos).values({
-        checkinPlaceId: issue.id,
-        url,
-      });
-    }
-  }
-
+  console.log(body)
   return NextResponse.json({ ok: true });
 }
 
