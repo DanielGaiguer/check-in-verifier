@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { Inter_Tight } from 'next/font/google'
+import { ToastContainer } from "react-toastify";
 
 export const interTight = Inter_Tight({
   subsets: ['latin'],
@@ -38,6 +39,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <ToastContainer />
       </body>
     </html>
   );

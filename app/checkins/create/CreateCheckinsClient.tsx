@@ -15,6 +15,7 @@ import { SelectDateToday } from '@/components/checkins/selectDateToday'
 import { GetDataForCheckinProtocol } from '@/types/dataForCheckinProtocol'
 import { SelectLabel } from '@radix-ui/react-select'
 import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 interface CreateCheckinProps {
   data: GetDataForCheckinProtocol
@@ -22,7 +23,7 @@ interface CreateCheckinProps {
 
 export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
-  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [date, setDate] = useState<Date | undefined>(new Date())
   const [checkinPlacesState, setCheckinPlacesState] = useState<
     Record<string, CheckinPlaceSubmit>
   >({})
@@ -35,27 +36,41 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
 
   const handleSubmit = () => {
     if (!selectUserId) {
-      //Alerta
+      toast.error('Preencha o campo usuário para continuar.')
+      return
     }
 
-    if (selectUserId && date ) {
-      setCheckinSubmitPayload({
-        userId: selectUserId,
-        date: formattedDate,
-        places: Object.entries(checkinPlacesState).map(
-          ([placeId, placeData]) => ( placeData.status == 'disorganized' ? {
-            placeId,
-            status: placeData.status,
-            issues: placeData.issues,
-            photos: placeData.photos,
-            observation: placeData.observation,
-          } : {
-            placeId,
-            status: placeData.status,
-          })
-        )
-      })
+    if (!date) {
+      toast.error('Preencha o campo data para continuar.')
+      return
     }
+
+    const totalPlaces = data.places.length
+    const filledPlaces = Object.keys(checkinPlacesState).length
+
+    if (filledPlaces !== totalPlaces) {
+      toast.error('Todos os locais precisam ser avaliados.')
+      return
+    }
+
+    setCheckinSubmitPayload({
+      userId: selectUserId,
+      date: formattedDate,
+      places: Object.entries(checkinPlacesState).map(([placeId, placeData]) =>
+        placeData.status == 'disorganized'
+          ? {
+              placeId,
+              status: placeData.status,
+              issues: placeData.issues,
+              photos: placeData.photos,
+              observation: placeData.observation,
+            }
+          : {
+              placeId,
+              status: placeData.status,
+            }
+      ),
+    })
   }
 
   useEffect(() => {
@@ -67,7 +82,6 @@ export default function CreateCheckinsClient({ data }: CreateCheckinProps) {
     month: '2-digit',
     year: 'numeric',
   })
-
 
   return (
     <main className="flex flex-col items-center justify-center">
