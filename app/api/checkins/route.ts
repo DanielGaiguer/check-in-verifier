@@ -4,6 +4,11 @@ import { checkins, users, checkinPlaceIssues, photos  } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { switchWhereClause } from '@/services/checkins/checkinUtils'
 
+type CreateCheckinInput = {
+  date: string
+  userId: string
+}
+
 // Padrao para a requisicao: 
 //http://localhost:3000/api/checkins?range=today
 //http://localhost:3000/api/checkins?from=2026-01-10&to=2026-01-15
@@ -22,9 +27,14 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  const data = (await req.json()) as CreateCheckinInput
 
-  console.log(body)
+  const isoDate = new Date(data.date ?? new Date())
+  .toISOString()
+  .slice(0, 10) 
+
+  await db.insert(checkins).values({date: isoDate, userId: data.userId})
+  console.log("OK")
   return NextResponse.json({ ok: true });
 }
 

@@ -18,6 +18,18 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { postDataForCheckin } from '@/services/checkins/checkinsServices'
 
+type CreateCheckinInput = {
+  date: string
+  userId: string
+  places: {
+    placeId: string
+    status: 'organized' | 'disorganized'
+    issues?: string[]
+    photos?: string[]
+    observation?: string
+  }[]
+}
+
 interface CreateCheckinProps {
   data: GetDataForCheckinProtocol
 }
@@ -56,16 +68,16 @@ export default function CreateCheckinsClient({
       return
     }
 
-    const payload: Partial<CheckinSubmit> = {
+    const payload: CreateCheckinInput = {
       userId: selectUserId,
-      date: formattedDate(date),
+      date: date.toISOString(),
       places: Object.entries(checkinPlacesState).map(([placeId, placeData]) =>
         placeData.status == 'disorganized'
           ? {
               placeId,
               status: placeData.status,
               issues: placeData.issues,
-              photos: placeData.photos,
+              photos: placeData.photos?.map((img) => img.url),
               observation: placeData.observation,
             }
           : {

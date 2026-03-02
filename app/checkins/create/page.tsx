@@ -1,10 +1,15 @@
 import { getDataForCheckin, postDataForCheckin } from "@/services/checkins/checkinsServices";
 import CreateCheckinsClient from "./CreateCheckinsClient";
 
+type CreateCheckinInput = {
+  date: string
+  userId: string
+}
+
 export default async function Page() {
   const data = await getDataForCheckin()
 
-	const postCheckinFunction = async (dataPostCheckin: Partial<CheckinSubmit>) => {
+	const postCheckinFunction = async (dataPostCheckin: CreateCheckinInput) => {
 		const response = await postDataForCheckin(dataPostCheckin)
 		return response;
 	}
