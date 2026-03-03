@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   .slice(0, 10) 
 
   await db.insert(checkins).values({date: isoDate, userId: data.userId})
-  console.log("OK")
+
   return NextResponse.json({ ok: true });
 }
 

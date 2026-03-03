@@ -4,6 +4,13 @@ import { GetDataForCheckinProtocol } from "@/types/dataForCheckinProtocol"
 type CreateCheckinInput = {
   date: string
   userId: string
+  places: {
+    placeId: string
+    status: 'organized' | 'disorganized'
+    issues?: string[]
+    photos?: string[]
+    observation?: string
+  }[]
 }
 
 export async function getDataForCheckin(): Promise<GetDataForCheckinProtocol> {

@@ -9,11 +9,12 @@ import {
 import { Button } from '../ui/button'
 import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
-import { getCheckinServer } from '@/services/checkins/checkins.server-side'
+import { getCheckinServer, getStatusCheckinServer } from '@/services/checkins/checkins.server-side'
 import CardCheckin from './cardCheckin'
 
 export async function TodayCheckin() {
   const data = await getCheckinServer({ defaultDate: 'today' })
+  //const isOrganized = await getStatusCheckinServer(data)
 
   return (
     <>

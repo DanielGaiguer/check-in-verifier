@@ -3,42 +3,55 @@ import { format } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 
 interface DateProtocol {
-	defaultDate?: 'today' | 'week' | 'month'
-	customDate?: DateRange 
+  defaultDate?: 'today' | 'week' | 'month'
+  customDate?: DateRange
 }
 
 export async function getCheckinServer(
-	date: DateProtocol
+  date: DateProtocol
 ): Promise<TodayCheckinResponse[]> {
-	let response: Response
+  let response: Response
 
-	// 🔹 Caso 1: range padrão (today, week, month)
-	if (date.defaultDate) {
-		response = await fetch(
-			`${process.env.URL}/api/checkins?range=${date.defaultDate}`,
-			{ cache: 'no-store' }
-		)
-	}
+  // 🔹 Caso 1: range padrão (today, week, month)
+  if (date.defaultDate) {
+    response = await fetch(
+      `${process.env.URL}/api/checkins?range=${date.defaultDate}`,
+      { cache: 'no-store' }
+    )
+  }
 
-	// 🔹 Caso 2: intervalo customizado
-	else if (date.customDate?.from && date.customDate?.to) {
-		const fromParam = format(date.customDate.from, 'yyyy-MM-dd')
-		const toParam = format(date.customDate.to, 'yyyy-MM-dd')
+  // 🔹 Caso 2: intervalo customizado
+  else if (date.customDate?.from && date.customDate?.to) {
+    const fromParam = format(date.customDate.from, 'yyyy-MM-dd')
+    const toParam = format(date.customDate.to, 'yyyy-MM-dd')
 
-		response = await fetch(
-			`${process.env.URL}/api/checkins?from=${fromParam}&to=${toParam}`,
-			{ cache: 'no-store' }
-		)
-	}
+    response = await fetch(
+      `${process.env.URL}/api/checkins?from=${fromParam}&to=${toParam}`,
+      { cache: 'no-store' }
+    )
+  }
 
-	// 🔹 Caso inválido
-	else {
-		throw new Error('Parâmetros de data inválidos')
-	}
+  // 🔹 Caso inválido
+  else {
+    throw new Error('Parâmetros de data inválidos')
+  }
 
-	if (!response.ok) {
-		throw new Error('Erro ao buscar check-ins')
-	}
+  if (!response.ok) {
+    throw new Error('Erro ao buscar check-ins')
+  }
 
-	return response.json()
+  return response.json()
+}
+
+export async function getStatusCheckinServer(
+  data: TodayCheckinResponse[]
+): Promise<void> {
+  data.map(async (checkinToday) => {
+    let response = await fetch(`${process.env.URL}/api/checkins/status?id=${checkinToday.checkins.id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    })
+  })
 }

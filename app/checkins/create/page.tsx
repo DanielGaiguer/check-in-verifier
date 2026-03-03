@@ -9,10 +9,10 @@ type CreateCheckinInput = {
 export default async function Page() {
   const data = await getDataForCheckin()
 
-	const postCheckinFunction = async (dataPostCheckin: CreateCheckinInput) => {
-		const response = await postDataForCheckin(dataPostCheckin)
-		return response;
-	}
+	// const postCheckinFunction = async (dataPostCheckin: CreateCheckinInput) => {
+	// 	const response = await postDataForCheckin(dataPostCheckin)
+	// 	return response;
+	// }
 
 	return <CreateCheckinsClient data={data}/>
 }

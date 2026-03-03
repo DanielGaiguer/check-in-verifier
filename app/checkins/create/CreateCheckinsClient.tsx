@@ -142,6 +142,7 @@ export default function CreateCheckinsClient({
             textLabel="Qual a data do check-in?"
             date={date}
             setDate={setDate}
+            
           />
         </Field>
         <h1 className="font-title mt-2 mb-3 font-medium tracking-tight">

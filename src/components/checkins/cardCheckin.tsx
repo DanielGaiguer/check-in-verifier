@@ -16,6 +16,10 @@ interface CardCheckinProps {
 }
 
 const CardCheckin = ({checkins}: CardCheckinProps) => {
+  // checkins.map((checkin) => {
+  //   if(checkin.checkins.)
+  // })
+
 	return (
 		<div className="flex w-[90%] flex-col items-center">
           {checkins.map(({ checkins, users }) => (

@@ -19,6 +19,9 @@ interface SelectDateTodayProps{
 export function SelectDateToday({textLabel, date, setDate}: SelectDateTodayProps) {
   const [open, setOpen] = React.useState(false)
 
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   return (
     <Field className="mx-auto w-44 ">
       <FieldLabel htmlFor="date" className="text-md">{textLabel}</FieldLabel>
@@ -42,6 +45,7 @@ export function SelectDateToday({textLabel, date, setDate}: SelectDateTodayProps
               setDate(date)
               setOpen(false)
             }}
+            disabled={{after: today}}
           />
         </PopoverContent>
       </Popover>

@@ -123,6 +123,7 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
             onCheckedChange={(checked) => {
               const newStatus = checked ? 'disorganized' : null
               setStatus(newStatus)
+              setOpen(true)
               setPlaceState(place.id, { status: newStatus || undefined})
             }}
           />

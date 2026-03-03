@@ -6,7 +6,7 @@ export type User = {
 export type Checkin = {
   id: string
   date: string
-	overallStatus: boolean
+	//verallStatus: boolean
   userId: string
 	createdAt: string
 }
