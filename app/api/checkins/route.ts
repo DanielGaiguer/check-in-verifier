@@ -42,48 +42,48 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const data = (await req.json()) as CreateCheckinInput
-
   const isoDate = new Date(data.date ?? new Date()).toISOString().slice(0, 10)
 
-  const [newCheckin] = await db
-    .insert(checkins)
-    .values({ date: isoDate, userId: data.userId })
-    .returning()
+  //Uma transaction (transação) é um bloco de operações no banco de dados que são executadas como uma única unidade.
+  //Ela garante que ou todas as operações dão certo, ou nenhuma é aplicada.
+  await db.transaction(async (tx) => {
+    const [newCheckin] = await tx
+      .insert(checkins)
+      .values({ date: isoDate, userId: data.userId })
+      .returning()
 
-  await Promise.all(
-    data.places.map(async (place) => {
-      const [newCheckinPlaces] = await db
-        .insert(checkinPlaces)
-        .values({
-          checkinId: newCheckin.id,
-          placeId: place.placeId,
-          status: place.status,
-          observation: place.observation,
-        })
-        .returning()
-      if (place.status === 'disorganized') {
-        await Promise.all(
-          place.issues?.map(async (issue) => {  
-            await db.insert(checkinPlaceIssues).values({
-              checkinPlaceId: newCheckinPlaces.id,
-              issueId: issue,
-            })
-          }) ?? []
-        )
-      }
-
-      if (place.photos) {
-        await Promise.all(
-          place.photos?.map(async (photo) => {
-            await db.insert(photos).values({
-              checkinPlaceId: newCheckinPlaces.id,
-              url: photo
-            })
+    await Promise.all(
+      data.places.map(async (place) => {
+        const [newCheckinPlace] = await tx
+          .insert(checkinPlaces)
+          .values({
+            checkinId: newCheckin.id,
+            placeId: place.placeId,
+            status: place.status,
+            observation: place.observation,
           })
-        )
-      }
-    })
-  )
+          .returning()
+
+        if (place.status === 'disorganized' && place.issues?.length) {
+          await tx.insert(checkinPlaceIssues).values(
+            place.issues.map(issue => ({
+              checkinPlaceId: newCheckinPlace.id,
+              issueId: issue,
+            }))
+          )
+        }
+
+        if (place.photos?.length) {
+          await tx.insert(photos).values(
+            place.photos.map(photo => ({
+              checkinPlaceId: newCheckinPlace.id,
+              url: photo,
+            }))
+          )
+        }
+      })
+    )
+  })
 
   return NextResponse.json({ ok: true })
 }
