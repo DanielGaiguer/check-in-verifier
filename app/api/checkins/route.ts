@@ -66,6 +66,7 @@ export async function POST(req: Request) {
 
         if (place.status === 'disorganized' && place.issues?.length) {
           await tx.insert(checkinPlaceIssues).values(
+            //Para varios registros de uma vez
             place.issues.map(issue => ({
               checkinPlaceId: newCheckinPlace.id,
               issueId: issue,
@@ -75,6 +76,7 @@ export async function POST(req: Request) {
 
         if (place.photos?.length) {
           await tx.insert(photos).values(
+            //Para varios registros de uma vez
             place.photos.map(photo => ({
               checkinPlaceId: newCheckinPlace.id,
               url: photo,
