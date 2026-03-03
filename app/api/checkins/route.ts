@@ -5,6 +5,7 @@ import {
   checkinPlaces,
   checkins,
   issues,
+  photos,
   users,
 } from '@/db/schema'
 import { eq } from 'drizzle-orm'
@@ -62,19 +63,23 @@ export async function POST(req: Request) {
         .returning()
       if (place.status === 'disorganized') {
         await Promise.all(
-          
-          place.issues?.map(async (issue) => {
-            const [issueRow] = await db
-              .select()
-              .from(issues)
-              .where(eq(issues.id, issue))
-  
+          place.issues?.map(async (issue) => {  
             await db.insert(checkinPlaceIssues).values({
               checkinPlaceId: newCheckinPlaces.id,
-              issueId: issueRow.id,
-  
+              issueId: issue,
             })
           }) ?? []
+        )
+      }
+
+      if (place.photos) {
+        await Promise.all(
+          place.photos?.map(async (photo) => {
+            await db.insert(photos).values({
+              checkinPlaceId: newCheckinPlaces.id,
+              url: photo
+            })
+          })
         )
       }
     })
