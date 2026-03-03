@@ -60,7 +60,8 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
   )
 
   const [open, setOpen] = useState(false)
-  const [observationState, setObservationState] = useState("")
+  const [observationState, setObservationState] = useState('')
+  const [arrayIssueState, setArrayIssueState] = useState<string[]>([])
 
   const handleClickCard = () => {
     if (status === 'disorganized') {
@@ -168,7 +169,18 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
                 <FieldGroup className="gap-3 pl-3">
                   {issues.map((issue) => (
                     <Field orientation="horizontal" key={issue.id}>
-                      <Checkbox id={issue.id} className="h-8 w-8" />
+                      <Checkbox
+                        id={issue.id}
+                        className="h-8 w-8"
+                        checked={arrayIssueState.includes(issue.id)}
+                        onCheckedChange={(checked) => {
+                          const newArray = [...arrayIssueState, issue.id]
+                          setArrayIssueState(newArray)
+                          setPlaceState(place.id, {
+                            issues: newArray || [],
+                          })
+                        }}
+                      />
                       <FieldLabel
                         htmlFor={issue.id}
                         className="text-lg font-normal"
