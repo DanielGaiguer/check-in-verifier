@@ -37,7 +37,7 @@ interface CreateCheckinProps {
 export default function CreateCheckinsClient({
   data,
 }: CreateCheckinProps) {
-  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
+  //const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [checkinPlacesState, setCheckinPlacesState] = useState<
     Record<string, CheckinPlaceSubmit>
@@ -87,7 +87,8 @@ export default function CreateCheckinsClient({
       ),
     }
 
-    await postDataForCheckin(payload)
+    console.log(payload)
+    //await postDataForCheckin(payload)
     toast.success('Check-in salvo com sucesso!')
     // setCheckinPlacesState({})
     // setCheckinSubmitPayload({})

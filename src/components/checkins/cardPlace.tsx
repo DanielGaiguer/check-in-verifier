@@ -8,16 +8,8 @@ import {
 } from '@/components/ui/item'
 import { Checkbox } from '../ui/checkbox'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import {
-  Collapsible,
-  CollapsibleContent,
-} from '../ui/collapsible'
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldSet,
-} from '../ui/field'
+import { Collapsible, CollapsibleContent } from '../ui/collapsible'
+import { Field, FieldGroup, FieldLabel, FieldSet } from '../ui/field'
 import { FileUploadCircularProgress } from '../drop-files'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
@@ -35,26 +27,31 @@ interface PlaceProtocol {
     code: string
     description: string
   }[]
-  
+
   //placeId: o id do lugar que quer atualizar, tanto no backend quanto no estado
   // data: os dados que voce quer aplicar no estado daquele lugar do ID
 
   //Partial<CheckinPlaceSubmit>:
   // CheckinPlaceSubmit é provavelmente um objeto com vários campos, Partial<CheckinPlaceSubmit> significa que você não precisa enviar todos os campos, apenas os que quer atualizar:
 
-  //((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>) 
+  //((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>)
   // Alternativamente, data pode ser uma função que recebe o estado atual (prev) do lugar e retorna os dados que devem ser atualizados.
   // Isso é útil quando você quer atualizar algo baseado no valor atual do lugar, como adicionar uma foto sem sobrescrever as antigas:
 
   //Resumindo em palavras simples
-    // O setPlaceState é uma função que:
-    // Recebe o ID de um lugar.
-    // Recebe os dados a atualizar, que podem ser:
-    // Um objeto direto com os campos que você quer mudar.
-    // Uma função que calcula os campos a mudar usando o estado atual.
-    // Atualiza o estado do lugar sem retornar nada.
+  // O setPlaceState é uma função que:
+  // Recebe o ID de um lugar.
+  // Recebe os dados a atualizar, que podem ser:
+  // Um objeto direto com os campos que você quer mudar.
+  // Uma função que calcula os campos a mudar usando o estado atual.
+  // Atualiza o estado do lugar sem retornar nada.
 
-  setPlaceState: (placeId: string, data: Partial<CheckinPlaceSubmit> | ((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>)) => void;
+  setPlaceState: (
+    placeId: string,
+    data:
+      | Partial<CheckinPlaceSubmit>
+      | ((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>)
+  ) => void
 }
 
 export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
@@ -63,16 +60,17 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
   )
 
   const [open, setOpen] = useState(false)
+  const [observationState, setObservationState] = useState("")
 
   const handleClickCard = () => {
-    if (status === 'disorganized'){
-      if (open){
+    if (status === 'disorganized') {
+      if (open) {
         setOpen(false)
         return
       }
-      setOpen(true);
-    } 
-  } 
+      setOpen(true)
+    }
+  }
 
   return (
     <>
@@ -80,7 +78,7 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
         variant="outline"
         key={place.id}
         onClick={handleClickCard}
-        className={`rounded-e-sm border-black h-21 ${
+        className={`h-21 rounded-e-sm border-black ${
           status === 'organized'
             ? 'border-white bg-green-300'
             : status === 'disorganized'
@@ -91,7 +89,7 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
         }`}
       >
         <ItemContent>
-          <ItemTitle className="mt-1 text-lg font-semibold tracking-tight ">
+          <ItemTitle className="mt-1 text-lg font-semibold tracking-tight">
             {place.name}
           </ItemTitle>
           <ItemDescription className="text-gray-700">
@@ -101,7 +99,7 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
           </ItemDescription>
         </ItemContent>
 
-        <ItemActions className="flex items-center gap-2 mb-1">
+        <ItemActions className="mb-1 flex items-center gap-2">
           {/* Organizado */}
           <Checkbox
             className="h-7 w-7"
@@ -117,14 +115,14 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
 
           {/* Desorganizado */}
           <Checkbox
-            className='h-7 w-7'
+            className="h-7 w-7"
             id={`disorganized-${place.id}`}
             checked={status === 'disorganized'}
             onCheckedChange={(checked) => {
               const newStatus = checked ? 'disorganized' : null
               setStatus(newStatus)
               setOpen(true)
-              setPlaceState(place.id, { status: newStatus || undefined})
+              setPlaceState(place.id, { status: newStatus || undefined })
             }}
           />
           <label
@@ -170,10 +168,10 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
                 <FieldGroup className="gap-3 pl-3">
                   {issues.map((issue) => (
                     <Field orientation="horizontal" key={issue.id}>
-                      <Checkbox id={issue.id} className='h-8 w-8'/>
+                      <Checkbox id={issue.id} className="h-8 w-8" />
                       <FieldLabel
                         htmlFor={issue.id}
-                        className="font-normal text-lg"
+                        className="text-lg font-normal"
                         defaultChecked
                       >
                         {issue.description}
@@ -185,26 +183,41 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
             </FieldGroup>
             <div className="flex flex-col items-center">
               <Field className="p-4 pl-5">
-                <FieldLabel htmlFor="textarea-message" className="mt-2 -mb-2 text-lg">
+                <FieldLabel
+                  htmlFor="textarea-message"
+                  className="mt-2 -mb-2 text-lg"
+                >
                   Adicionar descrição
                 </FieldLabel>
                 {/* <FieldDescription>Enter your message below.</FieldDescription> */}
                 <Textarea
                   className="p-3"
                   id="textarea-message"
+                  value={observationState}
                   placeholder="Adicione aqui a descrição do Check-in."
+                  onChange={(e) => {
+                    const value = e.target.value
+
+                    setObservationState(value)
+
+                    setPlaceState(place.id, {
+                      observation: value,
+                    })
+                  }}
                 />
               </Field>
             </div>
             <div className="mb-2 flex flex-col items-center pl-5">
               <Field>
-                <FieldLabel className='text-lg'>Adicionar Arquivos</FieldLabel>
+                <FieldLabel className="text-lg">Adicionar Arquivos</FieldLabel>
               </Field>
-              <FileUploadCircularProgress onFileUploaded={(photo) => {
-                setPlaceState(place.id, (prev) => ({
-                  photos: [...(prev.photos || []), photo]
-                }))
-              }}/> 
+              <FileUploadCircularProgress
+                onFileUploaded={(photo) => {
+                  setPlaceState(place.id, (prev) => ({
+                    photos: [...(prev.photos || []), photo],
+                  }))
+                }}
+              />
               {/*Aqui vai o estado das fotos */}
             </div>
           </div>
