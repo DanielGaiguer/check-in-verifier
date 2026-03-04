@@ -4,7 +4,6 @@ import {
   checkinPlaceIssues,
   checkinPlaces,
   checkins,
-  issues,
   photos,
   users,
 } from '@/db/schema'
@@ -41,20 +40,29 @@ export async function GET(req: Request) {
     .innerJoin(users, eq(users.id, checkins.userId))
     .where(whereClause)
 
-  // 🔥 Buscar status de todos de uma vez
+  // Cria um array só com os IDs.
   const checkinIds = data.map((c) => c.checkinId)
 
+  // Me traga todos os registros de checkinPlaces
   const placesStatus = await db
     .select()
     .from(checkinPlaces)
+    //Me traga todos os registros cujo checkinId esteja dentro dessa lista.
     .where(inArray(checkinPlaces.checkinId, checkinIds))
 
   // 🔥 Agrupar e calcular status
   const formatted = data.map((checkin) => {
+    //Pega apenas os lugares daquele check-in específico.
+    //Separar os lugares de cada check-in individualmente.
     const relatedPlaces = placesStatus.filter(
       (p) => p.checkinId === checkin.checkinId
     )
 
+    //Tem pelo menos 1 lugar?
+  // Todos os lugares estão organizados?
+
+  // Se sim → true
+  // Se algum estiver desorganizado → false
     const overallStatus =
       relatedPlaces.length > 0 &&
       relatedPlaces.every((p) => p.status === 'organized')
