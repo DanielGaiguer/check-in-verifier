@@ -1,4 +1,4 @@
-import { TodayCheckinResponse } from "@/types/checkin";
+import { TodayCheckinResponse } from '@/types/checkin'
 import {
   Item,
   ItemActions,
@@ -9,62 +9,60 @@ import {
 } from '@/components/ui/item'
 import Link from 'next/link'
 import { Badge } from '../ui/badge'
-import { AlertCircle, ChevronRightIcon, CircleCheckIcon } from "lucide-react";
+import { AlertCircle, ChevronRightIcon, CircleCheckIcon } from 'lucide-react'
 
 interface CardCheckinProps {
   checkins: TodayCheckinResponse[]
-}
-
-interface StatusCheckinProps{
-  id: string
-  hasOrganized: boolean
 }
 
 const CardCheckin = ({ checkins }: CardCheckinProps) => {
   return (
     <div className="flex w-[90%] flex-col items-center">
       {checkins.map((checkin) => (
-        <div key={checkin.id} className="mb-1 flex w-full flex-col">
-          <div className="w-[90%] self-center">
-            <Badge variant="ghost" className="w-fit">
-              {checkin.date}
-            </Badge>
+          <div
+            key={checkin.id}
+            className="mb-1 flex w-full cursor-pointer flex-col"
+          >
+            <div className="w-[90%] self-center">
+              <Badge variant="ghost" className="w-fit">
+                {checkin.date}
+              </Badge>
+            </div>
+
+            <div className="flex justify-center gap-6 border-b">
+              <Item
+                asChild
+                className={`w-[90%] rounded-md border transition-colors ${
+                  checkin.overallStatus
+                    ? 'border-green-400 bg-green-50 hover:border-green-600 hover:bg-green-100'
+                    : 'border-red-400 bg-red-50 hover:border-red-600 hover:bg-red-100'
+                }`}
+              >
+                <Link href={`/checkins/${checkin.id}`} key={checkin.id} className='block w-full'>
+                  <ItemMedia>
+                    {checkin.overallStatus ? (
+                      <CircleCheckIcon className="h-6 w-6 text-green-600" />
+                    ) : (
+                      <AlertCircle className="h-6 w-6 text-red-600" />
+                    )}
+                  </ItemMedia>
+
+                  <ItemContent>
+                    <ItemTitle>
+                      Check-in feito por {checkin.user.name}
+                    </ItemTitle>
+                    <ItemDescription>
+                      Clique aqui para conferir informações do check-in
+                    </ItemDescription>
+                  </ItemContent>
+
+                  <ItemActions>
+                    <ChevronRightIcon className="size-4" />
+                  </ItemActions>
+                </Link>
+              </Item>
+            </div>
           </div>
-
-          <div className="flex justify-center gap-6 border-b">
-            <Item
-              asChild
-              className={`w-[90%] rounded-md border transition-colors ${
-                checkin.overallStatus
-                  ? 'border-green-400 bg-green-50 hover:border-green-600 hover:bg-green-100'
-                  : 'border-red-400 bg-red-50 hover:border-red-600 hover:bg-red-100'
-              }`}
-            >
-              <Link href="#">
-                <ItemMedia>
-                  {checkin.overallStatus ? (
-                    <CircleCheckIcon className="h-6 w-6 text-green-600" />
-                  ) : (
-                    <AlertCircle className="h-6 w-6 text-red-600" />
-                  )}
-                </ItemMedia>
-
-                <ItemContent>
-                  <ItemTitle>
-                    Check-in feito por {checkin.user.name}
-                  </ItemTitle>
-                  <ItemDescription>
-                    Toque aqui para conferir informações do check-in
-                  </ItemDescription>
-                </ItemContent>
-
-                <ItemActions>
-                  <ChevronRightIcon className="size-4" />
-                </ItemActions>
-              </Link>
-            </Item>
-          </div>
-        </div>
       ))}
     </div>
   )
