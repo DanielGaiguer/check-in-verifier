@@ -11,7 +11,12 @@ export type Checkin = {
 	createdAt: string
 }
 
-export type TodayCheckinResponse = {
-  checkins: Checkin
-  users: User
+export interface TodayCheckinResponse {
+  id: string
+  date: string
+  user: {
+    id: string
+    name: string
+  }
+  overallStatus: boolean
 }

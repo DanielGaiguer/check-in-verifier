@@ -8,7 +8,7 @@ import {
   photos,
   users,
 } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { switchWhereClause } from '@/services/checkins/checkinUtils'
 
 type CreateCheckinInput = {
@@ -28,16 +28,49 @@ type CreateCheckinInput = {
 //http://localhost:3000/api/checkins?from=2026-01-10&to=2026-01-15
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-
   const whereClause = switchWhereClause(searchParams)
 
   const data = await db
-    .select()
+    .select({
+      checkinId: checkins.id,
+      date: checkins.date,
+      userId: users.id,
+      userName: users.name,
+    })
     .from(checkins)
     .innerJoin(users, eq(users.id, checkins.userId))
     .where(whereClause)
 
-  return NextResponse.json(data)
+  // 🔥 Buscar status de todos de uma vez
+  const checkinIds = data.map((c) => c.checkinId)
+
+  const placesStatus = await db
+    .select()
+    .from(checkinPlaces)
+    .where(inArray(checkinPlaces.checkinId, checkinIds))
+
+  // 🔥 Agrupar e calcular status
+  const formatted = data.map((checkin) => {
+    const relatedPlaces = placesStatus.filter(
+      (p) => p.checkinId === checkin.checkinId
+    )
+
+    const overallStatus =
+      relatedPlaces.length > 0 &&
+      relatedPlaces.every((p) => p.status === 'organized')
+
+    return {
+      id: checkin.checkinId,
+      date: checkin.date,
+      user: {
+        id: checkin.userId,
+        name: checkin.userName,
+      },
+      overallStatus,
+    }
+  })
+
+  return NextResponse.json(formatted)
 }
 
 export async function POST(req: Request) {

@@ -43,15 +43,20 @@ export async function getCheckinServer(
   return response.json()
 }
 
-export async function getStatusCheckinServer(
-  data: TodayCheckinResponse[]
-): Promise<void> {
-  data.map(async (checkinToday) => {
-    let response = await fetch(`${process.env.URL}/api/checkins/status?id=${checkinToday.checkins.id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store',
-    })
-  })
-}
+// export async function getStatusCheckinServer(
+//   checkin: TodayCheckinResponse[]
+// ): Promise<void> {
+//   await Promise.all(
+//     checkin.map(async (checkinToday) => {
+//       const response = await fetch(
+//         `${process.env.URL}/api/checkins/status?id=${checkinToday.id}`,
+//         {
+//           headers: { 'Content-Type': 'application/json' },
+//           cache: 'no-store',
+//         }
+//       )
+//       const json = await response.json()
+//       console.log("Response:", json)
+//     })
+//   )
+// }

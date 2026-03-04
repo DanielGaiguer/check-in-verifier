@@ -87,6 +87,7 @@ export default function CreateCheckinsClient({
       ),
     }
 
+    //console.log(payload)
     await postDataForCheckin(payload)
     toast.success('Check-in salvo com sucesso!')
     // setCheckinPlacesState({})
