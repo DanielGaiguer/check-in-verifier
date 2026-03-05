@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import { db } from '@/db'
+import { NextResponse } from "next/server";
+import { db } from "@/db";
 import {
   checkinAuditLogs,
   checkinPlaceIssues,
@@ -10,46 +10,72 @@ import {
   photos,
   places,
   users,
-} from '@/db/schema'
-import { eq } from 'drizzle-orm'
+} from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 interface CheckinPlaceFormatted {
-  id: string
-  checkinId: string
-  place: string
-  lab: string
-  status: string
-  observation: string | null
-  issues: string[]
-  photos: string[]
-  lastActions: string[]
-  lastReasons: string[]
-  auditCreatedAt: Date[]
+  id: string;
+  checkinId: string;
+  place: string;
+  lab: string;
+  status: string;
+  observation?: string | null;
+  issues: string[];
+  photos: string[];
+  lastActions: string[];
+  lastReasons: string[];
+  auditCreatedAt: Date[];
+}
+
+type CheckinData = {
+  userName: string;
+  date: string; 
 }
 
 export async function GET(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params
+  const { id } = await context.params;
 
   if (!id) {
     return NextResponse.json(
-      { error: 'ID do check-in não informado' },
+      { error: "ID do check-in não informado" },
       { status: 400 }
-    )
+    );
   }
-	const formatted: CheckinPlaceFormatted[] = []
 
-  const checkinsPlaces = await db
+  // 1️⃣ Buscar dados do check-in e usuário
+  const checkinArray = await db
+    .select({
+      userName: users.name,
+      date: checkins.date,
+    })
+    .from(checkins)
+    .innerJoin(users, eq(users.id, checkins.userId))
+    .where(eq(checkins.id, id))
+    .limit(1) // garante apenas 1 registro
+    .execute(); // ✅ tipagem correta
+
+
+  const checkinData = checkinArray[0] as CheckinData | undefined;
+  if (!checkinData) {
+    return NextResponse.json(
+      { error: "Check-in não encontrado" },
+      { status: 404 }
+    );
+  }
+
+  // 2️⃣ Buscar os locais, issues, fotos e auditoria
+  const checkinsPlacesRows = await db
     .select({
       id: checkinPlaces.id,
       checkinId: checkinPlaces.checkinId,
       place: places.name,
       lab: lab.name,
       status: checkinPlaces.status,
-      issues: issues.description,
       observation: checkinPlaces.observation,
+      issues: issues.description,
       photos: photos.url,
       lastActions: checkinAuditLogs.action,
       lastReasons: checkinAuditLogs.reason,
@@ -60,17 +86,15 @@ export async function GET(
     .innerJoin(places, eq(places.id, checkinPlaces.placeId))
     .innerJoin(lab, eq(lab.id, places.labId))
     .leftJoin(photos, eq(photos.checkinPlaceId, checkinPlaces.id))
-    .leftJoin(
-      checkinPlaceIssues,
-      eq(checkinPlaceIssues.checkinPlaceId, checkinPlaces.id)
-    )
+    .leftJoin(checkinPlaceIssues, eq(checkinPlaceIssues.checkinPlaceId, checkinPlaces.id))
     .leftJoin(issues, eq(checkinPlaceIssues.issueId, issues.id))
     .leftJoin(checkinAuditLogs, eq(checkinAuditLogs.checkinId, id))
+    .execute(); // você pode criar um tipo mais detalhado se quiser
 
-		
-  checkinsPlaces.forEach((row) => {
-    // Verifica se o lugar já existe no array
-    let existing = formatted.find((p) => p.id === row.id)
+  // 3️⃣ Formatar locais e arrays únicos
+  const formattedPlaces: CheckinPlaceFormatted[] = [];
+  checkinsPlacesRows.forEach((row) => {
+    let existing = formattedPlaces.find((p) => p.id === row.id);
     if (!existing) {
       existing = {
         id: row.id,
@@ -84,18 +108,26 @@ export async function GET(
         lastActions: row.lastActions ? [row.lastActions] : [],
         lastReasons: row.lastReasons ? [row.lastReasons] : [],
         auditCreatedAt: row.auditCreatedAt ? [row.auditCreatedAt] : [],
-      }
-      formatted.push(existing)
+      };
+      formattedPlaces.push(existing);
     } else {
-      // Adiciona novas issues/fotos se ainda não estiverem
-      if (row.issues && !existing.issues.includes(row.issues)) {
-        existing.issues.push(row.issues)
-      }
-      if (row.photos && !existing.photos.includes(row.photos)) {
-        existing.photos.push(row.photos)
-      }
+      const pushUnique = <T>(arr: T[], val: T | null | undefined) => {
+        if (val != null && !arr.includes(val)) arr.push(val);
+      };
+      pushUnique(existing.issues, row.issues);
+      pushUnique(existing.photos, row.photos);
+      pushUnique(existing.lastActions, row.lastActions);
+      pushUnique(existing.lastReasons, row.lastReasons);
+      pushUnique(existing.auditCreatedAt, row.auditCreatedAt);
     }
-  })
+  });
 
-  return NextResponse.json(formatted)
+  // 4️⃣ Retornar JSON final
+  return NextResponse.json({
+    checkin: {
+      user: checkinData.userName,
+      date: checkinData.date,
+    },
+    places: formattedPlaces,
+  });
 }

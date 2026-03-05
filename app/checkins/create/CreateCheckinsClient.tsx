@@ -42,9 +42,9 @@ export default function CreateCheckinsClient({
   const [checkinPlacesState, setCheckinPlacesState] = useState<
     Record<string, CheckinPlaceSubmit>
   >({})
-  const [checkinSubmitPayload, setCheckinSubmitPayload] = useState<
-    Partial<CheckinSubmit>
-  >({})
+  // const [checkinSubmitPayload, setCheckinSubmitPayload] = useState<
+    // Partial<CheckinSubmit>
+  // >({})
   const [selectUserId, setSelectUserId] = useState<
     CheckinSubmit['userId'] | undefined
   >(undefined)
