@@ -6,7 +6,7 @@ type UploadedImage = {
 interface CheckinPlaceSubmit {
 	placeId: string
 	status: 'organized' | 'disorganized'
-	observation?: string
+	observation?: string | null
 	issues?: string[]
 	photos?: UploadedImage[]
 }

@@ -78,7 +78,7 @@ export default function CreateCheckinsClient({
               status: placeData.status,
               issues: placeData.issues,
               photos: placeData.photos?.map((img) => img.url),
-              observation: placeData.observation,
+              observation: placeData.observation ?? undefined,
             }
           : {
               placeId,

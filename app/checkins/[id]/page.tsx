@@ -15,8 +15,9 @@ interface CheckinPlaceFormatted {
   id: string
   checkinId: string
   place: string
+  placeId: string
   lab: string
-  status: string
+  status: 'organized' | 'disorganized'
   observation: string | null
   issues: string[]
   photos: string[]
@@ -24,6 +25,19 @@ interface CheckinPlaceFormatted {
   lastReasons: string[]
   auditCreatedAt: Date[]
 }
+
+type CreateCheckinInput = {
+  date: string
+  userId: string
+  places: {
+    placeId: string
+    status: 'organized' | 'disorganized'
+    issues?: string[]
+    photos?: (string | UploadedImage)[]
+    observation?: string
+  }[]
+}
+
 
 type CheckinData = {
   user: string
@@ -42,9 +56,7 @@ export default function CheckinDetailPage() {
   const [data, setData] = useState<checkinPayload | null>(null)
   const [loading, setLoading] = useState(true)
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [checkinPlacesState, setCheckinPlacesState] = useState<
-    Record<string, CheckinPlaceSubmit>
-  >({})
+  const [checkinPlacesState, setCheckinPlacesState] = useState<Record<string, CheckinPlaceFormatted>>({})
   const [selectUserId, setSelectUserId] = useState<string | undefined>(undefined)
   const [initialDataCheckin, setInitialDataCheckin] = useState<GetDataForCheckinProtocol | null>(null)
 
@@ -60,6 +72,8 @@ export default function CheckinDetailPage() {
         if (!res.ok) throw new Error('Erro no fetch do check-in')
         const checkinJson: checkinPayload = await res.json()
         setData(checkinJson)
+        setDate(new Date(checkinJson?.checkin.date))
+        setCheckinPlacesState(checkinJson.places)
 
         setLoading(false)
       } catch (error) {
@@ -71,7 +85,21 @@ export default function CheckinDetailPage() {
     fetchAllData()
   }, [id])
 
-  const handleSubmit = () => {}
+  const handleSubmit = () => {
+  // const payload: CreateCheckinInput = {
+  //   date: date.toISOString(),
+  //   userId: selectUserId,
+  //   places: Object.values(checkinPlacesState).map((place) => ({
+  //     placeId: place.id, // <--- aqui mapeia id para placeId
+  //     status: place.status as 'organized' | 'disorganized',
+  //     issues: place.issues,
+  //     photos: place.photos, // se tiver UploadedImage[], converta para string
+  //     observation: place.observation || undefined,
+  //   })),
+  // }
+
+  //Fazer o metodo POST
+  }
 
   useEffect(() => {
     if (!initialDataCheckin || !data) return
@@ -87,6 +115,8 @@ export default function CheckinDetailPage() {
       (u) => normalizeName(u.name ?? "") === normalizeName(data.checkin.user ?? "")
     )
     setSelectUserId(user?.id)
+
+
   }, [initialDataCheckin, data])
 
   if (loading || !initialDataCheckin || !data) {
@@ -154,52 +184,25 @@ export default function CheckinDetailPage() {
                       key={place.id}
                       place={place}
                       issues={initialDataCheckin?.issues}
-                      //placeId → o ID do lugar que você quer atualizar.
-                      // data → pode ser:
-                      // Um objeto parcial com os campos que quer atualizar.
-                      // Uma função que recebe o estado atual daquele lugar e retorna os campos que quer atualizar.
                       setPlaceState={(placeId, data) =>
                         setCheckinPlacesState((prev) => ({
-                          //Aqui usamos a forma funcional de setState do React, que recebe o estado anterior (prev) e retorna o novo estado. Isso garante que estamos atualizando o estado com segurança, sem sobrescrever alterações feitas por outros lugares ao mesmo tempo.
-
-                          ...prev, //Isso espalha (spread) todas as entradas antigas do objeto prev, para não perder os outros lugares.
-                          //[placeId] → cria ou atualiza a chave referente ao lugar que queremos modificar.
+                          ...prev,
                           [placeId]:
-                            typeof data === 'function' //typeof data === 'function' → verifica se o que foi passado é uma função ou um objeto direto.
+                            typeof data === 'function'
                               ? {
                                   ...prev[placeId],
                                   ...data(prev[placeId] || {}),
+                                  photos: (data(prev[placeId] || {}) as any).photos?.map((p: any) =>
+                                    typeof p === 'string' ? p : p.url
+                                  ),
                                 }
-                              : //prev[placeId] || {} → pega o estado atual do lugar ou um objeto vazio se ainda não existir.
-
-                                //data(prev[placeId] || {}) → chama a função passada para calcular os novos campos.
-
-                                //{ ...prev[placeId], ...data(...) } → combina o estado antigo com os novos campos, garantindo que nenhum campo antigo seja perdido.
-
-                                { ...prev[placeId], ...data },
-                          //Se for objeto direto
-                          //Apenas combina o estado antigo com os novos dados passados diretamente.
-
-                          // Resumo
-                          //setPlaceState recebe placeId e data.
-                          // Atualiza apenas o lugar selecionado no estado global.
-                          // Mantém todos os outros lugares intactos (...prev).
-                          // Funciona tanto se você passar:
-                          // Um objeto com os novos campos.
-                          // Uma função que calcula novos campos com base no estado atual.
-
-                          //Exemplo
-                          // Passando objeto:
-                          // setPlaceState("place-1", { status: "organized" })
-
-                          // Resultado: place-1 agora tem status "organized", fotos continuam intactas.
-
-                          // Passando função:
-                          // setPlaceState("place-2", (prev) => ({
-                          //   photos: [...(prev.photos || []), "novaFoto.png"]
-                          // }))
-
-                          // Resultado: adiciona "novaFoto.png" às fotos existentes de place-2 sem sobrescrever status.
+                              : {
+                                  ...prev[placeId],
+                                  ...data,
+                                  photos: (data as any).photos?.map((p: any) =>
+                                    typeof p === 'string' ? p : p.url
+                                  ),
+                                },
                         }))
                       }
                     />

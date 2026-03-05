@@ -17,6 +17,7 @@ interface CheckinPlaceFormatted {
   id: string;
   checkinId: string;
   place: string;
+  placeId: string;
   lab: string;
   status: string;
   observation?: string | null;
@@ -74,6 +75,7 @@ export async function GET(
       id: checkinPlaces.id,
       checkinId: checkinPlaces.checkinId,
       place: places.name,
+      placeId: places.id,
       lab: lab.name,
       status: checkinPlaces.status,
       observation: checkinPlaces.observation,
@@ -102,6 +104,7 @@ export async function GET(
         id: row.id,
         checkinId: row.checkinId,
         place: row.place,
+        placeId: row.placeId,
         lab: row.lab,
         status: row.status,
         observation: row.observation,
