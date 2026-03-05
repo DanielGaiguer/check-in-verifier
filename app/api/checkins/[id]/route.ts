@@ -29,6 +29,7 @@ interface CheckinPlaceFormatted {
 
 type CheckinData = {
   userName: string;
+  userId: string;
   date: string; 
 }
 
@@ -49,6 +50,7 @@ export async function GET(
   const checkinArray = await db
     .select({
       userName: users.name,
+      userId: users.id,
       date: checkins.date,
     })
     .from(checkins)
@@ -126,6 +128,7 @@ export async function GET(
   return NextResponse.json({
     checkin: {
       user: checkinData.userName,
+      userId: checkinData.userId,
       date: checkinData.date,
     },
     places: formattedPlaces,
