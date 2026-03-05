@@ -87,24 +87,9 @@ export default function CreateCheckinsClient({
       ),
     }
 
-    //console.log(payload)
     await postDataForCheckin(payload)
     toast.success('Check-in salvo com sucesso!')
-    // setCheckinPlacesState({})
-    // setCheckinSubmitPayload({})
-    // setSelectUserId(undefined)
   }
-
-  useEffect(() => {
-    console.log(checkinSubmitPayload)
-  }, [checkinSubmitPayload])
-
-  const formattedDate = (date: Date): string =>
-    date?.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    })
 
   return (
     <main className="flex flex-col items-center justify-center">
