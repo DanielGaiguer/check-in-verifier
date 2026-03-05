@@ -1,4 +1,5 @@
 
+import { varchar } from "drizzle-orm/mysql-core";
 import {
   pgTable,
   text,
@@ -108,3 +109,13 @@ export const checkinPlaces = pgTable("checkin_places", {
     uniqueCheckinPlace: unique().on(table.checkinId, table.placeId)
   })
 )
+
+export const checkinAuditLogs = pgTable("checkin_audit_logs", {
+  id: uuid('id').defaultRandom().primaryKey(),
+  checkinId: uuid("checkin_id")
+    .references(() => checkins.id)
+    .notNull(),
+  reason: text("reason").notNull(),
+  action: text("action").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+})

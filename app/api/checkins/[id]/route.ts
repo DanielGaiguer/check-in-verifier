@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import {
+  checkinAuditLogs,
   checkinPlaceIssues,
   checkinPlaces,
   checkins,
@@ -21,6 +22,9 @@ interface CheckinPlaceFormatted {
   observation: string | null
   issues: string[]
   photos: string[]
+  lastActions: string[]
+  lastReasons: string[]
+  auditCreatedAt: Date[]
 }
 
 export async function GET(
@@ -47,6 +51,9 @@ export async function GET(
       issues: issues.description,
       observation: checkinPlaces.observation,
       photos: photos.url,
+      lastActions: checkinAuditLogs.action,
+      lastReasons: checkinAuditLogs.reason,
+      auditCreatedAt: checkinAuditLogs.createdAt,
     })
     .from(checkinPlaces)
     .where(eq(checkinPlaces.checkinId, id))
@@ -58,6 +65,7 @@ export async function GET(
       eq(checkinPlaceIssues.checkinPlaceId, checkinPlaces.id)
     )
     .leftJoin(issues, eq(checkinPlaceIssues.issueId, issues.id))
+    .leftJoin(checkinAuditLogs, eq(checkinAuditLogs.checkinId, id))
 
 		
   checkinsPlaces.forEach((row) => {
@@ -73,6 +81,9 @@ export async function GET(
         observation: row.observation,
         issues: row.issues ? [row.issues] : [],
         photos: row.photos ? [row.photos] : [],
+        lastActions: row.lastActions ? [row.lastActions] : [],
+        lastReasons: row.lastReasons ? [row.lastReasons] : [],
+        auditCreatedAt: row.auditCreatedAt ? [row.auditCreatedAt] : [],
       }
       formatted.push(existing)
     } else {
