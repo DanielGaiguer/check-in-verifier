@@ -126,7 +126,7 @@ export default function CheckinDetailPage() {
     <main className="flex flex-col items-center justify-center">
       <div className="flex w-full flex-col items-center justify-center p-4 lg:w-[60%]">
         <h1 className="font-title mt-1 text-lg font-semibold tracking-tight">
-          Criar um Novo Check-in
+          Editar Check-in
         </h1>
         <Field className="w-full max-w-150 p-3">
           {/* data-invalid */}
@@ -176,6 +176,7 @@ export default function CheckinDetailPage() {
                         key={place.id}
                         place={place}
                         issues={initialDataCheckin.issues}
+                        placeState={placeState[place.id]}
                         setPlaceState={setPlaceState}
                       />
                   ))}
