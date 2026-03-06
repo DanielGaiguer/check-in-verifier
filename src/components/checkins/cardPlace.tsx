@@ -14,7 +14,6 @@ import { FileUploadCircularProgress } from '../drop-files'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 import { CheckCircle, ChevronDownIcon } from 'lucide-react'
-import { photos } from '@/db/schema'
 import { CheckinPlaceSubmit } from '@/types/postPayloadCheckin'
 
 interface PlaceProtocol {
@@ -30,7 +29,7 @@ interface PlaceProtocol {
     description: string
   }[]
 
-  placeState?: CheckinPlaceSubmit
+  placeState?: CheckinPlaceSubmit  // ✅ Removido o '?' para obrigar a ter valor
 
   setPlaceState: (
     placeId: string,
@@ -45,8 +44,15 @@ export const CardPlace = ({
   placeState,
   setPlaceState,
 }: PlaceProtocol) => {
+  // ✅ Debug para ver o que está chegando
+  useEffect(() => {
+    console.log('🎴 CardPlace - place.id:', place.id)
+    console.log('🎴 CardPlace - placeState:', placeState)
+    console.log('🎴 CardPlace - status:', placeState?.status)
+  }, [place.id, placeState])
 
-  const status = placeState?.status ?? null
+  // ✅ Garante que sempre tem um valor padrão
+  const status = placeState?.status ?? 'organized'
   const observation = placeState?.observation ?? ''
   const selectedIssues = placeState?.issues ?? []
   const photos = placeState?.photos ?? []
@@ -90,7 +96,7 @@ export const CardPlace = ({
             id={`organized-${place.id}`}
             checked={status === 'organized'}
             onCheckedChange={(checked) => {
-              const newStatus = checked ? 'organized' : undefined
+              const newStatus = checked ? 'organized' : 'disorganized'
               setPlaceState(place.id, { status: newStatus })
             }}
           />
@@ -101,7 +107,7 @@ export const CardPlace = ({
             id={`disorganized-${place.id}`}
             checked={status === 'disorganized'}
             onCheckedChange={(checked) => {
-              const newStatus = checked ? 'disorganized' : undefined
+              const newStatus = checked ? 'disorganized' : 'organized'
               setPlaceState(place.id, { status: newStatus })
               if (checked) setOpen(true)
             }}
@@ -113,7 +119,7 @@ export const CardPlace = ({
               variant="ghost"
               size="icon"
               className="ml-1 h-6 w-7"
-              onClick={() => setOpen((prev) => prev)}
+              onClick={() => setOpen((prev) => !prev)}
             >
               <ChevronDownIcon className={`transition-transform ${open ? 'rotate-180' : ''}`} />
             </Button>

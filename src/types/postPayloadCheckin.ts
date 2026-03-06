@@ -1,6 +1,6 @@
 export type UploadedImage = {
 	url: string
-	tempId: string
+	tempId?: string
 }
 
 export interface CheckinPlaceSubmit {
