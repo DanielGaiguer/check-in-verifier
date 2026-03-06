@@ -44,17 +44,18 @@ export const CardPlace = ({
   placeState,
   setPlaceState,
 }: PlaceProtocol) => {
-  // ✅ Debug para ver o que está chegando
-  useEffect(() => {
-    console.log('🎴 CardPlace - place.id:', place.id)
-    console.log('🎴 CardPlace - placeState:', placeState)
-    console.log('🎴 CardPlace - status:', placeState?.status)
-  }, [place.id, placeState])
+  // // ✅ Debug para ver o que está chegando
+  // useEffect(() => {
+  //   console.log('🎴 CardPlace - place.id:', place.id)
+  //   console.log('🎴 CardPlace - placeState:', placeState)
+  //   console.log('🎴 CardPlace - status:', placeState?.status)
+  // }, [place.id, placeState])
 
   // ✅ Garante que sempre tem um valor padrão
-  const status = placeState?.status ?? 'organized'
+  const status = placeState?.status ?? undefined
   const observation = placeState?.observation ?? ''
   const selectedIssues = placeState?.issues ?? []
+  console.log(selectedIssues)
   const photos = placeState?.photos ?? []
 
   const [open, setOpen] = useState(false)
@@ -119,7 +120,7 @@ export const CardPlace = ({
               variant="ghost"
               size="icon"
               className="ml-1 h-6 w-7"
-              onClick={() => setOpen((prev) => !prev)}
+              onClick={() => setOpen((prev) => prev)}
             >
               <ChevronDownIcon className={`transition-transform ${open ? 'rotate-180' : ''}`} />
             </Button>

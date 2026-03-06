@@ -80,7 +80,7 @@ export default function CheckinDetailPage() {
 
           // ✅ CORRETO: Use 'initialData' em vez de 'initialDataCheckin'
           initialData.places.forEach((place) => {
-            console.log(`📍 Criando placeState para place.id: ${place.id}`)
+            // console.log(`📍 Criando placeState para place.id: ${place.id}`)
             
             // ✅ Busca pelo placeId correto
             const existingPlace = checkinJson.places.find(
@@ -105,8 +105,8 @@ export default function CheckinDetailPage() {
             }
           })
 
-          console.log('✅ placeState final:', newPlaceState)
-          console.log('✅ Total de chaves:', Object.keys(newPlaceState).length)
+          // console.log('✅ placeState final:', newPlaceState)
+          // console.log('✅ Total de chaves:', Object.keys(newPlaceState).length)
 
           setPlacesState(newPlaceState)
           setLoading(false)
@@ -121,12 +121,12 @@ export default function CheckinDetailPage() {
 
   // ✅ Debug para verificar o que está no placeState
   // No useEffect, adicione este debug:
-  useEffect(() => {
-    console.log('🔍 placeState completo:', placeState)
-    console.log('🔍 Total de lugares no placeState:', Object.keys(placeState).length)
-    console.log('🔍 initialDataCheckin.places:', initialDataCheckin?.places?.map(p => p.id))
-    console.log('🔍 Chaves do placeState:', Object.keys(placeState))
-  }, [placeState, initialDataCheckin])
+  // useEffect(() => {
+  //   console.log('🔍 placeState completo:', placeState)
+  //   console.log('🔍 Total de lugares no placeState:', Object.keys(placeState).length)
+  //   console.log('🔍 initialDataCheckin.places:', initialDataCheckin?.places?.map(p => p.id))
+  //   console.log('🔍 Chaves do placeState:', Object.keys(placeState))
+  // }, [placeState, initialDataCheckin])
 
   // Lógica para encontrar o userId
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function CheckinDetailPage() {
                     const currentPlaceState = placeState[place.id]
 
                     // ✅ Debug para cada CardPlace
-                    console.log(`📍 CardPlace - place.id: ${place.id}, placeState:`, currentPlaceState)
+                    // console.log(`📍 CardPlace - place.id: ${place.id}, placeState:`, currentPlaceState)
 
                     return (
                       <CardPlace
