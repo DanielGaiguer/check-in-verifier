@@ -55,7 +55,7 @@ interface PlaceProtocol {
   ) => void
 }
 
-export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
+export const CardPlaceEdit = ({ place, issues, setPlaceState }: PlaceProtocol) => {
   const [status, setStatus] = useState<'organized' | 'disorganized' | null>(
     null
   )
@@ -240,4 +240,4 @@ export const CardPlace = ({ place, issues, setPlaceState }: PlaceProtocol) => {
   )
 }
 
-export default CardPlace
+export default CardPlaceEdit

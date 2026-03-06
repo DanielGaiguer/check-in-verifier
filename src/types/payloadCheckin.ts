@@ -1,9 +1,9 @@
-type UploadedImage = {
+export type UploadedImage = {
 	url: string
 	tempId: string
 }
 
-interface CheckinPlaceSubmit {
+export interface CheckinPlaceSubmit {
 	placeId: string
 	status: 'organized' | 'disorganized'
 	observation?: string | null
@@ -11,7 +11,7 @@ interface CheckinPlaceSubmit {
 	photos?: UploadedImage[]
 }
 
-interface CheckinSubmit {
+export interface CheckinSubmit {
 	date: string
 	userId: string
 	places: CheckinPlaceSubmit[]

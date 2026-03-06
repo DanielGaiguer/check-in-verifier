@@ -10,45 +10,9 @@ import { getDataForCheckin } from '@/services/checkins/checkinsServices'
 import { GetDataForCheckinProtocol } from '@/types/dataForCheckinProtocol'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-
-interface CheckinPlaceFormatted {
-  id: string
-  checkinId: string
-  place: string
-  placeId: string
-  lab: string
-  status: 'organized' | 'disorganized'
-  observation: string | null
-  issues: string[]
-  photos: string[]
-  lastActions: string[]
-  lastReasons: string[]
-  auditCreatedAt: Date[]
-}
-
-type CreateCheckinInput = {
-  date: string
-  userId: string
-  places: {
-    placeId: string
-    status: 'organized' | 'disorganized'
-    issues?: string[]
-    photos?: (string | UploadedImage)[]
-    observation?: string
-  }[]
-}
-
-
-type CheckinData = {
-  user: string
-  userId: string
-  date: string
-}
-
-type checkinPayload = {
-  checkin: CheckinData
-  places: CheckinPlaceFormatted[]
-}
+import { UploadedImage } from '@/types/payloadCheckin'
+import CardPlaceEdit from '@/components/checkins/cardPlaceEdit'
+import { checkinPayload, CheckinPlaceFormatted } from '@/types/getCheckinPayload'
 
 export default function CheckinDetailPage() {
   const params = useParams()
@@ -180,7 +144,7 @@ export default function CheckinDetailPage() {
                 {initialDataCheckin?.places
                   ?.filter((place) => place.labId === lab.id)
                   .map((place) => (
-                    <CardPlace
+                    <CardPlaceEdit
                       key={place.id}
                       place={place}
                       issues={initialDataCheckin?.issues}
