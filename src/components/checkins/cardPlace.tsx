@@ -29,7 +29,7 @@ interface PlaceProtocol {
     description: string
   }[]
 
-  placeState?: CheckinPlaceSubmit  // ✅ Removido o '?' para obrigar a ter valor
+  placeState?: CheckinPlaceSubmit // ✅ Removido o '?' para obrigar a ter valor
 
   setPlaceState: (
     placeId: string,
@@ -44,14 +44,12 @@ export const CardPlace = ({
   placeState,
   setPlaceState,
 }: PlaceProtocol) => {
-  // // ✅ Debug para ver o que está chegando
   // useEffect(() => {
   //   console.log('🎴 CardPlace - place.id:', place.id)
   //   console.log('🎴 CardPlace - placeState:', placeState)
   //   console.log('🎴 CardPlace - status:', placeState?.status)
   // }, [place.id, placeState])
 
-  // ✅ Garante que sempre tem um valor padrão
   const status = placeState?.status ?? undefined
   const observation = placeState?.observation ?? ''
   const selectedIssues = placeState?.issues ?? []
@@ -60,26 +58,34 @@ export const CardPlace = ({
 
   const [open, setOpen] = useState(false)
 
+  const [statusState, setStatusState] = useState(status)
+
   const handleClickCard = () => {
-    if (status === 'disorganized') {
+    if (statusState === 'disorganized') {
       setOpen((prev) => !prev)
     }
   }
+
+  useEffect(() => {
+    setStatusState(placeState?.status ?? undefined)
+  }, [placeState?.status])
 
   return (
     <>
       <Item
         variant="outline"
         key={place.id}
-        onClick={() => status === 'disorganized' && setOpen((prev) => !prev)}
+        onClick={() =>
+          statusState === 'disorganized' && setOpen((prev) => !prev)
+        }
         className={`h-21 rounded-e-sm border-black ${
-          status === 'organized'
+          statusState === 'organized'
             ? 'border-white bg-green-300'
-            : status === 'disorganized'
-            ? open
-              ? 'mb-0 rounded-b-none border-2 border-b-0 bg-red-300'
-              : 'border-2 bg-red-300'
-            : 'bg-gray-300'
+            : statusState === 'disorganized'
+              ? open
+                ? 'mb-0 rounded-b-none border-2 border-b-0 bg-red-300'
+                : 'border-2 bg-red-300'
+              : 'bg-gray-300'
         }`}
       >
         <ItemContent>
@@ -87,17 +93,25 @@ export const CardPlace = ({
             {place.name}
           </ItemTitle>
           <ItemDescription className="text-gray-700">
-            {!status && <span>Selecione se o local está organizado ou não</span>}
+            {!statusState && (
+              <span>Selecione se o local está organizado ou não</span>
+            )}
           </ItemDescription>
         </ItemContent>
 
-        <ItemActions className="mb-1 flex items-center gap-2">
+        <ItemActions className={`mb-1 flex items-center gap-2 ${statusState ? "" : "mr-10.5 mb-3"}`}>
           <Checkbox
             className="h-7 w-7"
             id={`organized-${place.id}`}
-            checked={status === 'organized'}
+            checked={statusState === 'organized'}
             onCheckedChange={(checked) => {
-              const newStatus = checked ? 'organized' : 'disorganized'
+              let newStatus: 'organized' | 'disorganized' | undefined
+              if (statusState === 'organized') {
+                newStatus = undefined // desmarca ao clicar de novo
+              } else {
+                newStatus = 'organized'
+              }
+              setStatusState(newStatus)
               setPlaceState(place.id, { status: newStatus })
             }}
           />
@@ -106,31 +120,39 @@ export const CardPlace = ({
           <Checkbox
             className="h-7 w-7"
             id={`disorganized-${place.id}`}
-            checked={status === 'disorganized'}
+            checked={statusState === 'disorganized'}
             onCheckedChange={(checked) => {
-              const newStatus = checked ? 'disorganized' : 'organized'
+              let newStatus: 'organized' | 'disorganized' | undefined
+              if (statusState === 'disorganized') {
+                newStatus = undefined // desmarca ao clicar de novo
+              } else {
+                newStatus = 'disorganized'
+              }
+              setOpen(true)
+              setStatusState(newStatus)
               setPlaceState(place.id, { status: newStatus })
-              if (checked) setOpen(true)
             }}
           />
           <label htmlFor={`disorganized-${place.id}`}>Desorganizado</label>
 
-          {status === 'disorganized' && (
+          {statusState === 'disorganized' && (
             <Button
               variant="ghost"
               size="icon"
-              className="ml-1 h-6 w-7"
+              className="ml-1 h-6 w-7.5"
               onClick={() => setOpen((prev) => prev)}
             >
-              <ChevronDownIcon className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+              <ChevronDownIcon
+                className={`transition-transform ${open ? 'rotate-180' : ''}`}
+              />
             </Button>
           )}
 
-          {status === 'organized' && (
+          {statusState === 'organized' && (
             <Button
               variant="ghost"
               size="icon"
-              className="ml-1 h-6 w-6"
+              className="ml-1 h-6 w-7.5"
               onClick={() => setOpen((prev) => !prev)}
             >
               <CheckCircle />
@@ -139,28 +161,32 @@ export const CardPlace = ({
         </ItemActions>
       </Item>
 
-      <Collapsible open={open && status === 'disorganized'}>
+      <Collapsible open={open && statusState === 'disorganized'}>
         <CollapsibleContent className="-mt-1 mb-1 w-full overflow-hidden">
           <div className="-mt-2 w-full rounded-b-md border-2 border-t-0 border-black bg-red-300 p-2">
-
             <FieldGroup className="w-full max-w-xs p-2">
               <FieldSet>
                 <FieldGroup className="gap-3 pl-3">
                   {issues.map((issue) => (
-                    <Field orientation="horizontal" key={issue.id}>
+                    <Field orientation="horizontal" key={issue.description}>
                       <Checkbox
-                        id={issue.id}
+                        id={issue.description}
                         className="h-8 w-8"
-                        checked={selectedIssues.includes(issue.id)}
+                        checked={selectedIssues.includes(issue.description)}
                         onCheckedChange={(checked) => {
                           const newArray = checked
-                            ? [...selectedIssues, issue.id]
-                            : selectedIssues.filter((id) => id !== issue.id)
-
+                            ? [...selectedIssues, issue.description]
+                            : selectedIssues.filter(
+                                (description) =>
+                                  description !== issue.description
+                              )
                           setPlaceState(place.id, { issues: newArray })
                         }}
                       />
-                      <FieldLabel htmlFor={issue.id} className="text-lg font-normal">
+                      <FieldLabel
+                        htmlFor={issue.id}
+                        className="text-lg font-normal"
+                      >
                         {issue.description}
                       </FieldLabel>
                     </Field>
@@ -170,7 +196,10 @@ export const CardPlace = ({
             </FieldGroup>
 
             <Field className="p-4 pl-5">
-              <FieldLabel htmlFor="textarea-message" className="mt-2 -mb-2 text-lg">
+              <FieldLabel
+                htmlFor="textarea-message"
+                className="mt-2 -mb-2 text-lg"
+              >
                 Adicionar descrição
               </FieldLabel>
               <Textarea
@@ -178,7 +207,9 @@ export const CardPlace = ({
                 id="textarea-message"
                 value={observation}
                 placeholder="Adicione aqui a descrição do Check-in."
-                onChange={(e) => setPlaceState(place.id, { observation: e.target.value })}
+                onChange={(e) =>
+                  setPlaceState(place.id, { observation: e.target.value })
+                }
               />
             </Field>
 
@@ -188,7 +219,9 @@ export const CardPlace = ({
               </Field>
               <FileUploadCircularProgress
                 onFileUploaded={(photo) =>
-                  setPlaceState(place.id, (prev) => ({ photos: [...(prev.photos ?? []), photo] }))
+                  setPlaceState(place.id, (prev) => ({
+                    photos: [...(prev.photos ?? []), photo],
+                  }))
                 }
               />
             </div>

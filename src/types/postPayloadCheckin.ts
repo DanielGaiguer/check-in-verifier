@@ -8,6 +8,7 @@ export interface CheckinPlaceSubmit {
 	status: 'organized' | 'disorganized'
 	observation?: string | null
 	issues?: string[]
+	issuesId?: string[]
 	photos?: UploadedImage[]
 }
 

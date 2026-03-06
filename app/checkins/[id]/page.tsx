@@ -225,10 +225,6 @@ export default function CheckinDetailPage() {
         <Button className="mt-5 mb-5" onClick={() => console.log('Salvar')}>
           Salvar Check-in
         </Button>
-        <div>
-          <h1>Detalhe do check-in {id}</h1>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
       </div>
     </main>
   )
