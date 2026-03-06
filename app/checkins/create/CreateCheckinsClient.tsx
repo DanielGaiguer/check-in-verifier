@@ -1,5 +1,5 @@
 'use client'
-import CardPlace from '@/components/checkins/cardPlace'
+import { CardPlace } from '@/components/checkins/cardPlace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -17,6 +17,7 @@ import { SelectLabel } from '@radix-ui/react-select'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { postDataForCheckin } from '@/services/checkins/checkinsServices'
+import { CheckinPlaceSubmit, CheckinSubmit } from '@/types/postPayloadCheckin'
 
 type CreateCheckinInput = {
   date: string
@@ -39,15 +40,36 @@ export default function CreateCheckinsClient({
 }: CreateCheckinProps) {
   //const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [checkinPlacesState, setCheckinPlacesState] = useState<
+  const [placesState, setPlacesState] = useState<
     Record<string, CheckinPlaceSubmit>
   >({})
-  // const [checkinSubmitPayload, setCheckinSubmitPayload] = useState<
-    // Partial<CheckinSubmit>
-  // >({})
+
   const [selectUserId, setSelectUserId] = useState<
     CheckinSubmit['userId'] | undefined
   >(undefined)
+
+  
+  const setPlaceState = (
+    placeId: string,
+    data:
+      | Partial<CheckinPlaceSubmit>
+      | ((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>)
+  ) => {
+    setPlacesState((prev) => {
+      const prevPlace = prev[placeId] ?? {}
+
+      const newData =
+        typeof data === 'function' ? data(prevPlace) : data
+
+      return {
+        ...prev,
+        [placeId]: {
+          ...prevPlace,
+          ...newData,
+        },
+      }
+    })
+  }
 
   const handleSubmit = async () => {
     if (!selectUserId) {
@@ -61,7 +83,7 @@ export default function CreateCheckinsClient({
     }
 
     const totalPlaces = data.places.length
-    const filledPlaces = Object.keys(checkinPlacesState).length
+    const filledPlaces = Object.keys(placesState).length
 
     if (filledPlaces !== totalPlaces) {
       toast.error('Todos os locais precisam ser avaliados.')
@@ -71,7 +93,7 @@ export default function CreateCheckinsClient({
     const payload: CreateCheckinInput = {
       userId: selectUserId,
       date: date.toISOString(),
-      places: Object.entries(checkinPlacesState).map(([placeId, placeData]) =>
+      places: Object.entries(placesState).map(([placeId, placeData]) =>
         placeData.status == 'disorganized'
           ? {
               placeId,
@@ -146,58 +168,11 @@ export default function CreateCheckinsClient({
                   ?.filter((place) => place.labId === lab.id)
                   .map((place) => (
                     <CardPlace
-                      key={place.id}
-                      place={place}
-                      issues={data.issues}
-                      //placeId → o ID do lugar que você quer atualizar.
-                      // data → pode ser:
-                      // Um objeto parcial com os campos que quer atualizar.
-                      // Uma função que recebe o estado atual daquele lugar e retorna os campos que quer atualizar.
-                      setPlaceState={(placeId, data) =>
-                        setCheckinPlacesState((prev) => ({
-                          //Aqui usamos a forma funcional de setState do React, que recebe o estado anterior (prev) e retorna o novo estado. Isso garante que estamos atualizando o estado com segurança, sem sobrescrever alterações feitas por outros lugares ao mesmo tempo.
-
-                          ...prev, //Isso espalha (spread) todas as entradas antigas do objeto prev, para não perder os outros lugares.
-                          //[placeId] → cria ou atualiza a chave referente ao lugar que queremos modificar.
-                          [placeId]:
-                            typeof data === 'function' //typeof data === 'function' → verifica se o que foi passado é uma função ou um objeto direto.
-                              ? {
-                                  ...prev[placeId],
-                                  ...data(prev[placeId] || {}),
-                                }
-                              : //prev[placeId] || {} → pega o estado atual do lugar ou um objeto vazio se ainda não existir.
-
-                                //data(prev[placeId] || {}) → chama a função passada para calcular os novos campos.
-
-                                //{ ...prev[placeId], ...data(...) } → combina o estado antigo com os novos campos, garantindo que nenhum campo antigo seja perdido.
-
-                                { ...prev[placeId], ...data },
-                          //Se for objeto direto
-                          //Apenas combina o estado antigo com os novos dados passados diretamente.
-
-                          // Resumo
-                          //setPlaceState recebe placeId e data.
-                          // Atualiza apenas o lugar selecionado no estado global.
-                          // Mantém todos os outros lugares intactos (...prev).
-                          // Funciona tanto se você passar:
-                          // Um objeto com os novos campos.
-                          // Uma função que calcula novos campos com base no estado atual.
-
-                          //Exemplo
-                          // Passando objeto:
-                          // setPlaceState("place-1", { status: "organized" })
-
-                          // Resultado: place-1 agora tem status "organized", fotos continuam intactas.
-
-                          // Passando função:
-                          // setPlaceState("place-2", (prev) => ({
-                          //   photos: [...(prev.photos || []), "novaFoto.png"]
-                          // }))
-
-                          // Resultado: adiciona "novaFoto.png" às fotos existentes de place-2 sem sobrescrever status.
-                        }))
-                      }
-                    />
+                        key={place.id}
+                        place={place}
+                        issues={data.issues}
+                        setPlaceState={setPlaceState}
+                      />
                   ))}
               </div>
             </div>

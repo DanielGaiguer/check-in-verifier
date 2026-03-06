@@ -4,15 +4,24 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import { SelectDateToday } from '@/components/checkins/selectDateToday'
-import CardPlace from '@/components/checkins/cardPlace'
 import Button from '@mui/material/Button'
 import { getDataForCheckin } from '@/services/checkins/checkinsServices'
 import { GetDataForCheckinProtocol } from '@/types/dataForCheckinProtocol'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { UploadedImage } from '@/types/payloadCheckin'
-import CardPlaceEdit from '@/components/checkins/cardPlaceEdit'
-import { checkinPayload, CheckinPlaceFormatted } from '@/types/getCheckinPayload'
+import { CheckinPlaceSubmit } from '@/types/postPayloadCheckin'
+import { CardPlace } from '@/components/checkins/cardPlace'
+import {
+  checkinPayload,
+} from '@/types/getCheckinPayload'
 
 export default function CheckinDetailPage() {
   const params = useParams()
@@ -20,9 +29,33 @@ export default function CheckinDetailPage() {
   const [data, setData] = useState<checkinPayload | null>(null)
   const [loading, setLoading] = useState(true)
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [checkinPlacesState, setCheckinPlacesState] = useState<Record<string, CheckinPlaceFormatted>>({})
+  const [placeState, setPlacesState] = useState<Record<string, CheckinPlaceSubmit>>({})
   const [selectUserId, setSelectUserId] = useState<string | undefined>(undefined)
-  const [initialDataCheckin, setInitialDataCheckin] = useState<GetDataForCheckinProtocol | null>(null)
+  const [initialDataCheckin, setInitialDataCheckin] =
+    useState<GetDataForCheckinProtocol | null>(null)
+
+
+    const setPlaceState = (
+      placeId: string,
+      data:
+        | Partial<CheckinPlaceSubmit>
+        | ((prev: CheckinPlaceSubmit) => Partial<CheckinPlaceSubmit>)
+    ) => {
+      setPlacesState((prev) => {
+        const prevPlace = prev[placeId] ?? {}
+  
+        const newData =
+          typeof data === 'function' ? data(prevPlace) : data
+  
+        return {
+          ...prev,
+          [placeId]: {
+            ...prevPlace,
+            ...newData,
+          },
+        }
+      })
+    }
 
   useEffect(() => {
     async function fetchAllData() {
@@ -37,7 +70,7 @@ export default function CheckinDetailPage() {
         const checkinJson: checkinPayload = await res.json()
         setData(checkinJson)
         setDate(new Date(checkinJson?.checkin.date))
-        setCheckinPlacesState(checkinJson.places)
+        //setCheckinPlacesState(checkinJson.places)
 
         setLoading(false)
       } catch (error) {
@@ -50,19 +83,18 @@ export default function CheckinDetailPage() {
   }, [id])
 
   const handleSubmit = () => {
-  // const payload: CreateCheckinInput = {
-  //   date: date.toISOString(),
-  //   userId: selectUserId,
-  //   places: Object.values(checkinPlacesState).map((place) => ({
-  //     placeId: place.id, // <--- aqui mapeia id para placeId
-  //     status: place.status as 'organized' | 'disorganized',
-  //     issues: place.issues,
-  //     photos: place.photos, // se tiver UploadedImage[], converta para string
-  //     observation: place.observation || undefined,
-  //   })),
-  // }
-
-  //Fazer o metodo POST
+    // const payload: CreateCheckinInput = {
+    //   date: date.toISOString(),
+    //   userId: selectUserId,
+    //   places: Object.values(checkinPlacesState).map((place) => ({
+    //     placeId: place.id, // <--- aqui mapeia id para placeId
+    //     status: place.status as 'organized' | 'disorganized',
+    //     issues: place.issues,
+    //     photos: place.photos, // se tiver UploadedImage[], converta para string
+    //     observation: place.observation || undefined,
+    //   })),
+    // }
+    //Fazer o metodo POST
   }
 
   useEffect(() => {
@@ -70,17 +102,16 @@ export default function CheckinDetailPage() {
 
     const normalizeName = (str: string) =>
       str
-        .normalize("NFD") // separa acentos
-        .replace(/[\u0300-\u036f]/g, "") // remove acentos
+        .normalize('NFD') // separa acentos
+        .replace(/[\u0300-\u036f]/g, '') // remove acentos
         .trim()
         .toLowerCase()
 
     const user = initialDataCheckin.users.find(
-      (u) => normalizeName(u.name ?? "") === normalizeName(data.checkin.user ?? "")
+      (u) =>
+        normalizeName(u.name ?? '') === normalizeName(data.checkin.user ?? '')
     )
     setSelectUserId(user?.id)
-
-
   }, [initialDataCheckin, data])
 
   if (loading || !initialDataCheckin || !data) {
@@ -102,10 +133,7 @@ export default function CheckinDetailPage() {
           <FieldLabel className="text-md">
             Quem está realizando o Check-in?
           </FieldLabel>
-          <Select
-            value={selectUserId}
-            onValueChange={setSelectUserId}
-          >
+          <Select value={selectUserId} onValueChange={setSelectUserId}>
             <SelectTrigger className="border-gray-700 bg-gray-900">
               {/* aria-invalid */}
               <SelectValue placeholder="Selecione um usuário" />
@@ -144,32 +172,12 @@ export default function CheckinDetailPage() {
                 {initialDataCheckin?.places
                   ?.filter((place) => place.labId === lab.id)
                   .map((place) => (
-                    <CardPlaceEdit
-                      key={place.id}
-                      place={place}
-                      issues={initialDataCheckin?.issues}
-                      setPlaceState={(placeId, data) =>
-                        setCheckinPlacesState((prev) => ({
-                          ...prev,
-                          [placeId]:
-                            typeof data === 'function'
-                              ? {
-                                  ...prev[placeId],
-                                  ...data(prev[placeId] || {}),
-                                  photos: (data(prev[placeId] || {}) as any).photos?.map((p: any) =>
-                                    typeof p === 'string' ? p : p.url
-                                  ),
-                                }
-                              : {
-                                  ...prev[placeId],
-                                  ...data,
-                                  photos: (data as any).photos?.map((p: any) =>
-                                    typeof p === 'string' ? p : p.url
-                                  ),
-                                },
-                        }))
-                      }
-                    />
+                    <CardPlace
+                        key={place.id}
+                        place={place}
+                        issues={initialDataCheckin.issues}
+                        setPlaceState={setPlaceState}
+                      />
                   ))}
               </div>
             </div>
@@ -178,13 +186,11 @@ export default function CheckinDetailPage() {
         <Button className="mt-5 mb-5" onClick={handleSubmit}>
           Salvar Check-in
         </Button>
+        <div>
+          <h1>Detalhe do check-in {id}</h1>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
       </div>
     </main>
-  )
-  return (
-    <div>
-      <h1>Detalhe do check-in {id}</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </div>
   )
 }
