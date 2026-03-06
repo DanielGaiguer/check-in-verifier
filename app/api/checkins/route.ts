@@ -4,6 +4,7 @@ import {
   checkinPlaceIssues,
   checkinPlaces,
   checkins,
+  issues,
   photos,
   users,
 } from '@/db/schema'
@@ -92,6 +93,8 @@ export async function POST(req: Request) {
       .insert(checkins)
       .values({ date: isoDate, userId: data.userId })
       .returning()
+    
+      
 
     await Promise.all(
       data.places.map(async (place) => {
@@ -104,13 +107,35 @@ export async function POST(req: Request) {
             observation: place.observation,
           })
           .returning()
+        
 
         if (place.status === 'disorganized' && place.issues?.length) {
+          const issueIds = await Promise.all(
+            place.issues.map(async (issueName) => {
+
+              const [existing] = await tx
+                .select()
+                .from(issues)
+                .where(eq(issues.description, issueName))
+
+              if (existing) return existing.id
+
+              const [newIssue] = await tx
+                .insert(issues)
+                .values({
+                  description: issueName,
+                  code: issueName.toLowerCase().replace(/\s+/g, '_')
+                })
+                .returning()
+
+              return newIssue.id
+            })
+          )
+
           await tx.insert(checkinPlaceIssues).values(
-            //Para varios registros de uma vez
-            place.issues.map(issue => ({
+            issueIds.map((id) => ({
               checkinPlaceId: newCheckinPlace.id,
-              issueId: issue,
+              issueId: id,
             }))
           )
         }

@@ -22,6 +22,7 @@ export async function getDataForCheckin(): Promise<GetDataForCheckinProtocol> {
 export async function postDataForCheckin(
   data: CreateCheckinInput
 ) {
+  console.log("DADOS: ",data)
   const response = await fetch(`${process.env.URL}/api/checkins/`, {
     method: 'POST',
     body: JSON.stringify(data),

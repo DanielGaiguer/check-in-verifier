@@ -53,12 +53,15 @@ export const CardPlace = ({
   const status = placeState?.status ?? undefined
   const observation = placeState?.observation ?? ''
   const selectedIssues = placeState?.issues ?? []
-  console.log(selectedIssues)
   const photos = placeState?.photos ?? []
+  //console.log(placeState)
 
   const [open, setOpen] = useState(false)
 
   const [statusState, setStatusState] = useState(status)
+  const [observationState, setObservationState] = useState(observation)
+  const [selectedIssuesState, setSelectedIssuesState] = useState(selectedIssues)
+  const [photoState, setPhotoState] = useState(photos)
 
   const handleClickCard = () => {
     if (statusState === 'disorganized') {
@@ -99,7 +102,9 @@ export const CardPlace = ({
           </ItemDescription>
         </ItemContent>
 
-        <ItemActions className={`mb-1 flex items-center gap-2 ${statusState ? "" : "mr-10.5 mb-3"}`}>
+        <ItemActions
+          className={`mb-1 flex items-center gap-2 ${statusState ? '' : 'mr-10.5 mb-3'}`}
+        >
           <Checkbox
             className="h-7 w-7"
             id={`organized-${place.id}`}
@@ -172,14 +177,18 @@ export const CardPlace = ({
                       <Checkbox
                         id={issue.description}
                         className="h-8 w-8"
-                        checked={selectedIssues.includes(issue.description)}
+                        checked={selectedIssuesState.includes(
+                          issue.description
+                        )}
                         onCheckedChange={(checked) => {
                           const newArray = checked
-                            ? [...selectedIssues, issue.description]
-                            : selectedIssues.filter(
+                            ? [...selectedIssuesState, issue.description]
+                            : selectedIssuesState.filter(
                                 (description) =>
                                   description !== issue.description
                               )
+                          setSelectedIssuesState(newArray)
+                          console.log(newArray)
                           setPlaceState(place.id, { issues: newArray })
                         }}
                       />
@@ -205,11 +214,12 @@ export const CardPlace = ({
               <Textarea
                 className="p-3"
                 id="textarea-message"
-                value={observation}
+                value={observationState}
                 placeholder="Adicione aqui a descrição do Check-in."
-                onChange={(e) =>
+                onChange={(e) => {
+                  setObservationState(e.target.value)
                   setPlaceState(place.id, { observation: e.target.value })
-                }
+                }}
               />
             </Field>
 
