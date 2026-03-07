@@ -54,7 +54,7 @@ export const CardPlace = ({
   const observation = placeState?.observation ?? ''
   const selectedIssues = placeState?.issues ?? []
   const photos = placeState?.photos ?? []
-  //console.log(placeState)
+  console.log(photos)
 
   const [open, setOpen] = useState(false)
 

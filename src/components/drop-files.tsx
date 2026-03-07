@@ -21,19 +21,21 @@ type UploadedFile = {
   url: string
   tempId: string
 }
-
 type FileUploadCircularProgressProps = {
   onFileUploaded?: (file: UploadedFile) => void
+  initialFiles?: UploadedFile[] // Nova prop
 }
 
 export function FileUploadCircularProgress({
   onFileUploaded,
+  initialFiles = [],
 }: FileUploadCircularProgressProps) {
-  const [files, setFiles] = React.useState<File[]>([])
+  const [uploadedFiles, setUploadedFiles] = React.useState<UploadedFile[]>(initialFiles)
+  const [files, setFiles] = React.useState<File[]>(initialFiles.map(f => f.file)) // só os arquivos
 
   const onUpload = React.useCallback(
     async (
-      files: File[],
+      newFiles: File[],
       {
         onProgress,
         onSuccess,
@@ -44,15 +46,13 @@ export function FileUploadCircularProgress({
         onError: (file: File, error: Error) => void
       }
     ) => {
-      // Process each file individually
-      const uploadPromises = files.map(async (file) => {
+      const uploadPromises = newFiles.map(async (file) => {
         try {
           for (let i = 0; i <= 10; i++) {
             await new Promise((r) => setTimeout(r, 150))
             onProgress(file, i * 10)
           }
 
-          // 🔥 resultado simulado do servidor
           const result = {
             url: URL.createObjectURL(file),
             id: crypto.randomUUID(),
@@ -60,12 +60,16 @@ export function FileUploadCircularProgress({
 
           onSuccess(file)
 
-          // Personalizacao de componente daqui pra baixo
-          onFileUploaded?.({
+          const newUploadedFile: UploadedFile = {
             file,
             url: result.url,
             tempId: result.id,
-          })
+          }
+
+          // Atualiza estados
+          setUploadedFiles((prev) => [...prev, newUploadedFile])
+          setFiles((prev) => [...prev, file])
+          onFileUploaded?.(newUploadedFile)
         } catch (err) {
           onError(file, err as Error)
         }
@@ -81,6 +85,11 @@ export function FileUploadCircularProgress({
       description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
     })
   }, [])
+
+  const handleDelete = (tempId: string, file: File) => {
+    setUploadedFiles((prev) => prev.filter((f) => f.tempId !== tempId))
+    setFiles((prev) => prev.filter((f) => f !== file))
+  }
 
   return (
     <FileUpload
@@ -98,9 +107,7 @@ export function FileUploadCircularProgress({
           <div className="flex items-center justify-center rounded-full border p-2.5">
             <Upload className="text-muted-foreground size-6" />
           </div>
-          <p className="text-sm font-medium">
-            Arraste e solte os Arquivos aqui
-          </p>
+          <p className="text-sm font-medium">Arraste e solte os Arquivos aqui</p>
           <p className="text-muted-foreground text-xs">
             Ou clique em Carregar (max 10 arquivos, até 5MB cada)
           </p>
@@ -111,9 +118,10 @@ export function FileUploadCircularProgress({
           </Button>
         </FileUploadTrigger>
       </FileUploadDropzone>
+
       <FileUploadList orientation="horizontal">
-        {files.map((file, index) => (
-          <FileUploadItem key={index} value={file} className="p-0">
+        {uploadedFiles.map((fileObj) => (
+          <FileUploadItem key={fileObj.tempId} value={fileObj.file} className="p-0">
             <FileUploadItemPreview className="size-20 [&>svg]:size-12">
               <FileUploadItemProgress variant="circular" size={40} />
             </FileUploadItemPreview>
@@ -123,6 +131,7 @@ export function FileUploadCircularProgress({
                 variant="secondary"
                 size="icon"
                 className="absolute -top-1 -right-1 size-5 rounded-full"
+                onClick={() => handleDelete(fileObj.tempId, fileObj.file)}
               >
                 <X className="size-3" />
               </Button>
