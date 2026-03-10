@@ -4,7 +4,6 @@ import {
   SearchParamsProps,
   switchWheteClause,
 } from '@/services/switchWhereClause'
-import { between, eq } from 'drizzle-orm'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)

@@ -8,7 +8,6 @@ export interface SearchParamsProps {
   to?: string
 }
 
-
 export function switchWheteClause(searchParams: SearchParamsProps): SQL | undefined{
 	const date = new Date()
 	const today = format(date, "yyyy-MM-dd")
