@@ -17,6 +17,14 @@ export async function PATCH(req: Request, context: { params: Promise<{id: string
 		}, {status: 400})
 	}
 
+
+	if (!body.name) {
+		return NextResponse.json({
+			success: false,
+			error: "Novo nome do laboratório não informado."
+		}, {status: 400})
+	}
+
 	try{
 		await db.update(laboratories).set({name: body.name}).where(eq(laboratories.id, id))
 	}catch(e) {
