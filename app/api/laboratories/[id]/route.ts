@@ -3,6 +3,9 @@ import { laboratories } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
+//Formato da requisição: 
+//http://localhost:3000/api/laboratories/9bffbb93-4c45-47cc-ab33-e6bd96fcb5ce
+
 export async function PATCH(req: Request, context: { params: Promise<{id: string}> }) {
 	const { id } = await context.params
 	const body = await req.json()
@@ -15,7 +18,7 @@ export async function PATCH(req: Request, context: { params: Promise<{id: string
 	}
 
 	try{
-		await db.update(laboratories).set({name: body.name}).where(eq(laboratories.id, id)).returning()
+		await db.update(laboratories).set({name: body.name}).where(eq(laboratories.id, id))
 	}catch(e) {
 		NextResponse.json({
 			success: false,
