@@ -4,6 +4,7 @@ import {
   SearchParamsProps,
   switchWheteClause,
 } from '@/services/switchWhereClause'
+import { NextResponse } from 'next/server'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -23,8 +24,9 @@ export async function GET(req: Request) {
       .from(checkins)
       .where(whereClause)
 
-  return new Response(JSON.stringify({ checkinsFilter }), {
-    status: 200,
-    headers: { 'Contenty-Type': 'application/json' },
-  })
+  return NextResponse.json({ 
+		success: true,
+		data: checkinsFilter,
+		count: checkinsFilter.length 
+	})
 }
