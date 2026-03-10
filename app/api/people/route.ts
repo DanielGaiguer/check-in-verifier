@@ -19,3 +19,23 @@ export async function GET(req: Request) {
 		count: response.length
 	})
 }
+
+export async function POST(req: Request) {
+	const body = await req.json()
+	
+	if (!body.name) {
+		return NextResponse.json({
+			success: false,
+			error: "Nome da pessoa não informado"
+		}, {status: 400})
+	}
+
+	try{
+		db.insert(people).values({name: body.name})
+	}catch(e) {
+		NextResponse.json({
+			success: false,
+			error: e
+		}, {status: 400})
+	}
+}
