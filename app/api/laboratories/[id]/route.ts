@@ -29,3 +29,28 @@ export async function PATCH(req: Request, context: { params: Promise<{id: string
 	})
 
 }
+
+export async function DELETE(req: Request, context: { params: Promise<{id: string}> }) {
+	const { id } = await context.params
+
+	if (!id) {
+		NextResponse.json({
+			success: false,
+			error: "ID do laboratório não informado."
+		}, { status: 400 })
+	}
+
+	try{
+		await db.delete(laboratories).where(eq(laboratories.id, id))
+	}catch(e) {
+		return NextResponse.json({
+			success: false, 
+			error: e
+		}, {status: 400})
+	}
+
+	return NextResponse.json({
+		success: true,
+		data: `Laboratório ${id} deletado com sucesso.`
+	})
+}
