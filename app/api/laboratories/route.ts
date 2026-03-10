@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 	const body = await req.json()
 
 	if (!body.name) {
-		return NextResponse.json({success: false})
+		return NextResponse.json({success: false, error: "Nome do check-in não informado"}, {status: 400})
 	}
 
 	try{
