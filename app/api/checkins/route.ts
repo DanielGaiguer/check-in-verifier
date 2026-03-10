@@ -18,11 +18,11 @@ export async function GET(req: Request) {
   const whereClause = switchWheteClause(params)
 
   const checkinsFilter = await db
-      .select({
-				checkinsDate: checkins.date
-			})
-      .from(checkins)
-      .where(whereClause)
+    .select({
+			checkinsDate: checkins.date
+		})
+    .from(checkins)
+    .where(whereClause)
 
   return NextResponse.json({ 
 		success: true,
