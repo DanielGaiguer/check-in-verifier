@@ -35,3 +35,28 @@ export async function PATCH(req: Request, context: {params: Promise<{id: string}
 		data: `Pessoa ID ${id} alterada com sucesso`
 	})
 }
+
+export async function DELETE(req: Request, context: {params: Promise<{id: string}>}) {
+	const { id } = await context.params
+
+	if (!id) {
+		return NextResponse.json({
+			success: false, 
+			error: "ID da pessoa não informado."
+		}, {status: 400})
+	}
+
+	try{
+		db.delete(people).where(eq(people.id, id))
+	}catch(e) {
+		return NextResponse.json({
+			success: false, 
+			error: e
+		}, {status: 400})
+	}
+
+	return NextResponse.json({
+		success: true,
+		data: `Pessoa ${id} deletada com sucesso`
+	})
+}
