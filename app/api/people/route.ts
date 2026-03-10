@@ -31,11 +31,16 @@ export async function POST(req: Request) {
 	}
 
 	try{
-		db.insert(people).values({name: body.name})
+		await db.insert(people).values({name: body.name})
 	}catch(e) {
 		NextResponse.json({
 			success: false,
 			error: e
 		}, {status: 400})
 	}
+
+	return NextResponse.json({
+		success: true,
+		data: `Pessoa ${body.name} criada com sucesso`
+	})
 }

@@ -22,7 +22,7 @@ export async function PATCH(req: Request, context: {params: Promise<{id: string}
 	}
 
 	try{
-		db.update(people).set({name: body.name}).where(eq(people.id, id))
+		await db.update(people).set({name: body.name}).where(eq(people.id, id))
 	}catch(e) {
 		return NextResponse.json({
 			success: false,
@@ -47,7 +47,7 @@ export async function DELETE(req: Request, context: {params: Promise<{id: string
 	}
 
 	try{
-		db.delete(people).where(eq(people.id, id))
+		await db.delete(people).where(eq(people.id, id))
 	}catch(e) {
 		return NextResponse.json({
 			success: false, 

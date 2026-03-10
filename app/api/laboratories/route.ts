@@ -22,9 +22,9 @@ export async function POST(req: Request) {
 	try{
 		await db.insert(laboratories).values({
 			name: body.name
-		}).returning()
+		})
 	}catch(e) {
-		console.log(e)
+		return NextResponse.json({success: false, error: e}, {status: 400})
 	}
 
 	return NextResponse.json({ success: true })
