@@ -11,3 +11,21 @@ export async function GET(req: Request) {
 		count: labs.length
 	})
 }
+
+export async function POST(req: Request) {
+	const body = await req.json()
+
+	if (!body.name) {
+		return NextResponse.json({success: false})
+	}
+
+	try{
+		await db.insert(laboratories).values({
+			name: body.name
+		}).returning()
+	}catch(e) {
+		console.log(e)
+	}
+
+	return NextResponse.json({ success: true })
+}
