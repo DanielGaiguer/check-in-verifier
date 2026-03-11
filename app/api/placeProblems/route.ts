@@ -19,3 +19,25 @@ export async function GET(){
 	})
 }
 
+export async function POST(req: Request) {
+	const body = await req.json()
+
+	try{
+		const values = body.problemId.map((problemId: string) => ({
+      placeId: body.placeId,
+      problemId
+    }))
+
+    await db.insert(placeProblems).values(values)
+
+    return NextResponse.json({
+      success: true
+    })
+		
+	}catch(e) {
+		return NextResponse.json({
+			success: false,
+			error: e 
+		}, {status: 400})
+	}
+}
