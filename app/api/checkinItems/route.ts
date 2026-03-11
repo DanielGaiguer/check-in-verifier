@@ -53,6 +53,6 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     success: true,
-    data: 'Dados do check-in alterados com sucesso.',
+    data: 'Dados do item do check-in criado com sucesso.',
   })
 }
