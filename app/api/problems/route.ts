@@ -35,6 +35,6 @@ export async function POST(req: Request) {
 
 	return NextResponse.json({
 		success: true,
-		data: `Dados inseridos: ${result}`
+		data: result[0]
 	})
 }
