@@ -50,7 +50,8 @@ export async function DELETE(req: Request) {
     await db
       .delete(placeProblems)
       .where(
-        and(          eq(placeProblems.placeId, body.placeId),
+        and(
+					eq(placeProblems.placeId, body.placeId),
           eq(placeProblems.problemId, body.problemId)
         )
       )

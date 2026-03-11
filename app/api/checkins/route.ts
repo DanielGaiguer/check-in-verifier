@@ -42,3 +42,21 @@ export async function GET(req: Request) {
 		count: checkinsFilter.length 
 	})
 }
+
+export async function POST(req: Request) {
+	const body = await req.json()
+	let result
+
+	try{
+		result = await db.insert(checkins).values({peopleId: body.peopleId, date: body.date, observation: body.observation??""}).returning()
+	}catch(e) {
+		return NextResponse.json({
+			success: false,
+			error: e
+		}, { status: 400})
+	}
+	return NextResponse.json({
+		success: true,
+		data: result[0]
+	})
+}
