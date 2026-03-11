@@ -10,7 +10,8 @@ import {
   checkins,
   checkinItems,
   checkinItemsProblems,
-  checkinItemPhotos
+  checkinItemPhotos,
+  checkinStatusEnum
 } from "@/db/schema"
 
 async function seed() {
@@ -28,16 +29,8 @@ async function seed() {
   const createdPlaces = await db
     .insert(places)
     .values([
-      {
-        labId: lab.id,
-        name: "Bancada A",
-        sortOrder: 1
-      },
-      {
-        labId: lab.id,
-        name: "Bancada B",
-        sortOrder: 2
-      }
+      { labId: lab.id, name: "Bancada A", sortOrder: 1 },
+      { labId: lab.id, name: "Bancada B", sortOrder: 2 },
     ])
     .returning()
 
@@ -47,23 +40,15 @@ async function seed() {
   // PESSOAS
   const [person] = await db
     .insert(people)
-    .values({
-      name: "Alice"
-    })
+    .values({ name: "Alice" })
     .returning()
 
-  // PROBLEMAS
+  // PROBLEMAS (note que description foi removida do schema)
   const createdProblems = await db
     .insert(problems)
     .values([
-      {
-        name: "Lâmpada Quebrada",
-        description: "Lâmpada não funciona"
-      },
-      {
-        name: "Mesa Suja",
-        description: "Mesa com resíduos"
-      }
+      { name: "Lâmpada Quebrada" },
+      { name: "Mesa Suja" }
     ])
     .returning()
 
@@ -72,14 +57,8 @@ async function seed() {
 
   // RELAÇÃO PLACE -> PROBLEMS
   await db.insert(placeProblems).values([
-    {
-      placeId: placeA.id,
-      problemId: lampProblem.id
-    },
-    {
-      placeId: placeB.id,
-      problemId: tableProblem.id
-    }
+    { placeId: placeA.id, problemId: lampProblem.id },
+    { placeId: placeB.id, problemId: tableProblem.id },
   ])
 
   // CHECKIN
@@ -88,7 +67,7 @@ async function seed() {
     .values({
       peopleId: person.id,
       date: new Date().toISOString().slice(0, 10),
-      observation: "Check-in diário"
+      observation: "Check-in diário",
     })
     .returning()
 
@@ -98,8 +77,8 @@ async function seed() {
     .values({
       checkinId: checkin.id,
       placeId: placeA.id,
-      status: "organized",
-      observation: "Tudo organizado"
+      status: "organized", // respeitando enum
+      observation: "Tudo organizado",
     })
     .returning()
 
@@ -108,7 +87,7 @@ async function seed() {
     .insert(checkinItemsProblems)
     .values({
       checkinItemId: item.id,
-      problemId: lampProblem.id
+      problemId: lampProblem.id,
     })
     .returning()
 
@@ -116,7 +95,6 @@ async function seed() {
   await db.insert(checkinItemPhotos).values({
     checkinItemProblemId: itemProblem.id,
     photoUrl: "https://placehold.co/600x400",
-    sortOrder: 1
   })
 
   console.log("✅ Seed concluído com sucesso!")

@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 	let result
 
 	try{
-		result = await db.insert(problems).values({name: body.name, description: body.description}).returning()
+		result = await db.insert(problems).values({name: body.name}).returning()
 	}catch(e) {
 		return NextResponse.json({
 			success: false,

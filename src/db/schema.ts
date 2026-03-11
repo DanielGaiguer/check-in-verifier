@@ -27,7 +27,6 @@ export const places = pgTable('places', {
 export const problems = pgTable('problems', {
   id: uuid('id').defaultRandom().primaryKey().notNull().unique(),
   name: text('name').notNull().unique(),
-  description: text('description'),
 })
 
 export const placeProblems = pgTable('place_problems', {
@@ -99,7 +98,6 @@ export const checkinItemPhotos = pgTable(
       .references(() => checkinItemsProblems.id, { onDelete: "cascade" })
       .notNull(),
     photoUrl: text('photo_url').notNull(),
-    sortOrder: integer('sort_order').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [
@@ -110,7 +108,7 @@ export const checkinItemPhotos = pgTable(
 export const checkinEdits = pgTable('checkin_edits', {
   id: uuid('id').primaryKey().defaultRandom().unique().notNull(),
   checkinId: uuid('checkin_id').references(() => checkins.id),
-  editedBy: text('edited_by'),
+  editedBy: uuid('people_id').references(() => people.id),
   reason: text('reason'),
   changes: text('changes'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
