@@ -4,17 +4,40 @@ import { Button } from './ui/button'
 import {
   CalendarIcon,
   ChartNoAxesCombined,
+  FlaskConical,
   HistoryIcon,
   HomeIcon,
 } from 'lucide-react'
-import { SheetClose, SheetContent, SheetHeader, SheetTitle } from './ui/sheet'
+import {
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from './ui/sheet'
 import Link from 'next/link'
 
 const SidebarSheet = () => {
   return (
-    <SheetContent className="overflow-y-auto [&>button]:scale-125 [&>button]:p-2 [&>button>svg]:h-7 [&>button>svg]:w-7 ">
-      <SheetHeader className="mt-2 pr-12">
-        <SheetTitle className="text-left text-2xl">Menu</SheetTitle>
+    <SheetContent
+      className="w-65 overflow-y-auto bg-[#14181F] [&>button]:scale-125 [&>button]:border-0 [&>button]:bg-transparent [&>button]:p-2 [&>button]:ring-0 [&>button]:outline-none [&>button]:focus:ring-0 [&>button]:focus:ring-offset-0 [&>button]:focus:outline-none [&>button]:focus-visible:ring-0 [&>button]:focus-visible:ring-offset-0 [&>button]:focus-visible:outline-none"
+      side="left"
+    >
+
+      <SheetHeader className="mt-2 flex flex-row pr-12 border-b border-b-gray-700">
+        <FlaskConical
+          color="white"
+          className="rounded-xl bg-blue-400 p-2"
+          size={35}
+        />
+        <div>
+          <SheetTitle className="ml-1 text-left text-sm font-bold text-white font-sans">
+            Labcheck
+          </SheetTitle>
+          <SheetDescription className=" ml-1 text-xs">
+            Check-in de Laboratório
+          </SheetDescription>
+        </div>
       </SheetHeader>
 
       <div className="flex flex-col gap-1 border-b border-solid py-5">
