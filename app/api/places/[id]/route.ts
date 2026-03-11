@@ -10,11 +10,11 @@ export async function PATCH(
   const { id } = await context.params
   const body = await req.json()
 
-  if (!id) {
+  if (!id || !body.labId || !body.name || !body.sortOrder) {
     return NextResponse.json(
       {
         success: false,
-        error: 'ID do local não informado.',
+        error: 'Falta de informações do local não informado.',
       },
       { status: 400 }
     )
@@ -41,4 +41,33 @@ export async function PATCH(
       { status: 400 }
     )
   }
+
+	return NextResponse.json({
+		success: true, 
+		data: `Local ${body.name} atualizado com sucesso.`
+	})
+}
+
+export async function DELETE(req: Request, context: {params: Promise<{id: string}> } ) {
+	const { id } = await context.params
+		
+	if (!id) {
+		return NextResponse.json({
+			success: false,
+			error: "ID do local não informado."
+		}, {status: 400})
+	}
+	try{
+		await db.delete(places).where(eq(places.id, id))
+	}catch(e) {
+		NextResponse.json({
+			success: false, 
+			error: e
+		}, {status: 400})
+	}
+
+	return NextResponse.json({
+		success: true, 
+		data: `Local ${id} deletado com sucesso.`
+	})
 }
