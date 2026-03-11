@@ -31,3 +31,21 @@ export async function PATCH(
 		data: "Dados do check-in alterados com sucesso."
 	})
 }
+ 
+export async function DELETE(req: Request, context: { params: Promise<{id: string}>}) {
+	const { id } = await context.params
+
+  try {
+    await db.delete(checkins).where(eq(checkins.id, id))
+  } catch (e) {
+		return NextResponse.json({
+			success: false, 
+			error: e
+		}, { status: 400})
+	}
+
+	return NextResponse.json({
+		success: true,
+		data: "Dados do check-in deletados com sucesso."
+	})
+}
