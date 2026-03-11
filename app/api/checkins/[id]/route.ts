@@ -3,6 +3,29 @@ import { checkins, people } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
+
+export async function GET(req: Request, context:{ params: Promise<{id: string}>}) {
+	const { id } = await context.params
+	let result
+		try {
+			result = await db.select().from(checkins).where(eq(checkins.id, id))
+		} catch (e) {
+			return NextResponse.json(
+				{
+					success: false,
+					error: e,
+				},
+				{ status: 400 }
+			)
+		}
+	
+		return NextResponse.json({
+			success: true,
+			data: result,
+		})
+
+}
+
 export async function PATCH(
   req: Request,
   context: { params: Promise<{ id: string }> }
