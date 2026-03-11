@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { placeProblems } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(){
@@ -33,11 +34,33 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true
     })
-		
+
 	}catch(e) {
 		return NextResponse.json({
 			success: false,
 			error: e 
 		}, {status: 400})
 	}
+}
+
+export async function DELETE(req: Request) {
+  const body = await req.json()
+
+  try {
+    await db
+      .delete(placeProblems)
+      .where(
+        and(          eq(placeProblems.placeId, body.placeId),
+          eq(placeProblems.problemId, body.problemId)
+        )
+      )
+
+    return NextResponse.json({ success: true })
+
+  } catch (e) {
+    return NextResponse.json({
+      success: false,
+      error: e
+    }, { status: 400 })
+  }
 }
