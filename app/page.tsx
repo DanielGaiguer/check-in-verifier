@@ -40,10 +40,11 @@ export default async function Home() {
           <div className='mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 p-1'>
             <InfoCard
               number={0}
-              description="Lugares cadastrados"
+              description="Check-ins de Hoje"
               iconName="ClipboardCheckIcon" 
               iconColor="text-blue-400"
               iconBgColor="bg-[#87cfeb39]"
+              href='/history'
             />
             <InfoCard
               number={12}
@@ -51,6 +52,7 @@ export default async function Home() {
               iconName="MapPinIcon" 
               iconColor="text-green-700"
               iconBgColor="bg-[#98fb9846]"
+              href='/places'
             />
             <InfoCard
               number={3}
@@ -58,6 +60,7 @@ export default async function Home() {
               iconName="UsersRoundIcon" 
               iconColor="text-gray-600"
               iconBgColor="bg-[#d3d3d37b]"
+              href='/people'
             />
             <InfoCard
               number={4}
@@ -65,6 +68,7 @@ export default async function Home() {
               iconName="TrendingUp" 
               iconColor="text-blue-400"
               iconBgColor="bg-[#87cfeb39]"
+              href='/history'
             />
           </div>
         </div>

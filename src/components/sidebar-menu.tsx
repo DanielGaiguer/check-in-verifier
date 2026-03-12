@@ -1,5 +1,6 @@
 'use client'
 
+import { LinkIcon } from 'lucide-react'
 import { sidebarItems } from './sidebar-items'
 import { Button } from './ui/button'
 import Link from 'next/link'
@@ -13,7 +14,7 @@ export function SidebarMenu({ onItemClick }: Props) {
   const pathname = usePathname()
 
   return (
-    <div className="mr-5 ml-5 flex flex-col gap-1 py-5 font-sans">
+    <div className="relative mr-5 ml-5 flex h-full flex-col gap-1 py-5 font-sans">
       {sidebarItems.map((item) => {
         const Icon = item.icon
         const isActive = pathname === item.href
@@ -37,6 +38,12 @@ export function SidebarMenu({ onItemClick }: Props) {
           </Button>
         )
       })}
+      <Link href="https://github.com/DanielGaiguer" target="_blank" rel="noopener noreferrer">
+        <div className="absolute bottom-3 left-0 inline-flex w-full text-xs text-gray-400">
+            <LinkIcon size={15} className='mr-1' />
+            By Daniel Gaiguer
+        </div>
+      </Link>
     </div>
   )
 }
