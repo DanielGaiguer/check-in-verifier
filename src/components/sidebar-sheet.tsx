@@ -3,10 +3,15 @@
 import { Button } from './ui/button'
 import {
   CalendarIcon,
+  ChartColumn,
   ChartNoAxesCombined,
+  ClipboardCheckIcon,
   FlaskConical,
   HistoryIcon,
   LayoutDashboardIcon,
+  MapPinIcon,
+  TriangleAlertIcon,
+  UsersRoundIcon,
 } from 'lucide-react'
 import {
   SheetClose,
@@ -21,7 +26,7 @@ import { usePathname } from 'next/navigation'
 const SidebarSheet = () => {
   const pathname = usePathname()
 
-  const isActive = pathname === '/'  // ajustar para cada rota
+  const isActive = pathname === '/' // ajustar para cada rota
 
   return (
     <SheetContent
@@ -44,7 +49,7 @@ const SidebarSheet = () => {
         </div>
       </SheetHeader>
 
-      <div className="flex flex-col gap-1 py-5 ml-5 mr-5 font-sans">
+      <div className="mr-5 ml-5 flex flex-col gap-1 py-5 font-sans">
         <SheetClose asChild>
           <Button
             className={`mb-2 justify-start gap-4 text-sm ${
@@ -63,90 +68,141 @@ const SidebarSheet = () => {
         </SheetClose>
 
         <SheetClose asChild>
-        <Button
-          className={`mb-2 justify-start gap-4 text-sm ${
-            pathname === '/checkins/create'
-              ? 'bg-gray-800 text-white'
-              : 'text-gray-400 hover:bg-gray-700 hover:text-white'
-          }`}
-          variant="default"
-          asChild
-        >
-          <Link href="/checkins/create">
-            <CalendarIcon size={15} />
-            Realizar Check-in
-          </Link>
-        </Button>
-      </SheetClose>
-
-      <SheetClose asChild>
-        <Button
-          className={`mb-2 justify-start gap-4 text-sm ${
-            pathname === '/bookings'
-              ? 'bg-gray-800 text-white'
-              : 'text-gray-400 hover:bg-gray-700 hover:text-white'
-          }`}
-          variant="default"
-          asChild
-        >
-          <Link href="/bookings">
-            <HistoryIcon size={15} />
-            Histórico de Check-ins
-          </Link>
-        </Button>
-      </SheetClose>
-
-      <SheetClose asChild>
-        <Button
-          className={`mb-2 justify-start gap-4 text-sm ${
-            pathname === '/bookings'
-              ? 'bg-gray-800 text-white'
-              : 'text-gray-400 hover:bg-gray-700 hover:text-white'
-          }`}
-          variant="default"
-          asChild
-        >
-          <Link href="/bookings">
-            <ChartNoAxesCombined size={15} />
-            Relatórios de Check-ins
-          </Link>
-        </Button>
-      </SheetClose>
-      </div>
-
-      {/* <div className="flex flex-col gap-1 border-b border-solid py-5">
-        {quickSearchOptions.map((option) => (
-          <SheetClose key={option.title} asChild>
-            <Button className="justify-start gap-2" variant="ghost">
-              <Link
-                className="flex items-center gap-2"
-                href={`/barbershops?service=${option.title}`}
-              >
-                <Image
-                  alt={option.title}
-                  src={option.imageUrl}
-                  height={18}
-                  width={18}
-                />
-                {option.title}
-              </Link>
-            </Button>
-          </SheetClose>
-        ))}
-      </div> */}
-
-      {/* {data?.user && (
-        <div className="flex flex-col gap-1 border-b border-solid py-5">
           <Button
-            variant="ghost"
-            className="justify-start gap-2"
-            onClick={handleLogoutClick}
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/checkins/create'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
           >
-            <LogOutIcon size={18} />
-            Sair da conta
+            <Link href="/checkins/create">
+              <ClipboardCheckIcon size={15} />
+              Novo Check-in
+            </Link>
           </Button>
-        </div>
-      )} */}
+        </SheetClose>
+
+        <SheetClose asChild>
+          <Button
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/new'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
+          >
+            <Link href="/history">
+              <HistoryIcon size={15} />
+              Histórico
+            </Link>
+          </Button>
+        </SheetClose>
+
+        <SheetClose asChild>
+          <Button
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/history'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
+          >
+            <Link href="/reports">
+              <ChartColumn size={15} />
+              Relatórios
+            </Link>
+          </Button>
+        </SheetClose>
+
+        <SheetClose asChild>
+          <Button
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/history'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
+          >
+            <Link href="/laboratories">
+              <FlaskConical size={15} />
+              Laboratórios
+            </Link>
+          </Button>
+        </SheetClose>
+
+        <SheetClose asChild>
+          <Button
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/places'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
+          >
+            <Link href="/reports">
+              <ChartColumn size={15} />
+              Relatórios
+            </Link>
+          </Button>
+        </SheetClose>
+
+        <SheetClose asChild>
+          <Button
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/places'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
+          >
+            <Link href="/places">
+              <MapPinIcon size={15} />
+              Lugares
+            </Link>
+          </Button>
+        </SheetClose>
+
+        <SheetClose asChild>
+          <Button
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/places'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
+          >
+            <Link href="/reports">
+              <TriangleAlertIcon size={15} />
+              Problemas
+            </Link>
+          </Button>
+        </SheetClose>
+
+        <SheetClose asChild>
+          <Button
+            className={`mb-2 justify-start gap-4 text-sm ${
+              pathname === '/places'
+                ? 'bg-gray-800 text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+            variant="default"
+            asChild
+          >
+            <Link href="/reports">
+              <UsersRoundIcon size={15} />
+              Pessoas
+            </Link>
+          </Button>
+        </SheetClose>
+      </div>
     </SheetContent>
   )
 }
