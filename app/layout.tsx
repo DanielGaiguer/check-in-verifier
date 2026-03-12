@@ -41,20 +41,18 @@ export default function RootLayout({
       <body className="bg-background text-foreground min-h-screen antialiased">
         <div className="flex flex-col items-center bg-black ">
           <div className="h-full w-[98%] rounded-t-xl ">
-            <div className="bg-white rounded-t-xl mt-2">
+            <div className="bg-white rounded-t-xl mt-2 flex">
               {/* Sidebar fixa */}
                 <Sidebar />
                 <main className="flex-1">
 
                   {/* Mobile */}
-                  <div className="md:hidden">
+                  <div className="md:hidden flex-1 md:ml-64">
                     <SidebarSheet />
                   </div>
 
                   {children}
-
                 </main>
-
               </div>
             </div>
           </div>

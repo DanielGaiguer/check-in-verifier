@@ -5,23 +5,7 @@ import { Sheet, SheetTrigger } from './ui/sheet'
 import { Button } from './ui/button'
 
 const Header = () => {
-  return (
-    <div className='rounded-t-xl border-b border-gray-300'>
-          {/* <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                size="icon"
-                variant="outline"
-                className="h-5 w-7 text-gray-600 bg-white border-0 ml-3"
-                asChild
-              >
-                <MenuIcon size={1} />
-              </Button>
-            </SheetTrigger>
-            <SidebarSheet />
-          </Sheet> */}
-    </div>
-  )
+  return <div className="sticky top-0 z-40 h-12 rounded-t-xl border-b border-gray-300 shadow-sm bg-white"></div>
 }
 
 export default Header
