@@ -1,23 +1,35 @@
-import Header from "@/components/header";
+import Header from '@/components/header'
+import { AlertCard } from '@/components/alert-card'
 
 export default async function Home() {
   const date = new Date()
   const dateFormatted = new Intl.DateTimeFormat('pt-BR', {
-    weekday: 'long',  // dia da semana
-    day: '2-digit',   // dia com 2 dígitos
-    month: 'long',    // mês por extenso
-    year: 'numeric'   // ano completo
-  }).format(date);
+    weekday: 'long', // dia da semana
+    day: '2-digit', // dia com 2 dígitos
+    month: 'long', // mês por extenso
+    year: 'numeric', // ano completo
+  }).format(date)
   return (
-    <main className="flex flex-col justify-start min-h-screen bg-gray-50 rounded-t-xl">
+    <main className="flex min-h-screen flex-col justify-start rounded-t-xl bg-gray-50">
       <Header />
-      <div className="flex-1 w-full bg-white rounded-t-xl ml-6 mt-6">
-        <h1 className="text-2xl font-semibold tracking-tight font-sans ">
+      <div className="m-6 flex-1 rounded-t-xl bg-white">
+        <h1 className="font-sans text-2xl font-semibold tracking-tight">
           Dashboard
         </h1>
-        <p className="text-gray-500 text-sm">
-          {dateFormatted}
-        </p>
+        <p className="text-sm text-gray-500">{dateFormatted}</p>
+
+        {/* Card dentro do mesmo container */}
+        <div className="mt-4">
+          <AlertCard
+            title="Check-in diário não realizado!"
+            description={
+              <>
+                Nenhum check-in foi registrado para hoje.
+                <span className='block md:inline'> Realize o check-in dos laboratórios.</span>
+              </>
+            }
+          />
+        </div>
       </div>
     </main>
   )
