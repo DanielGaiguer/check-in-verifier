@@ -17,11 +17,11 @@ export default function SidebarSheet() {
   return (
     <Sheet>
       {/* Botão que abre */}
-      <SheetTrigger asChild>
+      <SheetTrigger>
         <Button
           size="icon"
           variant="outline"
-          className="ml-3 h-5 w-8 border-0 bg-white text-gray-600 mt-4 mb-1"
+          className="ml-3 h-5 w-8 border-0 bg-white text-gray-600 mt-4 "
           asChild
         >
           <MenuIcon size={1} />
