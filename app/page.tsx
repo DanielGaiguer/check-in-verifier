@@ -1,6 +1,7 @@
 import Header from '@/components/header'
 import { AlertCard } from '@/components/alert-card'
 import { InfoCard } from '@/components/info-card'
+import { LastCheckins } from '@/components/last-checkins'
 
 export default async function Home() {
   const date = new Date()
@@ -10,6 +11,24 @@ export default async function Home() {
     month: 'long', // mês por extenso
     year: 'numeric', // ano completo
   }).format(date)
+
+  const hardData = [
+  {
+    id: '1',
+    name: 'Joao',
+    date: '07/03/2026 às 11:29',
+  },
+  {
+    id: '2',
+    name: 'Daniel',
+    date: '07/03/2026 às 11:28',
+  },
+  {
+    id: '3',
+    name: 'Isis',
+    date: '07/03/2026 às 11:24',
+  },
+]
   return (
     <>
       <Header />
@@ -71,6 +90,8 @@ export default async function Home() {
               href='/history'
             />
           </div>
+
+          <LastCheckins checkins={hardData} hrefBase='/checkins/'/>
         </div>
       </main>
     </>
