@@ -47,7 +47,7 @@ export default function RootLayout({
                 <main className="flex-1">
 
                   {/* Mobile */}
-                  <div className="md:hidden">
+                  <div className="md:hidden h-14 border-b border-gray-300 shadow-2xs">
                     <SidebarSheet />
                   </div>
 
