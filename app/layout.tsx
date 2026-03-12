@@ -41,7 +41,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground min-h-screen antialiased">
         <div className="flex flex-col items-center bg-black ">
           <div className="h-full w-[98%] rounded-t-xl ">
-            <div className="bg-white rounded-t-xl mt-2 flex">
+            <div className="bg-gray-50 rounded-t-xl mt-2 flex">
               {/* Sidebar fixa */}
                 <Sidebar />
                 <main className="flex-1">

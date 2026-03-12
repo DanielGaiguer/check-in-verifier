@@ -1,5 +1,6 @@
 import Header from '@/components/header'
 import { AlertCard } from '@/components/alert-card'
+import { InfoCard } from '@/components/info-card'
 
 export default async function Home() {
   const date = new Date()
@@ -10,27 +11,62 @@ export default async function Home() {
     year: 'numeric', // ano completo
   }).format(date)
   return (
-    <main className="flex min-h-screen flex-col justify-start rounded-t-xl bg-gray-50">
+    <>
       <Header />
-      <div className="m-6 flex-1 rounded-t-xl bg-white">
-        <h1 className="font-sans text-2xl font-semibold tracking-tight">
-          Dashboard
-        </h1>
-        <p className="text-sm text-gray-500">{dateFormatted}</p>
+      <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 mt-2">
+        <div className="m-6 flex-1 rounded-t-xl bg-gray-50">
+          <h1 className="font-sans text-2xl font-semibold tracking-tight">
+            Dashboard
+          </h1>
+          <p className="text-sm text-gray-500">{dateFormatted}</p>
 
-        {/* Card dentro do mesmo container */}
-        <div className="mt-4">
-          <AlertCard
-            title="Check-in diário não realizado!"
-            description={
-              <>
-                Nenhum check-in foi registrado para hoje.
-                <span className='block md:inline'> Realize o check-in dos laboratórios.</span>
-              </>
-            }
-          />
+          {/* Card dentro do mesmo container */}
+          <div className="mt-5">
+            <AlertCard
+              title="Check-in diário não realizado!"
+              description={
+                <>
+                  Nenhum check-in foi registrado para hoje.
+                  <span className="block md:inline">
+                    {' '}
+                    Realize o check-in dos laboratórios.
+                  </span>
+                </>
+              }
+            />
+          </div>
+          <div className='mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 p-1'>
+            <InfoCard
+              number={0}
+              description="Lugares cadastrados"
+              iconName="ClipboardCheckIcon" 
+              iconColor="text-blue-400"
+              iconBgColor="bg-[#87cfeb39]"
+            />
+            <InfoCard
+              number={12}
+              description="Lugares cadastrados"
+              iconName="MapPinIcon" 
+              iconColor="text-green-700"
+              iconBgColor="bg-[#98fb9846]"
+            />
+            <InfoCard
+              number={3}
+              description="Pessoas"
+              iconName="UsersRoundIcon" 
+              iconColor="text-gray-600"
+              iconBgColor="bg-[#d3d3d37b]"
+            />
+            <InfoCard
+              number={4}
+              description="Últimos Check-ins"
+              iconName="TrendingUp" 
+              iconColor="text-blue-400"
+              iconBgColor="bg-[#87cfeb39]"
+            />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   )
 }
