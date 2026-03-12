@@ -23,7 +23,7 @@ export function InfoCard({
 
   return (
     <Card className="w-full flex flex-col md:flex-row gap-3 shadow-xs">
-      <CardHeader className="flex items-center gap-4">
+      <CardHeader className="flex items-center gap-4 ">
         <div className={`flex items-center justify-center w-12 h-12 rounded-2xl ${iconBgColor}`}>
           <Icon className={`w-15 h-5 ${iconColor}`} />
         </div>
