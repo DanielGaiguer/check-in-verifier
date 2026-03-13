@@ -1,6 +1,6 @@
 'use client'
 
-import { Upload, X } from 'lucide-react'
+import { CameraIcon, Upload, X } from 'lucide-react'
 import * as React from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -112,7 +112,7 @@ export function FileUploadCircularProgress({
       onValueChange={setFiles}
       maxFiles={5}
       maxSize={5 * 1024 * 1024} // 5MB
-      className="mt-2 w-full max-w-md rounded-xl bg-gray-100"
+      className="mt-2 md:max-w-[30%] max-w-[50%] rounded-xl bg-gray-100" //w-full max-w-md
       onUpload={onUpload}
       onFileReject={onFileReject}
       multiple
@@ -120,15 +120,15 @@ export function FileUploadCircularProgress({
       <FileUploadDropzone>
         <div className="flex flex-col items-center gap-1 text-center">
           <div className="flex items-center justify-center rounded-full border p-2.5">
-            <Upload className="text-muted-foreground size-6" />
+            <CameraIcon className="text-muted-foreground size-6" />
           </div>
           <p className="text-sm font-medium">Arraste e solte os Arquivos aqui</p>
           <p className="text-muted-foreground text-xs">
-            Ou clique em Carregar (max 5 arquivos, até 5MB cada)
+            Ou clique em Carregar (até 5MB cada)
           </p>
         </div>
         <FileUploadTrigger asChild>
-          <Button variant="outline" size="sm" className="mt-2 w-fit">
+          <Button variant="outline" size="icon-sm" className="mt-2 w-fit">
             Carregar Arquivos
           </Button>
         </FileUploadTrigger>

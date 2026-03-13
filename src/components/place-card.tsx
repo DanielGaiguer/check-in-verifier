@@ -35,13 +35,13 @@ export default function PlaceCard({
   const [status, setStatus] = useState<boolean | undefined>(undefined)
 
   return (
-    <Card>
+    <Card className='gap-0'>
       <CardHeader className="flex flex-row justify-between">
         <div>
           <CardTitle>{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
-        <div>
+        <div >
           <Button
             className={`dm:w-45 mr-4 w-35 bg-gray-100 text-black hover:bg-green-400 hover:text-white ${status ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
             onClick={() => setStatus(true)}
@@ -59,10 +59,10 @@ export default function PlaceCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div>
-          {status === false && (
+        {status === false && (
+          <div className='mt-4'>
             <FieldSet className="gap-1.5 space-y-0">
-              <FieldLegend variant="label">Problemas encontrados *</FieldLegend>
+              <FieldLegend variant="label" className='mb-2.5'>Problemas encontrados *</FieldLegend>
               {arrayProblems.map((problem) => (
                 <Field orientation="horizontal" className="space-y-0">
                   <Checkbox
@@ -77,12 +77,12 @@ export default function PlaceCard({
                 </Field>
               ))}
             </FieldSet>
-          )}
-        </div>
+          </div>
+        )}
         {status === false && (
-          <div className="mt-3">
-            <Field>
-              <FieldLegend variant="label">
+          <div className="mt-5">
+            <Field className="gap-2">
+              <FieldLegend variant="label" className="mb-0">
                 Fotos (Opcional, máx. 5)
               </FieldLegend>
               <FileUploadCircularProgress
