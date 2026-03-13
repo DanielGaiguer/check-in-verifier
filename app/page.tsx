@@ -31,7 +31,7 @@ export default async function Home() {
 ]
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
         <div className="m-5  flex-1 rounded-t-xl bg-gray-50">
           <h1 className="font-sans text-2xl font-semibold tracking-tight">

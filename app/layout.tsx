@@ -50,7 +50,7 @@ export default function RootLayout({
                   <div className="md:hidden h-14 border-b border-gray-300 shadow-2xs sticky top-0 bg-gray-50 rounded-t-2xl">
                     <SidebarSheet />
                   </div>
-
+                  <Header />
                   {children}
                 </main>
               </div>

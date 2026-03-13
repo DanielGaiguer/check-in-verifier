@@ -17,7 +17,7 @@ export const sidebarItems = [
   },
   {
     title: 'Novo Check-in',
-    href: '/checkins/create',
+    href: '/checkins',
     icon: ClipboardCheckIcon,
   },
   {
