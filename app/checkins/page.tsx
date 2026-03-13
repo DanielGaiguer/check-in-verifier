@@ -1,4 +1,5 @@
-import CardResponsible from '@/components/card-responsible'
+import SelectCard from "@/components/select-card";
+
 export default async function Checkins() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
@@ -7,7 +8,8 @@ export default async function Checkins() {
           Novo Check-in
         </h1>
 				<h4 className="text-gray-500">Preencha o status de cada lugar</h4>
-				<CardResponsible />
+				{/* TODO: Deixar interativo e retirar o hardCode, adicionar estado */}
+				<SelectCard textHeader="Responsável *" placeHolder="Selecione a pessoa"/>
       </div>
     </main>
   )
