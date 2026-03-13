@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { useAsRef } from '@/lib/hooks/use-as-ref'
+import { useAsRef} from '@/lib/hooks/use-as-ref'
 import { useLazyRef } from '@/lib/hooks/use-lazy-ref'
 
 const ROOT_NAME = 'FileUpload'

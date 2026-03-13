@@ -18,31 +18,39 @@ import {
   FieldLegend,
   FieldSet,
 } from './ui/field'
+import { FileUploadCircularProgress } from './drop-files'
 
 interface placeCardProps {
   title: string
   subTitle: string
+  arrayProblems: string[]
 }
 
 //TODO: Deixar interativo, colocar state, e tipar a requisicao do componente, olocar map com dados
-export default function PlaceCard({ ...props }: placeCardProps) {
+export default function PlaceCard({
+  title,
+  subTitle,
+  arrayProblems,
+}: placeCardProps) {
   const [status, setStatus] = useState<boolean | undefined>(undefined)
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{props.title}</CardTitle>
-        <CardDescription>{props.subTitle}</CardDescription>
+      <CardHeader className="flex flex-row justify-between">
+        <div>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription className="mt-1">{subTitle}</CardDescription>
+        </div>
         <div>
           <Button
-            className={`mr-4 w-45 bg-gray-100 text-black hover:bg-green-400 hover:text-white ${status ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
+            className={`dm:w-45 mr-4 w-35 bg-gray-100 text-black hover:bg-green-400 hover:text-white ${status ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
             onClick={() => setStatus(true)}
           >
             <CircleCheckIcon />
             <p className=" ">Organizado</p>
           </Button>
           <Button
-            className={`mr-4 w-45 bg-gray-100 text-black hover:bg-red-400 hover:text-white ${status === false ? 'bg-red-500 text-white' : 'bg-gray-100'}`}
+            className={`dm:w-45 mr-4 w-38 bg-gray-100 text-black hover:bg-red-400 hover:text-white ${status === false ? 'bg-red-500 text-white' : 'bg-gray-100'}`}
             onClick={() => setStatus(false)}
           >
             <CircleXIcon />
@@ -53,27 +61,38 @@ export default function PlaceCard({ ...props }: placeCardProps) {
       <CardContent>
         <div>
           {status === false && (
-            <FieldSet className="mt-2">
+            <FieldSet className="gap-1.5 space-y-0">
               <FieldLegend variant="label">Problemas encontrados *</FieldLegend>
-              <FieldGroup className="gap-3">
-                <Field orientation="horizontal">
+              {arrayProblems.map((problem) => (
+                <Field orientation="horizontal" className="space-y-0">
                   <Checkbox
-                    className="h-6 w-6 rounded-3xl"
-                    id="finder-pref-9k2-hard-disks-ljj-checkbox"
-                    name="finder-pref-9k2-hard-disks-ljj-checkbox"
+                    className="h-5 w-5 rounded-3xl"
+                    id={problem}
+                    name={problem}
                     defaultChecked
                   />
-                  <FieldLabel
-                    htmlFor="finder-pref-9k2-hard-disks-ljj-checkbox"
-                    className="font-normal"
-                  >
-                    Hard disks
+                  <FieldLabel htmlFor={problem} className="text-sm font-normal">
+                    {problem}
                   </FieldLabel>
                 </Field>
-              </FieldGroup>
+              ))}
             </FieldSet>
           )}
         </div>
+        {status === false && (
+          <div className="mt-3">
+            <Field>
+              <FieldLegend variant="label">
+                Fotos (Opcional, máx. 5)
+              </FieldLegend>
+              <FileUploadCircularProgress
+                onFileUploaded={(file) =>
+                  console.log('Arquivo carregado:', file)
+                }
+              />
+            </Field>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

@@ -15,23 +15,23 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
+import { supabase } from '@/db/supabaseClient'
 
 type UploadedFile = {
   file: File
   url: string
   tempId: string
 }
+
 type FileUploadCircularProgressProps = {
   onFileUploaded?: (file: UploadedFile) => void
-  initialFiles?: UploadedFile[] // Nova prop
 }
 
 export function FileUploadCircularProgress({
   onFileUploaded,
-  initialFiles = [],
 }: FileUploadCircularProgressProps) {
-  const [uploadedFiles, setUploadedFiles] = React.useState<UploadedFile[]>(initialFiles)
-  const [files, setFiles] = React.useState<File[]>(initialFiles.map(f => f.file)) // só os arquivos
+  const [uploadedFiles, setUploadedFiles] = React.useState<UploadedFile[]>([])
+  const [files, setFiles] = React.useState<File[]>([])
 
   const onUpload = React.useCallback(
     async (
@@ -48,30 +48,45 @@ export function FileUploadCircularProgress({
     ) => {
       const uploadPromises = newFiles.map(async (file) => {
         try {
+          // Simula progresso inicial (opcional)
           for (let i = 0; i <= 10; i++) {
-            await new Promise((r) => setTimeout(r, 150))
+            await new Promise((r) => setTimeout(r, 100))
             onProgress(file, i * 10)
           }
 
-          const result = {
-            url: URL.createObjectURL(file),
-            id: crypto.randomUUID(),
-          }
+          // Gera um nome único para evitar sobrescrita
+          const fileName = `${crypto.randomUUID()}-${file.name}`
 
+          // Upload para Supabase
+          const { error: uploadError } = await supabase.storage
+            .from('checkin-uploads')
+            .upload(`uploads/${fileName}`, file)
+
+          if (uploadError) throw uploadError
+
+          // URL pública do arquivo
+          const url = supabase.storage
+            .from('checkin-uploads')
+            .getPublicUrl(`uploads/${fileName}`).data.publicUrl
+
+          // Sucesso no upload
           onSuccess(file)
 
           const newUploadedFile: UploadedFile = {
             file,
-            url: result.url,
-            tempId: result.id,
+            url,
+            tempId: crypto.randomUUID(),
           }
 
           // Atualiza estados
           setUploadedFiles((prev) => [...prev, newUploadedFile])
           setFiles((prev) => [...prev, file])
+
+          // Callback externo
           onFileUploaded?.(newUploadedFile)
         } catch (err) {
           onError(file, err as Error)
+          toast.error(`Erro ao enviar ${file.name}`)
         }
       })
 
@@ -82,7 +97,7 @@ export function FileUploadCircularProgress({
 
   const onFileReject = React.useCallback((file: File, message: string) => {
     toast(message, {
-      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
+      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" foi rejeitado`,
     })
   }, [])
 
@@ -95,9 +110,9 @@ export function FileUploadCircularProgress({
     <FileUpload
       value={files}
       onValueChange={setFiles}
-      maxFiles={10}
-      maxSize={5 * 1024 * 1024}
-      className="mt-2 w-full max-w-md rounded-xl bg-red-300"
+      maxFiles={5}
+      maxSize={5 * 1024 * 1024} // 5MB
+      className="mt-2 w-full max-w-md rounded-xl bg-gray-100"
       onUpload={onUpload}
       onFileReject={onFileReject}
       multiple
@@ -109,7 +124,7 @@ export function FileUploadCircularProgress({
           </div>
           <p className="text-sm font-medium">Arraste e solte os Arquivos aqui</p>
           <p className="text-muted-foreground text-xs">
-            Ou clique em Carregar (max 10 arquivos, até 5MB cada)
+            Ou clique em Carregar (max 5 arquivos, até 5MB cada)
           </p>
         </div>
         <FileUploadTrigger asChild>
@@ -123,8 +138,13 @@ export function FileUploadCircularProgress({
         {uploadedFiles.map((fileObj) => (
           <FileUploadItem key={fileObj.tempId} value={fileObj.file} className="p-0">
             <FileUploadItemPreview className="size-20 [&>svg]:size-12">
-              <FileUploadItemProgress variant="circular" size={40} />
+              <img
+                src={fileObj.url}
+                alt={fileObj.file.name}
+                className="w-full h-full object-cover rounded"
+              />
             </FileUploadItemPreview>
+            <FileUploadItemProgress variant="circular" size={40} />
             <FileUploadItemMetadata className="sr-only" />
             <FileUploadItemDelete asChild>
               <Button
