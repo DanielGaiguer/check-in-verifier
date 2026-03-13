@@ -1,3 +1,4 @@
+'use client'
 import { Card, CardHeader } from "./ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 
@@ -9,7 +10,7 @@ interface selectCardProps{
 
 //TODO: Deixar interativo e retirar o hardCode, adicionar estado
 
-export default async function SelectCard({textHeader, placeHolder, options}: selectCardProps) {
+export default function SelectCard({textHeader, placeHolder, options}: selectCardProps) {
 	return (
 		<Card className="mt-5">
 			<CardHeader>
