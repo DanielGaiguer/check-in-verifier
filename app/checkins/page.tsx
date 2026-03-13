@@ -1,6 +1,8 @@
 'use client'
+import FieldObservation from '@/components/field-observation'
 import PlaceCard from '@/components/place-card'
 import SelectCard from '@/components/select-card'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function Checkins() {
   return (
@@ -25,6 +27,13 @@ export default function Checkins() {
             arrayProblems={['ferramenta faltando', 'desorganizado', 'outro']}
           />
         </div>
+				<div>
+					<Card className='mt-3'>
+						<CardContent>
+							<FieldObservation description='Observação geral do check-in (opcional)' placeholder='Observação geral...' />
+						</CardContent>
+					</Card>
+				</div>
       </div>
     </main>
   )

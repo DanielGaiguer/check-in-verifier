@@ -93,7 +93,7 @@ export default function PlaceCard({
                   console.log('Arquivo carregado:', file)
                 }
               />
-              <FieldObservation />
+              <FieldObservation description='Observação (Opcional)' placeholder="Adicione uma observação..." class="mt-6 gap-1"/>
             </Field>
           </div>
         )}
