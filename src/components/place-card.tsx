@@ -19,6 +19,7 @@ import {
   FieldSet,
 } from './ui/field'
 import { FileUploadCircularProgress } from './drop-files'
+import FieldObservation from './field-observation'
 
 interface placeCardProps {
   title: string
@@ -35,13 +36,13 @@ export default function PlaceCard({
   const [status, setStatus] = useState<boolean | undefined>(undefined)
 
   return (
-    <Card className='gap-0'>
+    <Card className="gap-0">
       <CardHeader className="flex flex-row justify-between">
         <div>
           <CardTitle>{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
-        <div >
+        <div>
           <Button
             className={`dm:w-45 mr-4 w-35 bg-gray-100 text-black hover:bg-green-400 hover:text-white ${status ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
             onClick={() => setStatus(true)}
@@ -60,9 +61,11 @@ export default function PlaceCard({
       </CardHeader>
       <CardContent>
         {status === false && (
-          <div className='mt-4'>
+          <div className="mt-4">
             <FieldSet className="gap-1.5 space-y-0">
-              <FieldLegend variant="label" className='mb-2.5'>Problemas encontrados *</FieldLegend>
+              <FieldLegend variant="label" className="mb-2.5">
+                Problemas encontrados *
+              </FieldLegend>
               {arrayProblems.map((problem) => (
                 <Field orientation="horizontal" className="space-y-0">
                   <Checkbox
@@ -81,7 +84,7 @@ export default function PlaceCard({
         )}
         {status === false && (
           <div className="mt-5">
-            <Field className="gap-2">
+            <Field className="gap-0">
               <FieldLegend variant="label" className="mb-0">
                 Fotos (Opcional, máx. 5)
               </FieldLegend>
@@ -90,6 +93,7 @@ export default function PlaceCard({
                   console.log('Arquivo carregado:', file)
                 }
               />
+              <FieldObservation />
             </Field>
           </div>
         )}
