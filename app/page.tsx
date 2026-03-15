@@ -53,7 +53,7 @@ export default async function Home() {
                 </>
               }
               textButton='Fazer Check-in'
-              href='/new'
+              href='/checkins'
             />
           </div>
           <div className='mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 p-1'>

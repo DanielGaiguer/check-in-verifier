@@ -62,17 +62,18 @@ export default function PlaceCard({
       <CardContent>
         {status === false && (
           <div className="mt-4">
-            <FieldSet className="gap-1.5 space-y-0">
+            <FieldSet className="gap-1.5 space-y-0" >
               <FieldLegend variant="label" className="mb-2.5">
                 Problemas encontrados *
               </FieldLegend>
               {arrayProblems.map((problem) => (
-                <Field orientation="horizontal" className="space-y-0">
+                <Field orientation="horizontal" className="space-y-0" key={problem}>
                   <Checkbox
                     className="h-5 w-5 rounded-3xl"
                     id={problem}
                     name={problem}
                     defaultChecked
+                    key={problem}
                   />
                   <FieldLabel htmlFor={problem} className="text-sm font-normal">
                     {problem}
