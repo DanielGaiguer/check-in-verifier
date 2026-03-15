@@ -1,4 +1,5 @@
 'use client'
+import CardCheckin from '@/components/card-checkins'
 import {
   Select,
   SelectContent,
@@ -100,6 +101,13 @@ export default function History() {
             </Select>
           </div>
         </div>
+				<div className='mt-5'>
+					{data.length > 0 && (
+						data.map((oneData) => (
+							<CardCheckin data={oneData}/>
+						))
+					)}
+				</div>
       </div>
     </main>
   )
