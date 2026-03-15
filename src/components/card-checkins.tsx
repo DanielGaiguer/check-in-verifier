@@ -15,13 +15,13 @@ interface CardCheckinProps {
 export default function CardCheckin({ data }: CardCheckinProps) {
   return (
     <Link href={'#'}>
-      <Card className="hover:shadow-md flex justify-between m-2 md:max-h-21.25">
+      <Card className="hover:shadow-md flex justify-between m-1.5 md:max-h-21.25">
         <div className='flex justify-between'>
           <div className="flex ml-5 items-center">
             {data.isOK ? (
-              <CircleCheckIcon className="text-green-400" />
+              <CircleCheckIcon className="text-green-300" />
             ) : (
-              <CircleXIcon className="text-red-400" />
+              <CircleXIcon className="text-red-300" />
             )}
             <div className='ml-3'>
               <CardTitle className='mb-1'>{data.people}</CardTitle>

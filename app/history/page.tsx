@@ -1,5 +1,6 @@
 'use client'
 import CardCheckin from '@/components/card-checkins'
+import { Card } from '@/components/ui/card'
 import {
   Select,
   SelectContent,
@@ -9,6 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { ClipboardCheckIcon } from 'lucide-react'
+import { M_PLUS_1 } from 'next/font/google'
 import { useState } from 'react'
 
 const data = [
@@ -102,11 +105,16 @@ export default function History() {
           </div>
         </div>
 				<div className='mt-5'>
-					{data.length > 0 && (
+					{data.length > 0 ? (
 						data.map((oneData) => (
 							<CardCheckin data={oneData}/>
 						))
-					)}
+					): (
+            <Card className='flex justify-center items-center'>
+              <ClipboardCheckIcon className='text-gray-300 mt-5' size={55}/>
+              <h4 className='text-gray-500 font-light mb-5'>Nenhum check-in encontrado neste período.</h4>
+            </Card>
+          )}
 				</div>
       </div>
     </main>
