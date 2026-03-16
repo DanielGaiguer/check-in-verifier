@@ -3,7 +3,6 @@ import { EditCard } from '@/components/edit-card'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useProblems } from '@/hooks/useProblems'
-import { useQuery } from '@tanstack/react-query'
 import { FlaskConicalIcon, PlusIcon } from 'lucide-react'
 
 
