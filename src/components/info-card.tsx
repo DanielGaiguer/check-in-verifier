@@ -12,7 +12,7 @@ import * as Icons from 'lucide-react'
 import Link from 'next/link'
 
 interface InfoCardProps {
-  number: number | string
+  title: number | string
   description: string
   iconName: keyof typeof Icons // nome do ícone como string
   iconColor?: string
@@ -21,7 +21,7 @@ interface InfoCardProps {
 }
 
 export function InfoCard({
-  number,
+  title,
   description,
   iconName,
   iconColor = 'text-white',
@@ -44,7 +44,7 @@ export function InfoCard({
             </div>
           </CardHeader>
           <CardContent>
-            <CardTitle className="text-2xl">{number}</CardTitle>
+            <CardTitle className="text-2xl">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </CardContent>
         </Card>
@@ -62,7 +62,7 @@ export function InfoCard({
         </div>
       </CardHeader>
       <CardContent>
-        <CardTitle className="text-2xl">{number}</CardTitle>
+        <CardTitle className="text-2xl">{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardContent>
     </Card>

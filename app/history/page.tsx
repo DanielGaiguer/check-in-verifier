@@ -40,7 +40,7 @@ const data = [
 	}
 ]
 
-export default function History() {
+export default function HistoryPage() {
   const [dateSelect, setDateSelect] = useState('7days')
 
   return (

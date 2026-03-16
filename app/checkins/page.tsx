@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
 //Todo: Fazer estados e dados necessarios
-export default function Checkins() {
+export default function CheckinsPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">

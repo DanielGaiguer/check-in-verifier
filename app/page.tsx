@@ -58,7 +58,7 @@ export default async function Home() {
           </div>
           <div className='mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 p-1'>
             <InfoCard
-              number={0}
+              title={0}
               description="Check-ins de Hoje"
               iconName="ClipboardCheckIcon" 
               iconColor="text-blue-400"
@@ -66,7 +66,7 @@ export default async function Home() {
               href='/history'
             />
             <InfoCard
-              number={12}
+              title={12}
               description="Lugares cadastrados"
               iconName="MapPinIcon" 
               iconColor="text-green-700"
@@ -74,7 +74,7 @@ export default async function Home() {
               href='/places'
             />
             <InfoCard
-              number={3}
+              title={3}
               description="Pessoas"
               iconName="UsersRoundIcon" 
               iconColor="text-gray-600"
@@ -82,7 +82,7 @@ export default async function Home() {
               href='/people'
             />
             <InfoCard
-              number={4}
+              title={4}
               description="Últimos Check-ins"
               iconName="TrendingUp" 
               iconColor="text-blue-400"
