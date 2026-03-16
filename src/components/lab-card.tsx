@@ -14,7 +14,7 @@ import { Button } from './ui/button'
 
 interface InfoCardProps {
   title: number | string
-  description: string
+  description?: string
   iconName: keyof typeof Icons // nome do ícone como string
   iconColor?: string
   iconBgColor?: string
@@ -42,15 +42,19 @@ export function LabCard({
 
       <CardContent className="flex flex-1 items-center justify-between">
         <div>
-          <CardTitle className="font-sans text-md font-semibold">
+          <CardTitle className="text-md font-sans font-semibold">
             {title}
           </CardTitle>
 
-          <CardDescription className="text-sm font-sans">{description}</CardDescription>
+          {description && (
+            <CardDescription className="font-sans text-sm">
+              {description}
+            </CardDescription>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
-          <Button className="bg-white hover:bg-blue-50 ">
+          <Button className="bg-white hover:bg-blue-50">
             <Icons.PencilIcon className="text-black" size={25} />
           </Button>
           <Button className="bg-white hover:bg-blue-50">
