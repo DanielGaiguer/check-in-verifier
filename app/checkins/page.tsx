@@ -13,7 +13,7 @@ export default function Checkins() {
         <h1 className="font-sans text-2xl font-semibold tracking-tight">
           Novo Check-in
         </h1>
-        <h4 className="text-gray-500">Preencha o status de cada lugar</h4>
+        <h4 className="text-gray-500 text-sm">Preencha o status de cada lugar</h4>
         {/* TODO: Deixar interativo e retirar o hardCode, adicionar estado */}
         <div>
           <SelectCard

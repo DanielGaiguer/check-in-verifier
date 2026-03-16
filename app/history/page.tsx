@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ClipboardCheckIcon } from 'lucide-react'
-import { M_PLUS_1 } from 'next/font/google'
 import { useState } from 'react'
 
 const data = [
@@ -52,7 +51,7 @@ export default function History() {
             <h1 className="font-sans text-2xl font-semibold tracking-tight">
               Histórico de Check-ins
             </h1>
-            <h4 className="text-gray-500">
+            <h4 className="text-gray-500 text-sm">
               Vizualize todos os check-ins realizados
             </h4>
           </div>
@@ -107,7 +106,7 @@ export default function History() {
 				<div className='mt-5'>
 					{data.length > 0 ? (
 						data.map((oneData) => (
-							<CardCheckin data={oneData}/>
+							<CardCheckin data={oneData} key={oneData.date}/>
 						))
 					): (
             <Card className='flex justify-center items-center'>
