@@ -2,24 +2,49 @@
 import { EditCard } from '@/components/edit-card'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { useQuery } from '@tanstack/react-query'
 import { FlaskConicalIcon, PlusIcon } from 'lucide-react'
 
-const data = [
-  {
-    id: '342343',
-    name: 'Desorganizado',
-  },
-  {
-    id: '342343e',
-    name: 'Ferramenta Faltando',
-  },
-  {
-    id: '342343e',
-    name: 'Fora do lugar',
-  },
-]
+interface Problem {
+  id: number
+  name: string
+}
+
+// const problems = [
+//   {
+//     id: '432423',
+//     name: 'erro1'
+//   },
+//   {
+//     id: 'foerfwef',
+//     name: 'erro2'
+//   }
+// ]
+
+interface ApiResponse {
+  success: boolean
+  data: Problem[]
+  count: number
+}
 
 export default function ProblemsPage() {
+  const { data, isLoading, error } = useQuery<Problem[]>({
+    queryKey: ['problems'],
+    queryFn: async () => {
+      const res = await fetch('/api/problems')
+      if (!res.ok) throw new Error('Erro ao buscar problemas')
+      const json: ApiResponse = await res.json()
+      return json.data
+    },
+  })
+
+  if (isLoading) return <p>Carregando...</p>
+  if (error) return <p>Erro ao carregar os problemas.</p>
+
+  const problems: Problem[] = Array.isArray(data) ? data : []
+  // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/problems`)
+  // const problems: Problem[] = await res.json()
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -39,13 +64,14 @@ export default function ProblemsPage() {
             </Button>
           </div>
         </div>
+
         <div className="mt-5">
-          {data.length > 0 ? (
-            data.map((lab) => (
-              <div className="mt-2">
+          {problems.length > 0 ? (
+            problems.map((problem) => (
+              <div className="mt-2" key={problem.id}>
                 <EditCard
-                  title={lab.name}
-                  iconName="AlertTriangleIcon"
+                  title={problem.name}
+                  iconName="AlertTriangleIcon" // Passa apenas o nome da chave
                   iconColor="text-red-500"
                   iconBgColor="bg-red-100"
                 />

@@ -39,7 +39,7 @@ export default function PeoplePage() {
           <div>
             <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
               <PlusIcon className="mr-1 mb-0.5" />
-              Novo Pessoa
+              Nova Pessoa
             </Button>
           </div>
         </div>

@@ -1,5 +1,4 @@
 'use client'
-
 import React from 'react'
 import {
   Card,
@@ -8,14 +7,13 @@ import {
   CardTitle,
   CardDescription,
 } from './ui/card'
-import * as Icons from 'lucide-react'
-import Link from 'next/link'
 import { Button } from './ui/button'
+import * as Icons from 'lucide-react'
 
-interface InfoCardProps {
-  title: number | string
+interface EditCardProps {
+  title: string | number
   description?: string
-  iconName: keyof typeof Icons // nome do ícone como string
+  iconName?: keyof typeof Icons // Passamos apenas o nome da chave
   iconColor?: string
   iconBgColor?: string
 }
@@ -26,30 +24,23 @@ export function EditCard({
   iconName,
   iconColor = 'text-blue-400',
   iconBgColor = 'bg-blue-50',
-}: InfoCardProps) {
-  const Icon = Icons[iconName] as unknown as (
-    props: React.ComponentProps<typeof Icons.HomeIcon>
-  ) => React.JSX.Element
+}: EditCardProps) {
+  // Resolve o ícone **dentro do componente**, nunca passa a função para props
+  const Icon = iconName ? (Icons[iconName] as React.ComponentType<{ className?: string; size?: number }>) : null
+
   return (
     <Card className="flex w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row h-20">
       <CardHeader className="flex items-center">
-        <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBgColor}`}
-        >
-          <Icon className={`${iconColor}`} size={22} />
+        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBgColor}`}>
+          {Icon && <Icon className={iconColor} size={22} />}
         </div>
       </CardHeader>
 
       <CardContent className="flex flex-1 items-center justify-between">
         <div>
-          <CardTitle className="text-md font-sans font-semibold">
-            {title}
-          </CardTitle>
-
+          <CardTitle className="text-md font-sans font-semibold">{title}</CardTitle>
           {description && (
-            <CardDescription className="font-sans text-sm">
-              {description}
-            </CardDescription>
+            <CardDescription className="font-sans text-sm">{description}</CardDescription>
           )}
         </div>
 
