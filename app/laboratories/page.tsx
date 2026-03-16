@@ -40,7 +40,7 @@ export default function LaboratoriesPage() {
         <div className="mt-5">
           {data.length > 0 ? (
             data.map((lab) => (
-              <div className="mt-2">
+              <div className="mt-2" key={lab.id}>
                 <EditCard
                   title={lab.name}
                   description={`Criado em ${lab.createdAt}`}

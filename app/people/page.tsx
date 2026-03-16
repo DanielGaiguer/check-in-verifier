@@ -59,7 +59,7 @@ export default function PeoplePage() {
 
                   <CardContent className="flex flex-1 items-center justify-between">
                     <div>
-                      <CardTitle className="text-md font-sans font-semibold">
+                      <CardTitle className="text-md font-sans font-normal">
                         {people.name}
                       </CardTitle>
 

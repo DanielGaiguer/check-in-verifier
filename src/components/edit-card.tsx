@@ -38,7 +38,7 @@ export function EditCard({
 
       <CardContent className="flex flex-1 items-center justify-between">
         <div>
-          <CardTitle className="text-md font-sans font-semibold">{title}</CardTitle>
+          <CardTitle className="text-md font-sans font-normal">{title}</CardTitle>
           {description && (
             <CardDescription className="font-sans text-sm">{description}</CardDescription>
           )}

@@ -24,7 +24,7 @@ export default function CardCheckin({ data }: CardCheckinProps) {
               <CircleXIcon className="text-red-300" />
             )}
             <div className='ml-3'>
-              <CardTitle className='mb-1'>{data.people}</CardTitle>
+              <CardTitle className='mb-1 font-semibold'>{data.people}</CardTitle>
               <CardDescription>
                 {data.date} • {data.countPlaces} lugares
               </CardDescription>

@@ -10,17 +10,6 @@ interface Problem {
   name: string
 }
 
-// const problems = [
-//   {
-//     id: '432423',
-//     name: 'erro1'
-//   },
-//   {
-//     id: 'foerfwef',
-//     name: 'erro2'
-//   }
-// ]
-
 interface ApiResponse {
   success: boolean
   data: Problem[]
