@@ -51,8 +51,8 @@ export default function LaboratoriesPage() {
             </h4>
           </div>
         </div>
-        <div className='mt-5'>
-          {data.length > 0 ? (
+        <div className="mt-5">
+          {data.length < 0 ? (
             data.map((lab) => (
               <div className="mt-2">
                 <LabCard
@@ -63,7 +63,12 @@ export default function LaboratoriesPage() {
               </div>
             ))
           ) : (
-            <h3>Tem nao</h3>
+            <Card className="flex items-center justif y-center">
+              <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
+              <h4 className="mb-5 font-light text-gray-500">
+                Ainda não foi cadastrado nenhum laboratório.
+              </h4>
+            </Card>
           )}
         </div>
       </div>
