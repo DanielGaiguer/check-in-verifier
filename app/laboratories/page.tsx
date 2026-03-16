@@ -2,43 +2,15 @@
 import { EditCard } from '@/components/edit-card'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useQuery } from '@tanstack/react-query'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { useLaboratories } from '@/hooks/useLaboratories'
 import { FlaskConicalIcon, PlusIcon } from 'lucide-react'
 
-interface LaboratoriesProtocol{
-  id: string
-  name: string
-  createdAt: string
-}
-
-interface ApiResponse{
-  success: boolean
-  data: LaboratoriesProtocol[]
-  count: number
-}
 
 export default function LaboratoriesPage() {
-  const { data, isLoading, error} = useQuery<ApiResponse>({
-    queryKey: ['laboratories'],
-    queryFn: async () => {
-      const res = await fetch('api/laboratories')
-      if (!res) throw new Error('Erro ao buscar laboratórios')
-      const json = await res.json()
-      return json.data
-    }
-  })
+  const { laboratories, isLoading, error} = useLaboratories()
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao buscar laboratórios</p>
-
-  const laboratories: LaboratoriesProtocol[] = Array.isArray(data) ? data : []
-
-  laboratories.map((lab) => {
-    return [lab.createdAt = format(new Date(lab.createdAt), 'dd/MM/yyyy', {locale: ptBR})]
-  })
-
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">

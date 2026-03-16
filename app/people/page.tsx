@@ -1,44 +1,14 @@
 'use client'
-import { EditCard } from '@/components/edit-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useQuery } from '@tanstack/react-query'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { usePeople } from '@/hooks/usePeoples'
 import { FlaskConicalIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react'
-import { Icons } from 'react-toastify'
-
-interface People{
-  id: string
-  name: string
-  createdAt: string
-}
-
-interface ApiResponse{
-  success: boolean
-  data: People[]
-  count: number
-}
 
 export default function PeoplePage() {
-  const { data, isLoading, error} = useQuery<ApiResponse>({
-    queryKey: ['peoples'],
-    queryFn: async () => {
-      const res = await fetch('api/people')
-      if (!res.ok) throw new Error("Erro ao buscar Pessoas")
-      const json = await res.json()
-      return json.data
-    }
-  })
+  const { peoples, isLoading, error} = usePeople()
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
-
-  const peoples: People[] = Array.isArray(data) ? data : []
-
-  peoples.map((people) => {
-    return [people.createdAt = format(new Date(people.createdAt), 'dd/MM/yyyy', {locale: ptBR}), ...peoples]
-  })
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
