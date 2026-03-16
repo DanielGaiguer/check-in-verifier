@@ -20,7 +20,7 @@ interface InfoCardProps {
   iconBgColor?: string
 }
 
-export function LabCard({
+export function EditCard({
   title,
   description,
   iconName,
@@ -31,7 +31,7 @@ export function LabCard({
     props: React.ComponentProps<typeof Icons.HomeIcon>
   ) => React.JSX.Element
   return (
-    <Card className="flex w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row">
+    <Card className="flex w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row h-20">
       <CardHeader className="flex items-center">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBgColor}`}

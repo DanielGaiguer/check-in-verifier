@@ -1,13 +1,8 @@
 'use client'
-import { LabCard } from '@/components/lab-card'
+import { EditCard } from '@/components/edit-card'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-} from '@/components/ui/card'
-import {
-  FlaskConicalIcon,
-	PlusIcon,
-} from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { FlaskConicalIcon, PlusIcon } from 'lucide-react'
 
 const data = [
   {
@@ -35,18 +30,18 @@ export default function LaboratoriesPage() {
               Gerencie os laboratórios cadastrados
             </h4>
           </div>
-					<div>
-            <Button className="rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300 w-40">
-							<PlusIcon className='mr-1 mb-0.5'/>
-							Novo Laboratório
-						</Button>
-					</div>
+          <div>
+            <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
+              <PlusIcon className="mr-1 mb-0.5" />
+              Novo Laboratório
+            </Button>
+          </div>
         </div>
         <div className="mt-5">
           {data.length > 0 ? (
             data.map((lab) => (
               <div className="mt-2">
-                <LabCard
+                <EditCard
                   title={lab.name}
                   description={`Criado em ${lab.createdAt}`}
                   iconName="FlaskConicalIcon"
