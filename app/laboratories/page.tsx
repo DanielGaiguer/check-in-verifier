@@ -1,30 +1,13 @@
 'use client'
-import CardCheckin from '@/components/card-checkins'
-import { InfoCard } from '@/components/info-card'
 import { LabCard } from '@/components/lab-card'
 import { Button } from '@/components/ui/button'
 import {
   Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
-  ClipboardCheckIcon,
-  FlaskConical,
   FlaskConicalIcon,
 	PlusIcon,
 } from 'lucide-react'
-import { useState } from 'react'
 
 const data = [
   {
@@ -67,11 +50,12 @@ export default function LaboratoriesPage() {
                   title={lab.name}
                   description={`Criado em ${lab.createdAt}`}
                   iconName="FlaskConicalIcon"
+									siz
                 />
               </div>
             ))
           ) : (
-            <Card className="flex items-center justif y-center">
+            <Card className="flex items-center justify-center">
               <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
               <h4 className="mb-5 font-light text-gray-500">
                 Ainda não foi cadastrado nenhum laboratório.

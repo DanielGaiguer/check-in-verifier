@@ -34,19 +34,19 @@ export function LabCard({
     <Card className="flex w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row">
       <CardHeader className="flex items-center">
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${iconBgColor}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBgColor}`}
         >
-          <Icon className={`${iconColor}`} size={24} />
+          <Icon className={`${iconColor}`} size={22} />
         </div>
       </CardHeader>
 
       <CardContent className="flex flex-1 items-center justify-between">
         <div>
-          <CardTitle className="font-sans text-xl font-semibold">
+          <CardTitle className="font-sans text-md font-semibold">
             {title}
           </CardTitle>
 
-          <CardDescription className="text-sm">{description}</CardDescription>
+          <CardDescription className="text-sm font-sans">{description}</CardDescription>
         </div>
 
         <div className="flex items-center gap-2">
