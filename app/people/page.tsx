@@ -48,7 +48,7 @@ export default function PeoplePage() {
             data.map((people) => {
               const initial = people.name.charAt(0).toUpperCase()
               return (
-                <Card className="flex w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row mt-2 h-20">
+                <Card className="flex w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row mt-2 h-20" key={people.id}>
                   <CardHeader className="flex items-center">
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50`}
