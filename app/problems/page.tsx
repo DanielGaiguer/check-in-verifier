@@ -33,7 +33,7 @@ export default function ProblemsPage() {
             </h4>
           </div>
           <div>
-            <Button className="rounded-md bg-blue-400 p-5.5 font-sans text-white hover:bg-blue-500">
+            <Button className="rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300 w-40">
               <PlusIcon className="mr-1 mb-0.5" />
               Novo Problema
             </Button>

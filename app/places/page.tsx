@@ -167,7 +167,7 @@ export default function PlacesPage() {
             </h4>
           </div>
 
-          <Button className="rounded-md bg-blue-400 p-5.5 font-sans text-white hover:bg-blue-300">
+            <Button className="rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300 w-35">
             <PlusIcon className="mr-1 mb-0.5" />
             Novo lugar
           </Button>

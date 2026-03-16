@@ -36,7 +36,7 @@ export default function LaboratoriesPage() {
             </h4>
           </div>
 					<div>
-						<Button className='bg-blue-400 text-white p-5.5 font-sans rounded-md hover:bg-blue-500'>
+            <Button className="rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300 w-40">
 							<PlusIcon className='mr-1 mb-0.5'/>
 							Novo Laboratório
 						</Button>
@@ -50,7 +50,6 @@ export default function LaboratoriesPage() {
                   title={lab.name}
                   description={`Criado em ${lab.createdAt}`}
                   iconName="FlaskConicalIcon"
-									siz
                 />
               </div>
             ))
