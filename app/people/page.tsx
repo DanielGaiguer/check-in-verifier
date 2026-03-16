@@ -2,28 +2,44 @@
 import { EditCard } from '@/components/edit-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useQuery } from '@tanstack/react-query'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { FlaskConicalIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { Icons } from 'react-toastify'
 
-const data = [
-  {
-    id: '342343',
-    name: 'Isis',
-    createdAt: '16/03/2026',
-  },
-  {
-    id: '342343e',
-    name: 'Daniel',
-    createdAt: '16/03/2026',
-  },
-  {
-    id: '34234a',
-    name: 'Joao',
-    createdAt: '16/03/2026',
-  },
-]
+interface People{
+  id: string
+  name: string
+  createdAt: string
+}
+
+interface ApiResponse{
+  success: boolean
+  data: People[]
+  count: number
+}
 
 export default function PeoplePage() {
+  const { data, isLoading, error} = useQuery<ApiResponse>({
+    queryKey: ['peoples'],
+    queryFn: async () => {
+      const res = await fetch('api/people')
+      if (!res.ok) throw new Error("Erro ao buscar Pessoas")
+      const json = await res.json()
+      return json.data
+    }
+  })
+
+  if (isLoading) return <p>Carregando...</p>
+  if (error) return <p>Erro ao carregar os problemas.</p>
+
+  const peoples: People[] = Array.isArray(data) ? data : []
+
+  peoples.map((people) => {
+    return [people.createdAt = format(new Date(people.createdAt), 'dd/MM/yyyy', {locale: ptBR}), ...peoples]
+  })
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -44,8 +60,8 @@ export default function PeoplePage() {
           </div>
         </div>
         <div className="mt-5">
-          {data.length > 0 ? (
-            data.map((people) => {
+          {peoples.length > 0 ? (
+            peoples.map((people) => {
               const initial = people.name.charAt(0).toUpperCase()
               return (
                 <Card className="flex w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row mt-2 h-20" key={people.id}>
