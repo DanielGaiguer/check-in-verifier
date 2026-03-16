@@ -2,6 +2,7 @@
 import CardCheckin from '@/components/card-checkins'
 import { InfoCard } from '@/components/info-card'
 import { LabCard } from '@/components/lab-card'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardDescription,
@@ -21,6 +22,7 @@ import {
   ClipboardCheckIcon,
   FlaskConical,
   FlaskConicalIcon,
+	PlusIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -50,9 +52,15 @@ export default function LaboratoriesPage() {
               Gerencie os laboratórios cadastrados
             </h4>
           </div>
+					<div>
+						<Button className='bg-blue-400 text-white p-5.5 font-sans rounded-md hover:bg-blue-500'>
+							<PlusIcon className='mr-1 mb-0.5'/>
+							Novo Laboratório
+						</Button>
+					</div>
         </div>
         <div className="mt-5">
-          {data.length < 0 ? (
+          {data.length > 0 ? (
             data.map((lab) => (
               <div className="mt-2">
                 <LabCard
