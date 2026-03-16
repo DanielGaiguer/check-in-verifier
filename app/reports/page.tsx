@@ -32,6 +32,7 @@ const PERIOD_OPTIONS = [
   { label: 'Último mês', value: '1m' },
   { label: 'Últimos 3 meses', value: '3m' },
   { label: 'Últimos 6 meses', value: '6m' },
+  { label: 'Últimos 12 meses', value: '12m'}
 ]
 
 const COLORS = ['hsl(142, 71%, 45%)', 'hsl(0, 72%, 51%)']
@@ -48,6 +49,8 @@ function getStartDate(period: string): Date {
       return subMonths(now, 3)
     case '6m':
       return subMonths(now, 6)
+    case '12m':
+      return subMonths(now, 12)
     default:
       return subDays(now, 7)
   }
@@ -169,7 +172,7 @@ export default function ReportsPage() {
 
             <SelectContent>
               {PERIOD_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
+                <SelectItem key={opt.value} value={opt.value} className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200 ">
                   {opt.label}
                 </SelectItem>
               ))}
