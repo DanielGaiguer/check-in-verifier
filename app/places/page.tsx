@@ -32,6 +32,7 @@ import {
 
 import { CSS } from '@dnd-kit/utilities'
 import { usePlaces } from '@/hooks/usePlaces'
+import { useQueryClient } from '@tanstack/react-query'
 
 /* ---------------- SORTABLE CARD ---------------- */
 
@@ -73,7 +74,7 @@ function SortablePlace({
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium">{place.name}</p>
             <p className="text-muted-foreground text-xs">
-              {place.labId?.name ?? '—'}
+              {place.labName ?? '—'}
             </p>
           </div>
 
@@ -101,12 +102,9 @@ function SortablePlace({
 
 export default function PlacesPage() {
   const { places, isLoading, error } = usePlaces()
-  console.log(places)
-  const [placesState, setPlacesState] = useState(places)
 
-  useEffect(() => {
-    setPlacesState(places)
-  }, [places])
+  const queryClient = useQueryClient()
+
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -123,24 +121,21 @@ export default function PlacesPage() {
 
     if (!over || active.id === over.id) return
 
-    const oldIndex = placesState.findIndex((p) => p.id === active.id)
-    const newIndex = placesState.findIndex((p) => p.id === over.id)
+    const oldIndex = places.findIndex((p) => p.id === active.id)
+    const newIndex = places.findIndex((p) => p.id === over.id)
 
-    const reordered = arrayMove(placesState, oldIndex, newIndex)
+    const reordered = arrayMove(places, oldIndex, newIndex)
 
     const updated = reordered.map((p, index) => ({
       ...p,
       sortOrder: index,
     }))
 
-    setPlacesState(updated)
+    // atualiza o cache do React Query
+    queryClient.setQueryData(['places'], updated)
 
-    /* 
-    FUTURO BANCO:
-
-    await updateSortOrder(updated)
-
-    */
+    // aqui você poderia salvar no banco
+    // updateSortOrder(updated)
   }
 
   return (
@@ -165,7 +160,7 @@ export default function PlacesPage() {
         {/* LIST */}
 
         <div className="mt-5">
-          {placesState.length === 0 ? (
+          {places.length === 0 ? (
             <Card className="flex items-center justify-center py-10">
               <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
               <h4 className="mb-5 font-light text-gray-500">
@@ -179,11 +174,11 @@ export default function PlacesPage() {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={placesState.map((p) => p.id)}
+                items={places.map((p) => p.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="space-y-2">
-                  {placesState.map((place) => (
+                  {places.map((place) => (
                     <SortablePlace
                       key={place.id}
                       place={place}

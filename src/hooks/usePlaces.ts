@@ -8,6 +8,7 @@ interface PlaceProtocol {
   name: string
   sortOrder: number
   createdAt: string
+	labName: string
 }
 
 interface ApiResponse {
