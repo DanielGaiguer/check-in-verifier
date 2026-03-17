@@ -1,8 +1,9 @@
 export interface Place {
-  id: number
+  id: string
   labId: string
   name: string
   sortOrder: number
   createdAt: string
 	labName: string
+  problems: string[]
 }

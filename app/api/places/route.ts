@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { laboratories, places } from '@/db/schema'
+import { laboratories, placeProblems, places, problems } from '@/db/schema'
 import { and, eq, gte, max, sql } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
@@ -20,12 +20,15 @@ export async function GET(req: Request) {
         name: places.name,
         sortOrder: places.sortOrder,
         createdAt: places.createdAt,
-        labName: laboratories.name
+        labName: laboratories.name,
+        problemName: problems.name, // renomeei para não confundir
       })
       .from(places)
       .innerJoin(laboratories, eq(places.labId, laboratories.id))
+      .leftJoin(placeProblems, eq(placeProblems.placeId, places.id))
+      .leftJoin(problems, eq(problems.id, placeProblems.problemId))
   } catch (e) {
-    NextResponse.json(
+    return NextResponse.json(
       {
         success: false,
         error: e,
@@ -34,9 +37,34 @@ export async function GET(req: Request) {
     )
   }
 
+  const grouped = response.reduce(
+    (acc, row) => {
+      if (!acc[row.id]) {
+        acc[row.id] = {
+          id: row.id,
+          labId: row.labId,
+          name: row.name,
+          sortOrder: row.sortOrder,
+          createdAt: row.createdAt,
+          labName: row.labName,
+          problems: [],
+        }
+      }
+
+      if (row.problemName) {
+        acc[row.id].problems.push(row.problemName)
+      }
+
+      return acc
+    },
+    {} as Record<string, any>
+  )
+
+  const data = Object.values(grouped)
+
   return NextResponse.json({
     success: true,
-    data: response,
+    data,
   })
 }
 
