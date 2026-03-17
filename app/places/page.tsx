@@ -31,8 +31,9 @@ import {
 } from '@dnd-kit/sortable'
 
 import { CSS } from '@dnd-kit/utilities'
-import { usePlaces } from '@/hooks/usePlaces'
+import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useQueryClient } from '@tanstack/react-query'
+import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
 
 /* ---------------- SORTABLE CARD ---------------- */
 
@@ -105,6 +106,7 @@ export default function PlacesPage() {
 
   const queryClient = useQueryClient()
 
+  const updateOrder = useUpdatePlacesOrder()
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -132,7 +134,7 @@ export default function PlacesPage() {
     }))
 
     // atualiza o cache do React Query
-    queryClient.setQueryData(['places'], updated)
+    updateOrder.mutate(updated)
 
     // aqui você poderia salvar no banco
     // updateSortOrder(updated)

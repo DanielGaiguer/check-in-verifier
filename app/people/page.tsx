@@ -1,7 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { usePeople } from '@/hooks/usePeoples'
+import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { FlaskConicalIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 
 export default function PeoplePage() {

@@ -2,7 +2,7 @@
 import { EditCard } from '@/components/edit-card'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useProblems } from '@/hooks/useProblems'
+import { useProblems } from '@/hooks/useQuerys/useProblems'
 import { FlaskConicalIcon, PlusIcon } from 'lucide-react'
 
 
