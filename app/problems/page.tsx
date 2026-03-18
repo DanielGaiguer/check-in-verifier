@@ -1,25 +1,14 @@
 'use client'
+import DialogProblems from '@/components/dialogProblems'
 import { EditCard } from '@/components/edit-card'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
-import { FlaskConicalIcon, PlusIcon } from 'lucide-react'
+import { FlaskConicalIcon } from 'lucide-react'
 import { useState } from 'react'
 
 export default function ProblemsPage() {
   const { problems, isLoading, error } = useProblems()
   const [name, setName] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [description, setDescription] = useState('')
 
   if (isLoading) return <p>Carregando...</p>
@@ -42,72 +31,7 @@ export default function ProblemsPage() {
             </h4>
           </div>
           <div>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
-                  <PlusIcon className="mr-1 mb-0.5" />
-                  Novo Problema
-                </Button>
-              </DialogTrigger>
-
-              <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
-                <DialogHeader>
-                  <DialogTitle className="text-lg font-semibold">
-                    Novo Problema
-                  </DialogTitle>
-                </DialogHeader>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <Label
-                      htmlFor="name"
-                      className="mb-1 block text-sm font-medium"
-                    >
-                      Nome do Lugar
-                    </Label>
-                    <Input
-                      id="name"
-                      placeholder="Nome do problema"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-300 bg-gray-100! px-3 focus:border-blue-400!"
-                    />
-                  </div>
-
-                  {/* PROBLEMAS POSSÍVEIS */}
-                  <div>
-                    <Label className="mb-1 block text-sm font-medium">
-                      Problemas Possíveis
-                    </Label>
-                    <Textarea
-                      placeholder="Descrição (Opcional)"
-                      className="border-2 border-gray-300 bg-gray-50!"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                    />
-                  </div>
-
-                  {/* BOTÕES */}
-                  <div className="mt-4 flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setDialogOpen(false)}
-                      className="cursor-pointer"
-                    >
-                      Cancelar
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={!name.trim() || !name}
-                      className="cursor-pointer bg-blue-400 hover:bg-blue-300"
-                    >
-                      Criar
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
+          <DialogProblems setName={setName} name={name} setDescription={setDescription} description={description}/>
           </div>
         </div>
 
