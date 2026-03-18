@@ -14,10 +14,6 @@ export default function ProblemsPage() {
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
 
-  function handleSubmit() {
-    console.log('enviou')
-  }
-
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">

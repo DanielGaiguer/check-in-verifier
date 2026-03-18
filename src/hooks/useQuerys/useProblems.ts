@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-interface Problem {
+export interface Problem {
   id: number
   name: string
 }
