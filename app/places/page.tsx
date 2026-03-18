@@ -10,6 +10,7 @@ import {
   GripVertical,
   Pencil,
   Trash2,
+  CheckIcon,
 } from 'lucide-react'
 
 import {
@@ -118,6 +119,7 @@ export default function PlacesPage() {
   const [labId, setLabId] = useState('')
   const [name, setName] = useState('')
   const [selectedProblems, setSelectedProblems] = useState<number[]>([])
+  const [isOpen, setIsOpen] = useState(false)
 
   const queryClient = useQueryClient()
   const updateOrder = useUpdatePlacesOrder()
@@ -198,29 +200,63 @@ export default function PlacesPage() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* LABORATÓRIO */}
-                <div>
+                <div className="relative">
                   <Label
                     htmlFor="lab"
                     className="mb-1 block text-sm font-medium"
                   >
                     Laboratório
                   </Label>
-                  <Select value={labId} onValueChange={setLabId}>
-                    <SelectTrigger className="flex h-10 w-full items-center justify-between rounded-xl border-2 border-gray-400 px-3">
-                      <SelectValue placeholder="Selecione um laboratório" />
-                    </SelectTrigger>
-                    <SelectContent className="w-[var(--radix-select-trigger-width)] w-full rounded-md" >
-                      <SelectGroup className="w-full bg-white rounded-md mt-1 ml-1">
-                        {uniqueLabs?.map((lab) => (
-                          <SelectItem key={lab} value={lab} className="w-full data-highlighted:bg-green-100 data-[state=checked]:bg-green-200 rounded-md">
-                            {lab}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
 
+                  {/* Trigger */}
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-xl border-2 border-gray-400 bg-white px-3 focus:border-blue-400"
+                  >
+                    <span className={`${!labId && 'text-gray-400'}`}>
+                      {labId || 'Selecione um laboratório'}
+                    </span>
+
+                    <svg
+                      className="h-4 w-4 opacity-50"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.937a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown */}
+                  {isOpen && (
+                    <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-md">
+                      {uniqueLabs?.map((lab) => (
+                        <li
+                          key={lab}
+                          onClick={() => {
+                            setLabId(lab)
+                            setIsOpen(false)
+                          }}
+                          className={`cursor-pointer rounded-md px-3 py-2 hover:bg-green-100 ${labId === lab ? 'bg-green-200' : ''}`}
+                        >
+                          {lab === labId ? (
+                            <div className={`flex flex-row items-center ${lab === labId ? "" : "pl-5"}`}>
+                              <CheckIcon className="mr-2 h-4 w-4 text-gray-500" />
+                              {lab}
+                            </div>
+                          ) : (
+                            lab
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
                 {/* NOME DO LUGAR */}
                 <div>
                   <Label
@@ -241,10 +277,10 @@ export default function PlacesPage() {
                 {/* PROBLEMAS POSSÍVEIS */}
                 {places[0]?.problems && places[0].problems.length > 0 && (
                   <div>
-                    <Label className="mb-1 block text-sm font-medium">
+                    <Label className="mb-1 block text-sm font-medium" key={places[0].id}>
                       Problemas Possíveis
                     </Label>
-                    <div className="max-h-40 space-y-2 overflow-y-auto rounded-md border p-3">
+                    <div className="max-h-40 space-y-2 overflow-y-auto rounded-md border p-3" key={places[0].id}>
                       {places[0].problems.map((problem: any) => (
                         <label
                           key={problem.id}
