@@ -188,7 +188,7 @@ export default function PlacesPage() {
           {/* DIALOG */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-2 bg-blue-500 text-white hover:bg-blue-600">
+              <Button className="flex items-center gap-5 bg-blue-400 text-white hover:bg-blue-300 p-5">
                 <PlusIcon className="h-4 w-4" /> Novo Lugar
               </Button>
             </DialogTrigger>
@@ -214,7 +214,7 @@ export default function PlacesPage() {
                   <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100 px-3 focus:border-blue-400"
+                    className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-300 bg-gray-100 px-3 focus:border-blue-400"
                   >
                     <span className={`${!labId && 'text-gray-400'}`}>
                       {labId || 'Selecione um laboratório'}
@@ -295,7 +295,7 @@ export default function PlacesPage() {
                           id={`problem-${problem.id}`}
                           checked={selectedProblems.includes(problem.id)}
                           onCheckedChange={() => toggleProblem(problem.id)}
-                          className="border-gray-400 data-[state=checked]:border-gray-400 data-[state=checked]:bg-gray-400"
+                          className="border-gray-400 data-[state=checked]:border-gray-300 data-[state=checked]:bg-gray-400"
                         />
                         <Label
                           htmlFor={`problem-${problem.id}`}
@@ -310,10 +310,10 @@ export default function PlacesPage() {
 
                 {/* BOTÕES */}
                 <div className="mt-4 flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={closeDialog} >
+                  <Button type="button" variant="outline" onClick={closeDialog} className='cursor-pointer' >
                     Cancelar
                   </Button>
-                  <Button type="submit" disabled={!name.trim() || !labId} className='bg-blue-400 hover:bg-blue-300'>
+                  <Button type="submit" disabled={!name.trim() || !labId} className='bg-blue-400 hover:bg-blue-300 cursor-pointer'>
                     Criar
                   </Button>
                 </div>
