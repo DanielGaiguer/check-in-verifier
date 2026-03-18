@@ -54,6 +54,7 @@ import { SelectContent, SelectTrigger } from '@radix-ui/react-select'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useProblems } from '@/hooks/useQuerys/useProblems'
 
 /* ---------------- SORTABLE CARD ---------------- */
 function SortablePlace({
@@ -115,6 +116,7 @@ function SortablePlace({
 /* ---------------- PAGE ---------------- */
 export default function PlacesPage() {
   const { places, isLoading, error } = usePlaces()
+  const { problems, isLoading: isLoadingProblems } = useProblems()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [labId, setLabId] = useState('')
   const [name, setName] = useState('')
@@ -212,7 +214,7 @@ export default function PlacesPage() {
                   <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-xl border-2 border-gray-400 bg-white px-3 focus:border-blue-400"
+                    className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100 px-3 focus:border-blue-400"
                   >
                     <span className={`${!labId && 'text-gray-400'}`}>
                       {labId || 'Selecione um laboratório'}
@@ -234,7 +236,7 @@ export default function PlacesPage() {
 
                   {/* Dropdown */}
                   {isOpen && (
-                    <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-md">
+                    <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md">
                       {uniqueLabs?.map((lab) => (
                         <li
                           key={lab}
@@ -245,12 +247,12 @@ export default function PlacesPage() {
                           className={`cursor-pointer rounded-md px-3 py-2 hover:bg-green-100 ${labId === lab ? 'bg-green-200' : ''}`}
                         >
                           {lab === labId ? (
-                            <div className={`flex flex-row items-center ${lab === labId ? "" : "pl-5"}`}>
+                            <div className={`flex flex-row items-center`}>
                               <CheckIcon className="mr-2 h-4 w-4 text-gray-500" />
                               {lab}
                             </div>
                           ) : (
-                            lab
+                            <span className="ml-6">{lab}</span>
                           )}
                         </li>
                       ))}
@@ -261,7 +263,7 @@ export default function PlacesPage() {
                 <div>
                   <Label
                     htmlFor="name"
-                    className="mb-1 block text-sm font-medium"
+                    className="mb-1 block text-sm font-medium "
                   >
                     Nome do Lugar
                   </Label>
@@ -270,40 +272,48 @@ export default function PlacesPage() {
                     placeholder="Ex: Bancada A"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="h-10 w-full px-3"
+                    className="h-10 w-full px-3 focus:border-2.5 flex items-center justify-between rounded-md border-2  border-gray-400 bg-gray-100!"
                   />
                 </div>
 
                 {/* PROBLEMAS POSSÍVEIS */}
-                {places[0]?.problems && places[0].problems.length > 0 && (
-                  <div>
-                    <Label className="mb-1 block text-sm font-medium" key={places[0].id}>
-                      Problemas Possíveis
-                    </Label>
-                    <div className="max-h-40 space-y-2 overflow-y-auto rounded-md border p-3" key={places[0].id}>
-                      {places[0].problems.map((problem: any) => (
-                        <label
-                          key={problem.id}
-                          className="flex cursor-pointer items-center gap-2 text-sm"
+                <div>
+                  <Label className="mb-1 block text-sm font-medium">
+                    Problemas Possíveis
+                  </Label>
+
+                  <div className="max-h-40 space-y-2 overflow-y-auto rounded-md border p-3">
+                    {isLoadingProblems && (
+                      <p className="text-sm text-gray-500">
+                        Carregando problemas...
+                      </p>
+                    )}
+
+                    {problems.map((problem) => (
+                      <div key={problem.id} className="flex items-center">
+                        <Checkbox
+                          id={`problem-${problem.id}`}
+                          checked={selectedProblems.includes(problem.id)}
+                          onCheckedChange={() => toggleProblem(problem.id)}
+                          className="border-gray-400 data-[state=checked]:border-gray-400 data-[state=checked]:bg-gray-400"
+                        />
+                        <Label
+                          htmlFor={`problem-${problem.id}`}
+                          className="ml-3 cursor-pointer text-sm"
                         >
-                          <Checkbox
-                            key={problem.id}
-                            checked={selectedProblems.includes(problem.id)}
-                            onCheckedChange={() => toggleProblem(problem.id)}
-                          />
                           {problem.name}
-                        </label>
-                      ))}
-                    </div>
+                        </Label>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
 
                 {/* BOTÕES */}
                 <div className="mt-4 flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={closeDialog}>
+                  <Button type="button" variant="outline" onClick={closeDialog} >
                     Cancelar
                   </Button>
-                  <Button type="submit" disabled={!name.trim() || !labId}>
+                  <Button type="submit" disabled={!name.trim() || !labId} className='bg-blue-400 hover:bg-blue-300'>
                     Criar
                   </Button>
                 </div>
