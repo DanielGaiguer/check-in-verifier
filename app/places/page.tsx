@@ -188,10 +188,10 @@ export default function PlacesPage() {
           {/* DIALOG */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-            <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
-              <PlusIcon className="mr-1 mb-0.5" />
-              Novo Lugar
-            </Button>
+              <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
+                <PlusIcon className="mr-1 mb-0.5" />
+                Novo Lugar
+              </Button>
             </DialogTrigger>
 
             <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
@@ -264,7 +264,7 @@ export default function PlacesPage() {
                 <div>
                   <Label
                     htmlFor="name"
-                    className="mb-1 block text-sm font-medium "
+                    className="mb-1 block text-sm font-medium"
                   >
                     Nome do Lugar
                   </Label>
@@ -273,7 +273,7 @@ export default function PlacesPage() {
                     placeholder="Ex: Bancada A"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="h-10 w-full px-3 focus:border-2.5 flex items-center justify-between rounded-md border-2  border-gray-400 bg-gray-100!"
+                    className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100! px-3"
                   />
                 </div>
 
@@ -291,16 +291,20 @@ export default function PlacesPage() {
                     )}
 
                     {problems.map((problem) => (
-                      <div key={problem.id} className="flex items-center">
+                      <div
+                        key={problem.id}
+                        className="flex items-center rounded-md hover:bg-gray-100"
+                      >
                         <Checkbox
                           id={`problem-${problem.id}`}
                           checked={selectedProblems.includes(problem.id)}
                           onCheckedChange={() => toggleProblem(problem.id)}
                           className="border-gray-400 data-[state=checked]:border-gray-300 data-[state=checked]:bg-gray-400"
                         />
+
                         <Label
                           htmlFor={`problem-${problem.id}`}
-                          className="ml-3 cursor-pointer text-sm"
+                          className="ml-3 cursor-pointer text-sm select-none"
                         >
                           {problem.name}
                         </Label>
@@ -311,10 +315,19 @@ export default function PlacesPage() {
 
                 {/* BOTÕES */}
                 <div className="mt-4 flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={closeDialog} className='cursor-pointer' >
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={closeDialog}
+                    className="cursor-pointer"
+                  >
                     Cancelar
                   </Button>
-                  <Button type="submit" disabled={!name.trim() || !labId} className='bg-blue-400 hover:bg-blue-300 cursor-pointer'>
+                  <Button
+                    type="submit"
+                    disabled={!name.trim() || !labId || selectedProblems.length == 0}
+                    className="cursor-pointer bg-blue-400 hover:bg-blue-300"
+                  >
                     Criar
                   </Button>
                 </div>
