@@ -188,9 +188,10 @@ export default function PlacesPage() {
           {/* DIALOG */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-5 bg-blue-400 text-white hover:bg-blue-300 p-5">
-                <PlusIcon className="h-4 w-4" /> Novo Lugar
-              </Button>
+            <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
+              <PlusIcon className="mr-1 mb-0.5" />
+              Novo Lugar
+            </Button>
             </DialogTrigger>
 
             <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">

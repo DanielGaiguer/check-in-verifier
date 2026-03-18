@@ -15,6 +15,7 @@ export default function ProblemsPage() {
   const { problems, isLoading, error} = useProblems()
   const [ name, setName] = useState("")
   const [ dialogOpen, setDialogOpen] = useState(false)
+  const [ description, setDescription] = useState("")
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
@@ -38,9 +39,10 @@ export default function ProblemsPage() {
           <div>
                       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-5 bg-blue-400 text-white hover:bg-blue-300 p-5">
-                <PlusIcon className="h-4 w-4" /> Novo Problema
-              </Button>
+            <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
+              <PlusIcon className="mr-1 mb-0.5" />
+              Novo Problema
+            </Button>
             </DialogTrigger>
 
             <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
@@ -72,7 +74,7 @@ export default function ProblemsPage() {
                   <Label className="mb-1 block text-sm font-medium">
                     Problemas Possíveis
                   </Label>
-                  <Textarea placeholder='Descrição (Opcional)' className='bg-gray-50! border-2 border-gray-300'/>
+                  <Textarea placeholder='Descrição (Opcional)' className='bg-gray-50! border-2 border-gray-300' value={description} onChange={(e) => setDescription(e.target.value)}/>
                 </div>
 
                 {/* BOTÕES */}
