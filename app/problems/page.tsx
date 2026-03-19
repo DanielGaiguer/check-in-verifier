@@ -1,5 +1,5 @@
 'use client'
-import DialogProblems from '@/components/dialogProblems'
+import DialogProblems from '@/components/dialog-problems'
 import { EditCard } from '@/components/edit-card'
 import { Card } from '@/components/ui/card'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
@@ -27,7 +27,12 @@ export default function ProblemsPage() {
             </h4>
           </div>
           <div>
-          <DialogProblems setName={setName} name={name} setDescription={setDescription} description={description}/>
+            <DialogProblems
+              setName={setName}
+              name={name}
+              setDescription={setDescription}
+              description={description}
+            />
           </div>
         </div>
 

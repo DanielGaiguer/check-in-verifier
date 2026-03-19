@@ -1,5 +1,5 @@
 'use client'
-import DialogPeople from '@/components/dialogPeople'
+import DialogPeople from '@/components/dialog-people'
 import { Button } from '@/components/ui/button'
 import {
   Card,

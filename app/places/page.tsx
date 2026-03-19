@@ -5,12 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   FlaskConicalIcon,
-  PlusIcon,
   MapPin,
   GripVertical,
   Pencil,
   Trash2,
-  CheckIcon,
 } from 'lucide-react'
 
 import {
@@ -33,29 +31,9 @@ import {
 
 import { CSS } from '@dnd-kit/utilities'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
-import { useQueryClient } from '@tanstack/react-query'
 import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { DialogTrigger } from '@radix-ui/react-dialog'
-import {
-  Select,
-  SelectGroup,
-  SelectItem,
-  SelectValue,
-} from '@/components/ui/select'
-import { SelectContent, SelectTrigger } from '@radix-ui/react-select'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
-import DialogPlace from '@/components/dialogPlace'
+import DialogPlace from '@/components/dialog-place'
 
 /* ---------------- SORTABLE CARD ---------------- */
 function SortablePlace({
