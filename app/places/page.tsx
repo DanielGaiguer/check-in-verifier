@@ -35,7 +35,6 @@ import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import DialogPlace from '@/components/dialog-place'
-import { DialogTrigger } from '@/components/ui/dialog'
 
 /* ---------------- SORTABLE CARD ---------------- */
 function SortablePlace({
@@ -128,7 +127,9 @@ export default function PlacesPage() {
     updateOrder.mutate(updated)
   }
 
-  function handleEdit() {
+  function handleEdit(placeId: string, labId: string, labName: string, placeName: string, placeProblems: string[], sortOrder: number) {
+    setLabId(labName)
+    setName(placeName)
     setOpenDialog(true)
   }
 
@@ -143,7 +144,7 @@ export default function PlacesPage() {
               Arraste para reordenar os lugares do check-in
             </h4>
           </div>
-          <Button asChild onClick={() => handleEdit()}>
+          <Button asChild onClick={() => setOpenDialog(true)}>
             <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
               <PlusIcon className="mr-1 mb-0.5" />
               Novo Lugar
@@ -188,7 +189,7 @@ export default function PlacesPage() {
                     <SortablePlace
                       key={place.id}
                       place={place}
-                      onEdit={() => handleEdit()}
+                      onEdit={() => handleEdit(place.id, place.labId, place.labName, place.name, place.problems, place.sortOrder)}
                       onDelete={() => console.log('delete', place)}
                     />
                   ))}
