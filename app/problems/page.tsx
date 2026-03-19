@@ -1,4 +1,5 @@
 'use client'
+import DialogDelete from '@/components/dialog-delete'
 import DialogProblems from '@/components/dialog-problems'
 import { EditCard } from '@/components/edit-card'
 import { Card } from '@/components/ui/card'
@@ -11,8 +12,10 @@ export default function ProblemsPage() {
   const [name, setName] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
 
+
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
+
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">

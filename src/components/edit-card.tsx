@@ -9,6 +9,7 @@ import {
 } from './ui/card'
 import { Button } from './ui/button'
 import * as Icons from 'lucide-react'
+import DialogDelete from './dialog-delete'
 
 interface EditCardProps {
   title: string | number
@@ -35,6 +36,11 @@ export function EditCard({
       }>)
     : null
   const [openEdit, setOpenEdit] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
+
+  function handleDelete() {
+    console.log('deletado')
+  }
 
   function handleEdit() {
     setOpenEdit(true)
@@ -67,7 +73,7 @@ export function EditCard({
             <Button className="bg-white hover:bg-blue-50" onClick={handleEdit}>
               <Icons.PencilIcon className="text-black" size={25} />
             </Button>
-            <Button className="bg-white hover:bg-blue-50">
+            <Button className="bg-white hover:bg-blue-50" onClick={() => setOpenDelete(true)}>
               <Icons.Trash2Icon className="text-red-400" size={25} />
             </Button>
           </div>
@@ -79,6 +85,15 @@ export function EditCard({
           open: openEdit,
           onOpenChange: setOpenEdit,
         })}
+
+      {openDelete && (
+        <DialogDelete
+          title={title.toString()}
+          open={openDelete}
+          onOpenChange={setOpenDelete}
+          handleDelete={handleDelete}
+        />
+      )}
     </div>
   )
 }

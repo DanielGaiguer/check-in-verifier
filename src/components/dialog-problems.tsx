@@ -5,9 +5,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from './ui/button'
 import { PlusIcon } from 'lucide-react'
+import DialogDelete from './dialog-delete'
 
 interface DialogProblemsProtocol {
   setName: Dispatch<SetStateAction<string>>
@@ -91,6 +92,7 @@ export default function DialogProblems({
             </Button>
           </div>
         </form>
+
       </DialogContent>
     </Dialog>
   )
