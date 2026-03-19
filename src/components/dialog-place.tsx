@@ -8,7 +8,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { CheckIcon, PlusIcon } from 'lucide-react'
 import { Problem } from '@/hooks/useQuerys/useProblems'
@@ -16,8 +16,8 @@ import { Checkbox } from './ui/checkbox'
 import { Dispatch, SetStateAction } from 'react'
 
 interface DialogPlaceProtocol {
-  dialogOpen: boolean,
-  setDialogOpen:  Dispatch<SetStateAction<boolean>>,
+  dialogOpen: boolean
+  setDialogOpen: Dispatch<SetStateAction<boolean>>
 
   name: string
   setName: Dispatch<SetStateAction<string>>
@@ -49,10 +49,15 @@ export default function DialogPlace({
 }: DialogPlaceProtocol) {
   const [isOpen, setIsOpen] = useState(false)
 
+  useEffect(() => {
+    if (dialogOpen && selectedProblems.length > 0) {
+      setSelectedProblems(selectedProblems)
+    }
+  }, [dialogOpen, selectedProblems, setSelectedProblems])
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     console.log('Criou/Atualizou lugar:', { labId, name, selectedProblems })
-    // Aqui você faria sua lógica de POST/PUT
     setDialogOpen(false)
     setName('')
     setLabId('')
@@ -76,7 +81,6 @@ export default function DialogPlace({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">

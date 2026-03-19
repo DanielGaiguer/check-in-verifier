@@ -133,6 +133,12 @@ export default function PlacesPage() {
     setOpenDialog(true)
   }
 
+  function handleCreate() {
+    setOpenDialog(true)
+    setLabId("")
+    setName("")
+  }
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -144,7 +150,7 @@ export default function PlacesPage() {
               Arraste para reordenar os lugares do check-in
             </h4>
           </div>
-          <Button asChild onClick={() => setOpenDialog(true)}>
+          <Button asChild onClick={() => handleCreate()}>
             <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
               <PlusIcon className="mr-1 mb-0.5" />
               Novo Lugar
