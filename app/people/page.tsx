@@ -1,4 +1,5 @@
 'use client'
+import DialogDelete from '@/components/dialog-delete'
 import DialogPeople from '@/components/dialog-people'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,9 +23,15 @@ export default function PeoplePage() {
   const { peoples, isLoading, error } = usePeople()
   const [name, setName] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
+
+
+  function handleDelete() {
+    console.log('deletado')
+  }
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
@@ -98,7 +105,10 @@ export default function PeoplePage() {
                       >
                         <PencilIcon className="text-black" size={25} />
                       </Button>
-                      <Button className="bg-white hover:bg-blue-50">
+                      <Button className="bg-white hover:bg-blue-50" onClick={() => {
+                        setOpenDelete(true)
+                        setName(people.name)
+                      } }>
                         <Trash2Icon className="text-red-400" size={25} />
                       </Button>
                     </div>
@@ -123,6 +133,10 @@ export default function PeoplePage() {
               setInternalOpen={setInternalOpen}
               internalOpen={internalOpen}
             />
+          )}
+
+          {openDelete && (
+            <DialogDelete title={name} open={openDelete} onOpenChange={setOpenDelete} handleDelete={handleDelete}/>
           )}
         </div>
       </div>
