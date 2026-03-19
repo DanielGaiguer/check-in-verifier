@@ -39,20 +39,23 @@ export default function DialogPeople({
       open={forEdit ? open : internalOpen}
       onOpenChange={forEdit ? onOpenChange : setInternalOpen}
     >
-      {!forEdit && (
+      {/* {!forEdit && (
         <Button
           className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
-          onClick={() => setInternalOpen?.(true)}
+          onClick={() => {
+            setInternalOpen?.(true)
+            setName("")
+          }}
         >
           <PlusIcon className="mr-1 mb-0.5" />
           Nova Pessoa
         </Button>
-      )}
+      )} */}
 
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
-            {forEdit ? "Editar Pessoa" : "Nova Pessoa"}
+            {name ? "Editar Pessoa" : "Nova Pessoa"}
           </DialogTitle>
         </DialogHeader>
 
@@ -83,7 +86,7 @@ export default function DialogPeople({
             </Button>
             <Button
               type="submit"
-              disabled={!name.trim() || !name}
+              disabled={!name.trim() || !name }
               className="cursor-pointer bg-blue-400 hover:bg-blue-300"
             >
               Criar

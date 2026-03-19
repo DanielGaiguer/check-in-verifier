@@ -10,7 +10,12 @@ import {
 } from '@/components/ui/card'
 
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
-import { FlaskConicalIcon, PencilIcon, Trash2Icon } from 'lucide-react'
+import {
+  FlaskConicalIcon,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
+} from 'lucide-react'
 import { useState } from 'react'
 
 export default function PeoplePage() {
@@ -34,9 +39,20 @@ export default function PeoplePage() {
             </h4>
           </div>
           <div>
+              <Button
+                className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+                onClick={() => {
+                  setInternalOpen?.(true)
+                  setName('')
+                }}
+              >
+                <PlusIcon className="mr-1 mb-0.5" />
+                Nova Pessoa
+              </Button>
             <DialogPeople
               setName={setName}
               name={name}
+              forEdit={false}
               internalOpen={internalOpen}
               setInternalOpen={setInternalOpen}
             />
@@ -76,8 +92,8 @@ export default function PeoplePage() {
                       <Button
                         className="bg-white hover:bg-blue-50"
                         onClick={() => {
-                           setInternalOpen(true)
-                           setName(people.name)
+                          setInternalOpen(true)
+                          setName(people.name)
                         }}
                       >
                         <PencilIcon className="text-black" size={25} />
