@@ -9,6 +9,7 @@ import {
   GripVertical,
   Pencil,
   Trash2,
+  PlusIcon,
 } from 'lucide-react'
 
 import {
@@ -34,6 +35,7 @@ import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import DialogPlace from '@/components/dialog-place'
+import { DialogTrigger } from '@/components/ui/dialog'
 
 /* ---------------- SORTABLE CARD ---------------- */
 function SortablePlace({
@@ -99,6 +101,7 @@ export default function PlacesPage() {
   const [labId, setLabId] = useState('')
   const [name, setName] = useState('')
   const [selectedProblems, setSelectedProblems] = useState<number[]>([])
+  const [openDialog, setOpenDialog] = useState(false)
 
   // const queryClient = useQueryClient()
   const updateOrder = useUpdatePlacesOrder()
@@ -125,6 +128,10 @@ export default function PlacesPage() {
     updateOrder.mutate(updated)
   }
 
+  function handleEdit() {
+    setOpenDialog(true)
+  }
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -136,9 +143,15 @@ export default function PlacesPage() {
               Arraste para reordenar os lugares do check-in
             </h4>
           </div>
-
-          {/* DIALOG */}
+          <Button asChild onClick={() => handleEdit()}>
+            <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
+              <PlusIcon className="mr-1 mb-0.5" />
+              Novo Lugar
+            </Button>
+          </Button>
           <DialogPlace
+            dialogOpen={openDialog}
+            setDialogOpen={setOpenDialog}
             name={name}
             setName={setName}
             labId={labId}
@@ -175,13 +188,28 @@ export default function PlacesPage() {
                     <SortablePlace
                       key={place.id}
                       place={place}
-                      onEdit={() => console.log('editar', place)}
+                      onEdit={() => handleEdit()}
                       onDelete={() => console.log('delete', place)}
                     />
                   ))}
                 </div>
               </SortableContext>
             </DndContext>
+          )}
+          {openDialog && (
+            <DialogPlace
+              dialogOpen={openDialog}
+              setDialogOpen={setOpenDialog}
+              name={name}
+              setName={setName}
+              labId={labId}
+              setLabId={setLabId}
+              uniqueLabs={uniqueLabs}
+              problems={problems}
+              isLoadingProblems={isLoadingProblems}
+              selectedProblems={selectedProblems}
+              setSelectedProblems={setSelectedProblems}
+            />
           )}
         </div>
       </div>

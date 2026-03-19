@@ -16,6 +16,9 @@ import { Checkbox } from './ui/checkbox'
 import { Dispatch, SetStateAction } from 'react'
 
 interface DialogPlaceProtocol {
+  dialogOpen: boolean,
+  setDialogOpen:  Dispatch<SetStateAction<boolean>>,
+
   name: string
   setName: Dispatch<SetStateAction<string>>
 
@@ -32,6 +35,8 @@ interface DialogPlaceProtocol {
 }
 
 export default function DialogPlace({
+  dialogOpen,
+  setDialogOpen,
   setName,
   name,
   labId,
@@ -42,7 +47,6 @@ export default function DialogPlace({
   selectedProblems,
   setSelectedProblems,
 }: DialogPlaceProtocol) {
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
   function handleSubmit(e: React.FormEvent) {
@@ -72,12 +76,6 @@ export default function DialogPlace({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
-          <PlusIcon className="mr-1 mb-0.5" />
-          Novo Lugar
-        </Button>
-      </DialogTrigger>
 
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
