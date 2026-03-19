@@ -35,6 +35,7 @@ import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import DialogPlace from '@/components/dialog-place'
+import DialogDelete from '@/components/dialog-delete'
 
 /* ---------------- SORTABLE CARD ---------------- */
 function SortablePlace({
@@ -101,6 +102,7 @@ export default function PlacesPage() {
   const [name, setName] = useState('')
   const [selectedProblems, setSelectedProblems] = useState<number[]>([])
   const [openDialog, setOpenDialog] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
 
   // const queryClient = useQueryClient()
   const updateOrder = useUpdatePlacesOrder()
@@ -127,7 +129,14 @@ export default function PlacesPage() {
     updateOrder.mutate(updated)
   }
 
-  function handleEdit(placeId: string, labId: string, labName: string, placeName: string, placeProblems: string[], sortOrder: number) {
+  function handleEdit(
+    placeId: string,
+    labId: string,
+    labName: string,
+    placeName: string,
+    placeProblems: string[],
+    sortOrder: number
+  ) {
     setLabId(labName)
     setName(placeName)
     setOpenDialog(true)
@@ -135,8 +144,12 @@ export default function PlacesPage() {
 
   function handleCreate() {
     setOpenDialog(true)
-    setLabId("")
-    setName("")
+    setLabId('')
+    setName('')
+  }
+
+  function handleDelete() {
+    console.log('deletado')
   }
 
   return (
@@ -195,8 +208,20 @@ export default function PlacesPage() {
                     <SortablePlace
                       key={place.id}
                       place={place}
-                      onEdit={() => handleEdit(place.id, place.labId, place.labName, place.name, place.problems, place.sortOrder)}
-                      onDelete={() => console.log('delete', place)}
+                      onEdit={() =>
+                        handleEdit(
+                          place.id,
+                          place.labId,
+                          place.labName,
+                          place.name,
+                          place.problems,
+                          place.sortOrder
+                        )
+                      }
+                      onDelete={() => {
+                        setName(place.name)
+                        setOpenDelete(true)
+                      }}
                     />
                   ))}
                 </div>
@@ -216,6 +241,15 @@ export default function PlacesPage() {
               isLoadingProblems={isLoadingProblems}
               selectedProblems={selectedProblems}
               setSelectedProblems={setSelectedProblems}
+            />
+          )}
+
+          {openDelete && (
+            <DialogDelete
+              title={name}
+              open={openDelete}
+              onOpenChange={setOpenDelete}
+              handleDelete={handleDelete}
             />
           )}
         </div>
