@@ -60,9 +60,6 @@ export default function DialogProblems({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="name" className="mb-1 block text-sm font-medium">
-              Nome do Problema
-            </Label>
             <Input
               id="name"
               placeholder="Nome do problema"

@@ -10,20 +10,16 @@ import {
 } from '@/components/ui/card'
 
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
-import {
-  FlaskConicalIcon,
-  PencilIcon,
-  Trash2Icon,
-} from 'lucide-react'
+import { FlaskConicalIcon, PencilIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
 
 export default function PeoplePage() {
   const { peoples, isLoading, error } = usePeople()
   const [name, setName] = useState('')
+  const [internalOpen, setInternalOpen] = useState(false)
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
-
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
@@ -38,7 +34,12 @@ export default function PeoplePage() {
             </h4>
           </div>
           <div>
-            <DialogPeople setName={setName} name={name} />
+            <DialogPeople
+              setName={setName}
+              name={name}
+              internalOpen={internalOpen}
+              setInternalOpen={setInternalOpen}
+            />
           </div>
         </div>
         <div className="mt-5">
@@ -72,7 +73,13 @@ export default function PeoplePage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <Button className="bg-white hover:bg-blue-50">
+                      <Button
+                        className="bg-white hover:bg-blue-50"
+                        onClick={() => {
+                           setInternalOpen(true)
+                           setName(people.name)
+                        }}
+                      >
                         <PencilIcon className="text-black" size={25} />
                       </Button>
                       <Button className="bg-white hover:bg-blue-50">
@@ -90,6 +97,16 @@ export default function PeoplePage() {
                 Ainda não foi cadastrado nenhum problema.
               </h4>
             </Card>
+          )}
+
+          {internalOpen && (
+            <DialogPeople
+              setName={setName}
+              name={name}
+              forEdit={true}
+              setInternalOpen={setInternalOpen}
+              internalOpen={internalOpen}
+            />
           )}
         </div>
       </div>

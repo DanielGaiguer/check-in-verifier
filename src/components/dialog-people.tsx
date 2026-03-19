@@ -6,36 +6,53 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from './ui/button'
 import { PlusIcon } from 'lucide-react'
 
 interface DialogPeopleProtocol {
-  setName: (arg0: string) => void
+  setName: Dispatch<SetStateAction<string>>
   name: string
+  forEdit?: boolean
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  internalOpen?: boolean
+  setInternalOpen?: Dispatch<SetStateAction<boolean>>
 }
 
-export default function DialogPeople({ setName, name }: DialogPeopleProtocol) {
-  const [dialogOpen, setDialogOpen] = useState(false)
-
+export default function DialogPeople({
+  setName,
+  name,
+  forEdit = false,
+  open,
+  onOpenChange,
+  internalOpen,
+  setInternalOpen,
+}: DialogPeopleProtocol) {
   function handleSubmit(e: { preventDefault: () => void }) {
     e.preventDefault()
     console.log('enviou')
   }
-
+  
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
+    <Dialog
+      open={forEdit ? open : internalOpen}
+      onOpenChange={forEdit ? onOpenChange : setInternalOpen}
+    >
+      {!forEdit && (
+        <Button
+          className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+          onClick={() => setInternalOpen?.(true)}
+        >
           <PlusIcon className="mr-1 mb-0.5" />
-          Novo Laboratório
+          Nova Pessoa
         </Button>
-      </DialogTrigger>
+      )}
 
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
-            Novo Laboratório
+            {forEdit ? "Editar Pessoa" : "Nova Pessoa"}
           </DialogTitle>
         </DialogHeader>
 
@@ -43,7 +60,7 @@ export default function DialogPeople({ setName, name }: DialogPeopleProtocol) {
           <div>
             <Input
               id="name"
-              placeholder="Nome do laboratório"
+              placeholder="Nome da Pessoa"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-300 bg-gray-100! px-3 focus:border-blue-400!"
@@ -53,7 +70,13 @@ export default function DialogPeople({ setName, name }: DialogPeopleProtocol) {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setDialogOpen(false)}
+              onClick={() => {
+                if (forEdit) {
+                  onOpenChange?.(false)
+                } else {
+                  setInternalOpen?.(false)
+                }
+              }}
               className="cursor-pointer"
             >
               Cancelar
