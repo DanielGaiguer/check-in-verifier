@@ -9,7 +9,7 @@ import { useState } from 'react'
 export default function ProblemsPage() {
   const { problems, isLoading, error } = useProblems()
   const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
+  const [internalOpen, setInternalOpen] = useState(false)
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
@@ -30,12 +30,11 @@ export default function ProblemsPage() {
             <DialogProblems
               setName={setName}
               name={name}
-              setDescription={setDescription}
-              description={description}
+              internalOpen={internalOpen}
+              setInternalOpen={setInternalOpen}
             />
           </div>
         </div>
-
         <div className="mt-5">
           {problems.length > 0 ? (
             problems.map((problem) => (
@@ -45,6 +44,13 @@ export default function ProblemsPage() {
                   iconName="AlertTriangleIcon" // Passa apenas o nome da chave
                   iconColor="text-red-500"
                   iconBgColor="bg-red-100"
+                  componentEdit={
+                    <DialogProblems
+                      setName={setName}
+                      name={problem.name}
+                      forEdit={true}
+                    />
+                  }
                 />
               </div>
             ))
