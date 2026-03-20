@@ -1,21 +1,40 @@
 'use client'
+
 import DialogDelete from '@/components/dialog-delete'
 import DialogProblems from '@/components/dialog-problems'
-import { EditCard } from '@/components/edit-card'
-import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card'
+
 import { useProblems } from '@/hooks/useQuerys/useProblems'
-import { FlaskConicalIcon } from 'lucide-react'
+import {
+  FlaskConicalIcon,
+  AlertTriangleIcon,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
+} from 'lucide-react'
+
 import { useState } from 'react'
 
 export default function ProblemsPage() {
   const { problems, isLoading, error } = useProblems()
+
   const [name, setName] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
-
+  const [openDelete, setOpenDelete] = useState(false)
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
 
+  function handleDelete() {
+    console.log('deletado')
+  }
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
@@ -29,33 +48,78 @@ export default function ProblemsPage() {
               Cadastre os possíveis problemas para os lugares
             </h4>
           </div>
+
           <div>
+            <Button
+              className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+              onClick={() => {
+                setInternalOpen(true)
+                setName('')
+              }}
+            >
+              <PlusIcon className="mr-1 mb-0.5" />
+              Novo Problema
+            </Button>
+
             <DialogProblems
               setName={setName}
               name={name}
+              forEdit={false}
               internalOpen={internalOpen}
               setInternalOpen={setInternalOpen}
             />
           </div>
         </div>
+
         <div className="mt-5">
           {problems.length > 0 ? (
             problems.map((problem) => (
-              <div className="mt-2" key={problem.id}>
-                <EditCard
-                  title={problem.name}
-                  iconName="AlertTriangleIcon" // Passa apenas o nome da chave
-                  iconColor="text-red-500"
-                  iconBgColor="bg-red-100"
-                  componentEdit={
-                    <DialogProblems
-                      setName={setName}
-                      name={problem.name}
-                      forEdit={true}
-                    />
-                  }
-                />
-              </div>
+              <Card
+                className="mt-2 flex h-20 w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row"
+                key={problem.id}
+              >
+                <CardHeader className="flex items-center">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100">
+                    <AlertTriangleIcon className="text-red-500" size={22} />
+                  </div>
+                </CardHeader>
+
+                <CardContent className="flex flex-1 items-center justify-between">
+                  <div>
+                    <CardTitle className="text-md font-sans font-normal">
+                      {problem.name}
+                    </CardTitle>
+
+                    {/* {problem.createdAt && (
+                      <CardDescription className="font-sans text-sm">
+                        Criado em {problem.createdAt}
+                      </CardDescription>
+                    )} */}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      className="bg-white hover:bg-blue-50"
+                      onClick={() => {
+                        setInternalOpen(true)
+                        setName(problem.name)
+                      }}
+                    >
+                      <PencilIcon className="text-black" size={25} />
+                    </Button>
+
+                    <Button
+                      className="bg-white hover:bg-blue-50"
+                      onClick={() => {
+                        setOpenDelete(true)
+                        setName(problem.name)
+                      }}
+                    >
+                      <Trash2Icon className="text-red-400" size={25} />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             ))
           ) : (
             <Card className="flex items-center justify-center">
@@ -64,6 +128,25 @@ export default function ProblemsPage() {
                 Ainda não foi cadastrado nenhum problema.
               </h4>
             </Card>
+          )}
+
+          {internalOpen && (
+            <DialogProblems
+              setName={setName}
+              name={name}
+              forEdit={true}
+              internalOpen={internalOpen}
+              setInternalOpen={setInternalOpen}
+            />
+          )}
+
+          {openDelete && (
+            <DialogDelete
+              title={name}
+              open={openDelete}
+              onOpenChange={setOpenDelete}
+              handleDelete={handleDelete}
+            />
           )}
         </div>
       </div>
