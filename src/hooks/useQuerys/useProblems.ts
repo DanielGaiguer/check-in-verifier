@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 export interface Problem {
-  id: number
+  id: string
   name: string
 }
 
