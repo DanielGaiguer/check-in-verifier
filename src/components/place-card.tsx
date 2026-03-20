@@ -36,7 +36,7 @@ export default function PlaceCard({
   const [status, setStatus] = useState<boolean | undefined>(undefined)
 
   return (
-    <Card className="gap-0">
+    <Card className="gap-0 mt-2">
       <CardHeader className="flex flex-row justify-between">
         <div>
           <CardTitle>{title}</CardTitle>
@@ -72,7 +72,6 @@ export default function PlaceCard({
                     className="h-5 w-5 rounded-3xl"
                     id={problem}
                     name={problem}
-                    defaultChecked
                     key={problem}
                   />
                   <FieldLabel htmlFor={problem} className="text-sm font-normal">
