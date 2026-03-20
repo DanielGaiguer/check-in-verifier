@@ -1,23 +1,39 @@
 'use client'
+
+import DialogDelete from '@/components/dialog-delete'
 import DialogLaboratories from '@/components/dialog-laboratories'
-import { EditCard } from '@/components/edit-card'
-import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
 import { useLaboratories } from '@/hooks/useQuerys/useLaboratories'
-import { FlaskConicalIcon } from 'lucide-react'
+import {
+  FlaskConicalIcon,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
+} from 'lucide-react'
 import { useState } from 'react'
 
 export default function LaboratoriesPage() {
   const { laboratories, isLoading, error } = useLaboratories()
+
   const [name, setName] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false)
 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao buscar laboratórios</p>
 
-  function handleSubmit() {
-    console.log('enviou')
+  function handleDelete() {
+    console.log('deletado')
   }
-  
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -30,32 +46,80 @@ export default function LaboratoriesPage() {
               Gerencie os laboratórios cadastrados
             </h4>
           </div>
+
           <div>
+            <Button
+              className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+              onClick={() => {
+                setInternalOpen(true)
+                setName('')
+              }}
+            >
+              <PlusIcon className="mr-1 mb-0.5" />
+              Novo Problema
+            </Button>
+
             <DialogLaboratories
               setName={setName}
               name={name}
+              forEdit={false}
               internalOpen={internalOpen}
               setInternalOpen={setInternalOpen}
             />
           </div>
         </div>
+
         <div className="mt-5">
           {laboratories.length > 0 ? (
             laboratories.map((lab) => (
-              <div className="mt-2" key={lab.id}>
-                <EditCard
-                  title={lab.name}
-                  description={`Criado em ${lab.createdAt}`}
-                  iconName="FlaskConicalIcon"
-                  componentEdit={
-                    <DialogLaboratories
-                      setName={setName}
-                      name={lab.name}
-                      forEdit={true}
-                    />
-                  }
-                />
-              </div>
+              <Card
+                className="mt-2 flex h-20 w-full flex-row gap-3 shadow-xs transition hover:shadow-md md:flex-row"
+                key={lab.id}
+              >
+                <CardHeader className="flex items-center">
+                  <div
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50`}
+                  >
+                    <FlaskConicalIcon className="text-blue-400" size={22} />
+                  </div>
+                </CardHeader>
+
+                <CardContent className="flex flex-1 items-center justify-between">
+                  <div>
+                    <CardTitle className="text-md font-sans font-normal">
+                      {lab.name}
+                    </CardTitle>
+
+                    {lab.createdAt && (
+                      <CardDescription className="font-sans text-sm">
+                        Criado em {lab.createdAt}
+                      </CardDescription>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      className="bg-white hover:bg-blue-50"
+                      onClick={() => {
+                        setInternalOpen(true)
+                        setName(lab.name)
+                      }}
+                    >
+                      <PencilIcon className="text-black" size={25} />
+                    </Button>
+
+                    <Button
+                      className="bg-white hover:bg-blue-50"
+                      onClick={() => {
+                        setOpenDelete(true)
+                        setName(lab.name)
+                      }}
+                    >
+                      <Trash2Icon className="text-red-400" size={25} />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             ))
           ) : (
             <Card className="flex items-center justify-center">
@@ -64,6 +128,25 @@ export default function LaboratoriesPage() {
                 Ainda não foi cadastrado nenhum laboratório.
               </h4>
             </Card>
+          )}
+
+          {internalOpen && (
+            <DialogLaboratories
+              setName={setName}
+              name={name}
+              forEdit={true}
+              setInternalOpen={setInternalOpen}
+              internalOpen={internalOpen}
+            />
+          )}
+
+          {openDelete && (
+            <DialogDelete
+              title={name}
+              open={openDelete}
+              onOpenChange={setOpenDelete}
+              handleDelete={handleDelete}
+            />
           )}
         </div>
       </div>
