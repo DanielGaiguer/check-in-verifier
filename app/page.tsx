@@ -1,9 +1,12 @@
+'use client'
 import Header from '@/components/header'
 import { AlertCard } from '@/components/alert-card'
 import { InfoCard } from '@/components/info-card'
 import { LastCheckins } from '@/components/last-checkins'
+import { useTodayCheckin } from '@/hooks/useQuerys/useTodayCheckin'
 
-export default async function Home() {
+export default function Home() {
+  const { checkinData, isLoading, error } = useTodayCheckin()
   const date = new Date()
   const dateFormatted = new Intl.DateTimeFormat('pt-BR', {
     weekday: 'long', // dia da semana
@@ -29,6 +32,10 @@ export default async function Home() {
     date: '07/03/2026 às 11:24',
   },
 ]
+
+  if (isLoading) return <p>Carregando...</p>
+  if (error) return <p>Erro ao carregar os dados.</p>
+  
   return (
     <>
       {/* <Header /> */}
@@ -91,7 +98,7 @@ export default async function Home() {
             />
           </div>
 
-          <LastCheckins checkins={hardData} hrefBase='/checkins/'/>
+          <LastCheckins checkins={checkinData} hrefBase='/checkins/'/>
         </div>
       </main>
     </>

@@ -18,7 +18,7 @@ export async function GET(req: Request) {
     to: searchParams.get('to') || undefined,
   }
 
-	if (!params.range || (!params.to && !params.from)){
+	if (!params.range && (!params.to || !params.from)){
 		return NextResponse.json({success: false, error: "Parametros da requisição não informados."}, {status: 400})
 	}
 

@@ -1,4 +1,3 @@
-import { problems } from '@/db/schema'
 import { useQuery } from '@tanstack/react-query'
 
 export interface Checkin {
@@ -26,7 +25,7 @@ export function useTodayCheckin() {
 		},
 	})
 
-	const checkin: Checkin[] = Array.isArray(data) ? data: []
+	const checkinData: Checkin[] = Array.isArray(data) ? data: []
 
-	return { problems, isLoading, error}
+	return { checkinData, isLoading, error}
 }
