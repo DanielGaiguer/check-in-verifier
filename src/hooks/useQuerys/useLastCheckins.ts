@@ -14,11 +14,11 @@ interface ApiResponse {
   count: number
 }
 
-export function useTodayCheckin() {
+export function useLastCheckins() {
 	const { data, isLoading, error } = useQuery<Checkin[]>({
-		queryKey: ['todayCheckin'],
+		queryKey: ['lastCheckins'],
 		queryFn: async () => {
-			const res = await fetch('/api/checkins?range=today')
+			const res = await fetch('/api/checkins?range=week')
 			if (!res.ok) throw new Error("Erro ao buscar check-in")
 			const json: ApiResponse = await res.json()
 			return json.data

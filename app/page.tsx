@@ -1,12 +1,11 @@
 'use client'
-import Header from '@/components/header'
 import { AlertCard } from '@/components/alert-card'
 import { InfoCard } from '@/components/info-card'
 import { LastCheckins } from '@/components/last-checkins'
-import { useTodayCheckin } from '@/hooks/useQuerys/useTodayCheckin'
+import { useLastCheckins } from '@/hooks/useQuerys/useLastCheckins'
 
 export default function Home() {
-  const { checkinData, isLoading, error } = useTodayCheckin()
+  const { checkinData, isLoading, error } = useLastCheckins()
   const date = new Date()
   const dateFormatted = new Intl.DateTimeFormat('pt-BR', {
     weekday: 'long', // dia da semana
@@ -15,32 +14,14 @@ export default function Home() {
     year: 'numeric', // ano completo
   }).format(date)
 
-  const hardData = [
-  {
-    id: '1',
-    name: 'Joao',
-    date: '07/03/2026 às 11:29',
-  },
-  {
-    id: '2',
-    name: 'Daniel',
-    date: '07/03/2026 às 11:28',
-  },
-  {
-    id: '3',
-    name: 'Isis',
-    date: '07/03/2026 às 11:24',
-  },
-]
-
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os dados.</p>
-  
+
   return (
     <>
       {/* <Header /> */}
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
-        <div className="m-5  flex-1 rounded-t-xl bg-gray-50">
+        <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
           <h1 className="font-sans text-2xl font-semibold tracking-tight">
             Dashboard
           </h1>
@@ -59,46 +40,46 @@ export default function Home() {
                   </span>
                 </>
               }
-              textButton='Fazer Check-in'
-              href='/checkins'
+              textButton="Fazer Check-in"
+              href="/checkins"
             />
           </div>
-          <div className='mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 p-1'>
+          <div className="mt-5 grid grid-cols-2 gap-4 p-1 sm:grid-cols-4">
             <InfoCard
               title={0}
               description="Check-ins de Hoje"
-              iconName="ClipboardCheckIcon" 
+              iconName="ClipboardCheckIcon"
               iconColor="text-blue-400"
               iconBgColor="bg-[#87cfeb39]"
-              href='/history'
+              href="/history"
             />
             <InfoCard
               title={12}
               description="Lugares cadastrados"
-              iconName="MapPinIcon" 
+              iconName="MapPinIcon"
               iconColor="text-green-700"
               iconBgColor="bg-[#98fb9846]"
-              href='/places'
+              href="/places"
             />
             <InfoCard
               title={3}
               description="Pessoas"
-              iconName="UsersRoundIcon" 
+              iconName="UsersRoundIcon"
               iconColor="text-gray-600"
               iconBgColor="bg-[#d3d3d37b]"
-              href='/people'
+              href="/people"
             />
             <InfoCard
               title={4}
               description="Últimos Check-ins"
-              iconName="TrendingUp" 
+              iconName="TrendingUp"
               iconColor="text-blue-400"
               iconBgColor="bg-[#87cfeb39]"
-              href='/history'
+              href="/history"
             />
           </div>
 
-          <LastCheckins checkins={checkinData} hrefBase='/checkins/'/>
+            <LastCheckins checkins={checkinData} hrefBase="/checkins/" />
         </div>
       </main>
     </>

@@ -1,12 +1,7 @@
 'use client'
 
+import { Checkin } from '@/hooks/useQuerys/useLastCheckins'
 import Link from 'next/link'
-
-type Checkin = {
-  id: string
-  name: string
-  date: string
-}
 
 type Props = {
   checkins: Checkin[]
