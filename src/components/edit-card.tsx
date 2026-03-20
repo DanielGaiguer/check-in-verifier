@@ -1,5 +1,5 @@
 'use client'
-import React, { Component, ReactElement, useState } from 'react'
+import React, { Component, Dispatch, ReactElement, SetStateAction, useState } from 'react'
 import {
   Card,
   CardContent,
@@ -10,6 +10,7 @@ import {
 import { Button } from './ui/button'
 import * as Icons from 'lucide-react'
 import DialogDelete from './dialog-delete'
+import DialogLaboratories from './dialog-laboratories'
 
 interface EditCardProps {
   title: string | number
@@ -37,6 +38,7 @@ export function EditCard({
     : null
   const [openEdit, setOpenEdit] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
+
 
   function handleDelete() {
     console.log('deletado')
