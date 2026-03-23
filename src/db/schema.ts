@@ -110,6 +110,5 @@ export const checkinEdits = pgTable('checkin_edits', {
   checkinId: uuid('checkin_id').references(() => checkins.id),
   editedBy: uuid('people_id').references(() => people.id),
   reason: text('reason'),
-  changes: text('changes'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })

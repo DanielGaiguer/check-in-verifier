@@ -1,110 +1,139 @@
-// src/db/seed.ts
-
-import { db } from "@/db"
+import { db } from '@/db'
 import {
   laboratories,
   places,
   people,
   problems,
-  placeProblems,
   checkins,
   checkinItems,
   checkinItemsProblems,
   checkinItemPhotos,
-  checkinStatusEnum
-} from "@/db/schema"
+} from '@/db/schema'
+import { v4 as uuid } from 'uuid'
 
 async function seed() {
-  console.log("🌱 Iniciando seed...")
+  // --- LABORATÓRIOS ---
+  const labs = [
+    { id: uuid(), name: 'Laboratório A' },
+    { id: uuid(), name: 'Laboratório B' },
+    { id: uuid(), name: 'Laboratório C' },
+  ]
 
-  // LABORATÓRIOS
-  const [lab] = await db
-    .insert(laboratories)
-    .values({
-      name: "Laboratório Central"
-    })
-    .returning()
+  for (const lab of labs) {
+    await db.insert(laboratories).values(lab)
+  }
 
-  // PLACES
-  const createdPlaces = await db
-    .insert(places)
-    .values([
-      { labId: lab.id, name: "Bancada A", sortOrder: 1 },
-      { labId: lab.id, name: "Bancada B", sortOrder: 2 },
-    ])
-    .returning()
+  // --- LUGARES ---
+  const placesData = []
+  let sort = 1
+  for (const lab of labs) {
+    for (let i = 1; i <= 3; i++) {
+      placesData.push({
+        id: uuid(),
+        labId: lab.id,
+        name: `Lugar ${i} do ${lab.name}`,
+        sortOrder: sort++,
+      })
+    }
+  }
 
-  const placeA = createdPlaces[0]
-  const placeB = createdPlaces[1]
+  for (const place of placesData) {
+    await db.insert(places).values(place)
+  }
 
-  // PESSOAS
-  const [person] = await db
-    .insert(people)
-    .values({ name: "Alice" })
-    .returning()
+  // --- PESSOAS ---
+  const peopleData = [
+    { id: uuid(), name: 'Daniel' },
+    { id: uuid(), name: 'Ana' },
+    { id: uuid(), name: 'João' },
+    { id: uuid(), name: 'Maria' },
+    { id: uuid(), name: 'Lucas' },
+  ]
 
-  // PROBLEMAS (note que description foi removida do schema)
-  const createdProblems = await db
-    .insert(problems)
-    .values([
-      { name: "Lâmpada Quebrada" },
-      { name: "Mesa Suja" }
-    ])
-    .returning()
+  for (const person of peopleData) {
+    await db.insert(people).values(person)
+  }
 
-  const lampProblem = createdProblems[0]
-  const tableProblem = createdProblems[1]
+  // --- PROBLEMAS ---
+  const problemsData = [
+    { id: uuid(), name: 'Monitor quebrado' },
+    { id: uuid(), name: 'Teclado sem tecla' },
+    { id: uuid(), name: 'Cadeira quebrada' },
+    { id: uuid(), name: 'Mesa instável' },
+    { id: uuid(), name: 'Computador desligando' },
+  ]
 
-  // RELAÇÃO PLACE -> PROBLEMS
-  await db.insert(placeProblems).values([
-    { placeId: placeA.id, problemId: lampProblem.id },
-    { placeId: placeB.id, problemId: tableProblem.id },
-  ])
+  for (const prob of problemsData) {
+    await db.insert(problems).values(prob)
+  }
 
-  // CHECKIN
-  const [checkin] = await db
-    .insert(checkins)
-    .values({
+  // --- CHECKINS ---
+  const statusOptions = ['organized', 'disorganized', 'not_checked'] as const
+
+  for (let i = 0; i < 20; i++) {
+    const checkinId = uuid()
+    const person = peopleData[Math.floor(Math.random() * peopleData.length)]
+
+    // Converte Date para string YYYY-MM-DD
+    const randomDate = new Date(
+      Date.now() - Math.floor(Math.random() * 10) * 24 * 60 * 60 * 1000
+    )
+    const checkinDate = randomDate.toISOString().split('T')[0]
+
+    await db.insert(checkins).values({
+      id: checkinId,
       peopleId: person.id,
-      date: new Date().toISOString().slice(0, 10),
-      observation: "Check-in diário",
+      date: checkinDate,
+      observation: `Observação do checkin ${i + 1}`,
     })
-    .returning()
 
-  // CHECKIN ITEM
-  const [item] = await db
-    .insert(checkinItems)
-    .values({
-      checkinId: checkin.id,
-      placeId: placeA.id,
-      status: "organized", // respeitando enum
-      observation: "Tudo organizado",
-    })
-    .returning()
+    // --- ITENS DE CHECKIN ---
+    const placesForCheckin = placesData
+      .sort(() => 0.5 - Math.random()) // randomiza
+      .slice(0, Math.floor(Math.random() * 3) + 1) // 1 a 3 lugares por checkin
 
-  // CHECKIN ITEM PROBLEM
-  const [itemProblem] = await db
-    .insert(checkinItemsProblems)
-    .values({
-      checkinItemId: item.id,
-      problemId: lampProblem.id,
-    })
-    .returning()
+    for (const place of placesForCheckin) {
+      const checkinItemId = uuid()
+      const status =
+        statusOptions[Math.floor(Math.random() * statusOptions.length)]
 
-  // FOTO DO PROBLEMA
-  await db.insert(checkinItemPhotos).values({
-    checkinItemProblemId: itemProblem.id,
-    photoUrl: "https://placehold.co/600x400",
-  })
+      await db.insert(checkinItems).values({
+        id: checkinItemId,
+        checkinId,
+        placeId: place.id,
+        status,
+        observation: `Status ${status} no ${place.name}`,
+      })
 
-  console.log("✅ Seed concluído com sucesso!")
+      // --- PROBLEMAS DO ITEM ---
+      const hasProblem = Math.random() < 0.5
+      if (hasProblem) {
+        const problem =
+          problemsData[Math.floor(Math.random() * problemsData.length)]
+        const checkinItemProblemId = uuid()
+
+        await db.insert(checkinItemsProblems).values({
+          id: checkinItemProblemId,
+          checkinItemId,
+          problemId: problem.id,
+        })
+
+        // --- FOTOS ---
+        const photoCount = Math.floor(Math.random() * 3) // até 2 fotos
+        for (let p = 0; p < photoCount; p++) {
+          await db.insert(checkinItemPhotos).values({
+            id: uuid(),
+            checkinItemProblemId,
+            photoUrl: `https://picsum.photos/200/200?random=${Math.floor(
+              Math.random() * 1000
+            )}`,
+          })
+        }
+      }
+    }
+  }
+
+  console.log('Seed completa!')
 }
 
 seed()
-  .catch((error) => {
-    console.error("❌ Erro no seed:", error)
-    process.exit(1)
-  })
-  .finally(() => {
-    process.exit(0)
-  })

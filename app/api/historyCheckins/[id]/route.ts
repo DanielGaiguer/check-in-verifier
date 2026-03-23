@@ -7,13 +7,14 @@ import {
   people,
   places,
   problems,
+  laboratories,
+  checkinEdits,
 } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
 export async function GET(req: Request) {
   try {
-    // Pega o id diretamente da URL
     const url = new URL(req.url)
     const id = url.pathname.split('/').pop() // pega o último segmento da URL
 
@@ -28,6 +29,7 @@ export async function GET(req: Request) {
       .select({
         checkinId: checkins.id,
         date: checkins.date,
+        createdAt: checkins.createdAt,
         observation: checkins.observation,
         peopleId: people.id,
         peopleName: people.name,
@@ -36,15 +38,22 @@ export async function GET(req: Request) {
         itemObservation: checkinItems.observation,
         placeId: places.id,
         placeName: places.name,
+        labId: laboratories.id,
+        labName: laboratories.name,
         problemId: problems.id,
         problemName: problems.name,
         photoId: checkinItemPhotos.id,
         photoUrl: checkinItemPhotos.photoUrl,
+        editId: checkinEdits.id,
+        editedBy: checkinEdits.editedBy,
+        editedReason: checkinEdits.reason,
+        editedCreatedAt: checkinEdits.createdAt,
       })
       .from(checkins)
       .innerJoin(people, eq(checkins.peopleId, people.id))
       .leftJoin(checkinItems, eq(checkins.id, checkinItems.checkinId))
       .leftJoin(places, eq(checkinItems.placeId, places.id))
+      .leftJoin(laboratories, eq(laboratories.id, places.labId))
       .leftJoin(
         checkinItemsProblems,
         eq(checkinItems.id, checkinItemsProblems.checkinItemId)
@@ -54,6 +63,7 @@ export async function GET(req: Request) {
         checkinItemPhotos,
         eq(checkinItemsProblems.id, checkinItemPhotos.checkinItemProblemId)
       )
+      .leftJoin(checkinEdits, eq(checkins.id, checkinEdits.checkinId))
       .where(eq(checkins.id, id))
 
     const checkinsMap = new Map<string, any>()
@@ -63,18 +73,23 @@ export async function GET(req: Request) {
         checkinsMap.set(row.checkinId, {
           checkinId: row.checkinId,
           date: row.date,
+          createdAt: row.createdAt,
           people: {
             id: row.peopleId,
             name: row.peopleName,
+            labId: row.labId,
+            labName: row.labName,
           },
           observation: row.observation,
           placeCount: 0,
           items: [],
+          edits: [], // array de edits
         })
       }
 
       const checkin = checkinsMap.get(row.checkinId)
 
+      // --- Itens ---
       let item = checkin.items.find((i: any) => i.itemId === row.itemId)
 
       if (!item && row.itemId) {
@@ -83,28 +98,28 @@ export async function GET(req: Request) {
           place: {
             id: row.placeId,
             name: row.placeName,
+            labId: row.labId,
+            labName: row.labName,
           },
           status: row.itemStatus,
           observation: row.itemObservation,
           problems: [],
         }
-
         checkin.items.push(item)
         checkin.placeCount += 1
       }
 
+      // --- Problemas ---
       if (item && row.problemId) {
         let problem = item.problems.find(
           (p: any) => p.problemId === row.problemId
         )
-
         if (!problem) {
           problem = {
             problemId: row.problemId,
             name: row.problemName,
             photos: [],
           }
-
           item.problems.push(problem)
         }
 
@@ -115,6 +130,20 @@ export async function GET(req: Request) {
               url: row.photoUrl,
             })
           }
+        }
+      }
+
+      if (row.editId) {
+        const editExists = checkin.edits.find(
+          (e: any) => e.editId === row.editId
+        )
+        if (!editExists) {
+          checkin.edits.push({
+            editId: row.editId,
+            editedBy: row.editedBy,
+            editedReason: row.editedReason,
+            editedCreatedAt: row.editedCreatedAt,
+          })
         }
       }
     }

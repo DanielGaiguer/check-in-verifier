@@ -7,6 +7,8 @@ import {
   people,
   places,
   problems,
+  laboratories,
+  checkinEdits,
 } from '@/db/schema'
 import {
   SearchParamsProps,
@@ -38,6 +40,7 @@ export async function GET(req: Request) {
       .select({
         checkinId: checkins.id,
         date: checkins.date,
+        createdAt: checkins.createdAt,
         observation: checkins.observation,
         peopleId: people.id,
         peopleName: people.name,
@@ -46,15 +49,22 @@ export async function GET(req: Request) {
         itemObservation: checkinItems.observation,
         placeId: places.id,
         placeName: places.name,
+        labId: laboratories.id,
+        labName: laboratories.name,
         problemId: problems.id,
         problemName: problems.name,
         photoId: checkinItemPhotos.id,
         photoUrl: checkinItemPhotos.photoUrl,
+        editId: checkinEdits.id,
+        editedBy: checkinEdits.editedBy,
+        editedReason: checkinEdits.reason,
+        editedCreatedAt: checkinEdits.createdAt,
       })
       .from(checkins)
       .innerJoin(people, eq(checkins.peopleId, people.id))
       .leftJoin(checkinItems, eq(checkins.id, checkinItems.checkinId))
       .leftJoin(places, eq(checkinItems.placeId, places.id))
+      .leftJoin(laboratories, eq(laboratories.id, places.labId))
       .leftJoin(
         checkinItemsProblems,
         eq(checkinItems.id, checkinItemsProblems.checkinItemId)
@@ -73,12 +83,12 @@ export async function GET(req: Request) {
 
     // Percorre cada linha retornada do banco
     for (const row of rawData) {
-      // Verifica se já existe um checkin com esse ID no Map
+      // Cria o checkin no map se ainda não existir
       if (!checkinsMap.has(row.checkinId)) {
-        // Criamos o objeto do checkin e armazenamos no Map
         checkinsMap.set(row.checkinId, {
-          checkinId: row.checkinId, // id do checkin
+          checkinId: row.checkinId,
           date: row.date,
+          createdAt: row.createdAt,
           people: {
             id: row.peopleId,
             name: row.peopleName,
@@ -86,11 +96,13 @@ export async function GET(req: Request) {
           observation: row.observation,
           placeCount: 0,
           items: [],
+          edits: [], // adiciona array de edits
         })
       }
 
       const checkin = checkinsMap.get(row.checkinId)
 
+      // --- Itens ---
       let item = checkin.items.find((i: any) => i.itemId === row.itemId)
       if (!item && row.itemId) {
         item = {
@@ -98,6 +110,8 @@ export async function GET(req: Request) {
           place: {
             id: row.placeId,
             name: row.placeName,
+            labId: row.labId,
+            labName: row.labName,
           },
           status: row.itemStatus,
           observation: row.itemObservation,
@@ -107,8 +121,8 @@ export async function GET(req: Request) {
         checkin.placeCount += 1
       }
 
+      // --- Problemas do item ---
       if (item && row.problemId) {
-        // Verifica se o problema já existe
         let problem = item.problems.find(
           (p: any) => p.problemId === row.problemId
         )
@@ -122,7 +136,6 @@ export async function GET(req: Request) {
         }
 
         if (problem && row.photoId) {
-          // Evita fotos duplicadas
           if (!problem.photos.find((p: any) => p.photoId === row.photoId)) {
             problem.photos.push({
               photoId: row.photoId,
@@ -131,28 +144,43 @@ export async function GET(req: Request) {
           }
         }
       }
+
+      if (row.editId) {
+        const editExists = checkin.edits.find(
+          (e: any) => e.editId === row.editId
+        )
+        if (!editExists) {
+          checkin.edits.push({
+            editId: row.editId,
+            editedBy: row.editedBy,
+            editedReason: row.editedReason,
+            editedCreatedAt: row.editedCreatedAt,
+          })
+        }
+      }
     }
-		//EXEMPLO: 
-// 		{
-//   checkinId: 1,
-//   person: { id: 2, name: "Daniel" },
-//   placeCount: 2,
-//   items: [
-//     {
-//       itemId: 10,
-//       place: { id: 1, name: "Lab 1" },
-//       problems: [
-//         {
-//           problemId: 5,
-//           name: "Monitor quebrado",
-//           photos: [
-//             { photoId: 1, url: "foto1.jpg" }
-//           ]
-//         }
-//       ]
-//     }
-//   ]
-// }
+
+    //EXEMPLO:
+    // 		{
+    //   checkinId: 1,
+    //   person: { id: 2, name: "Daniel" },
+    //   placeCount: 2,
+    //   items: [
+    //     {
+    //       itemId: 10,
+    //       place: { id: 1, name: "Lab 1" },
+    //       problems: [
+    //         {
+    //           problemId: 5,
+    //           name: "Monitor quebrado",
+    //           photos: [
+    //             { photoId: 1, url: "foto1.jpg" }
+    //           ]
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // }
 
     return NextResponse.json({
       success: true,
