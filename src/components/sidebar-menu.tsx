@@ -17,7 +17,12 @@ export function SidebarMenu({ onItemClick }: Props) {
     <div className="relative mr-5 ml-5 flex h-full flex-col gap-1 py-5 font-sans">
       {sidebarItems.map((item) => {
         const Icon = item.icon
-        const isActive = pathname === item.href
+        let isActive
+        if (item.href !== '/') {
+          isActive = pathname.startsWith(item.href)
+        } else{
+          isActive = pathname === item.href
+        }
 
         return (
           <Button
@@ -38,10 +43,14 @@ export function SidebarMenu({ onItemClick }: Props) {
           </Button>
         )
       })}
-      <Link href="https://github.com/DanielGaiguer" target="_blank" rel="noopener noreferrer">
+      <Link
+        href="https://github.com/DanielGaiguer"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <div className="absolute bottom-3 left-0 inline-flex w-full text-xs text-gray-400">
-            <LinkIcon size={15} className='mr-1' />
-            By Daniel Gaiguer
+          <LinkIcon size={15} className="mr-1" />
+          By Daniel Gaiguer
         </div>
       </Link>
     </div>

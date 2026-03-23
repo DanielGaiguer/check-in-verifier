@@ -13,7 +13,7 @@ export default function CardCheckin({ data }: CardCheckinProps) {
   const hasProblems = data.items.some(item => item.problems.length > 0);
 
   return (
-    <Link href={'#'}>
+    <Link href={`/checkins/${data.checkinId}`}>
       <Card className="hover:shadow-md flex justify-between m-1.5 md:max-h-21.25">
         <div className='flex justify-between w-full'>
           <div className="flex ml-5 items-center">
