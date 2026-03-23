@@ -23,7 +23,7 @@ export interface Item {
   problems: Problem[];
 }
 
-export interface Person {
+export interface People {
   id: string;
   name: string;
 }
@@ -31,7 +31,7 @@ export interface Person {
 export interface Checkin {
   checkinId: string;
   date: string; // ou Date, se você fizer parse
-  person: Person;
+  people: People;
   observation: string;
   placeCount: number;
   items: Item[];

@@ -23,7 +23,7 @@ export default function CardCheckin({ data }: CardCheckinProps) {
               <CircleCheckIcon className="text-green-300" />
             )}
             <div className='ml-3'>
-              <CardTitle className='mb-1 font-semibold'>{data.person.name}</CardTitle>
+              <CardTitle className='mb-1 font-semibold'>{data.people?.name || 'Indefinido'}</CardTitle>
               <CardDescription>
                 {data.date} • {data.placeCount} lugares
               </CardDescription>

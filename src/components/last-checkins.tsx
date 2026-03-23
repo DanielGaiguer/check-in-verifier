@@ -1,36 +1,37 @@
 'use client'
 
-import { Checkin } from '@/hooks/useQuerys/useLastCheckins'
+import { InitialDataCheckin } from '@/hooks/useQuerys/useLastCheckins'
+import { format } from 'date-fns'
 import Link from 'next/link'
 
 type Props = {
-  checkins: Checkin[]
+  checkins: InitialDataCheckin[]
   hrefBase: string
 }
 
 export function LastCheckins({ checkins, hrefBase }: Props) {
   return (
-    <div className="rounded-xl border bg-muted/40 p-6 mt-5">
-      <h2 className="text-lg font-semibold mb-6">Últimos Check-ins</h2>
+    <div className="bg-muted/40 mt-5 rounded-xl border p-6">
+      <h2 className="mb-6 text-lg font-semibold">Últimos Check-ins</h2>
 
       <div className="flex flex-col gap-6">
         {checkins.map((checkin) => {
-          const initial = checkin.name.charAt(0).toUpperCase()
+          const initial = checkin.peopleName?.charAt(0)?.toUpperCase() || '?'
 
           return (
             <Link
               key={checkin.id}
               href={`${hrefBase}/${checkin.id}`}
-              className="flex items-center gap-4 hover:bg-muted/60 rounded-lg p-2 transition"
+              className="hover:bg-muted/60 flex items-center gap-4 rounded-lg p-2 transition"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium text-blue-500 bg-[#87cfeb39]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#87cfeb39] text-sm font-medium text-blue-500">
                 {initial}
               </div>
 
               <div className="flex flex-col">
-                <span className="font-medium">{checkin.name}</span>
-                <span className="text-sm text-muted-foreground">
-                  {checkin.date}
+                <span className="font-medium">{checkin.peopleName}</span>
+                <span className="text-muted-foreground text-sm">
+                  {format(checkin.createdAt, "dd/MM/yyyy 'às' HH:mm")}
                 </span>
               </div>
             </Link>

@@ -1,9 +1,10 @@
 import { db } from '@/db'
-import { checkins } from '@/db/schema'
+import { checkins, people } from '@/db/schema'
 import {
   SearchParamsProps,
   switchWheteClause,
 } from '@/services/switchWhereClause'
+import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
 // Padrao para a requisicao:
@@ -28,9 +29,15 @@ export async function GET(req: Request) {
 	try{
 		checkinsFilter = await db
 			.select({
-				checkinsDate: checkins.date
+				id: checkins.id,
+				peopleId: checkins.peopleId,
+				peopleName: people.name,
+				checkinsDate: checkins.date,
+				observation: checkins.observation,
+				createdAt: checkins.createdAt
 			})
 			.from(checkins)
+			.innerJoin(people, eq(checkins.peopleId, people.id))
 			.where(whereClause)
 	}catch(e) {
 		return NextResponse.json({success: false, error: e}, {status: 400})

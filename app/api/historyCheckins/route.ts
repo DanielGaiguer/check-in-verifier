@@ -79,7 +79,7 @@ export async function GET(req: Request) {
         checkinsMap.set(row.checkinId, {
           checkinId: row.checkinId, // id do checkin
           date: row.date,
-          person: {
+          people: {
             id: row.peopleId,
             name: row.peopleName,
           },
