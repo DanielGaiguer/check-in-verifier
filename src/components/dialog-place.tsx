@@ -30,8 +30,8 @@ interface DialogPlaceProtocol {
   problems: Problem[]
   isLoadingProblems: boolean
 
-  selectedProblems: number[]
-  setSelectedProblems: Dispatch<SetStateAction<number[]>>
+  selectedProblems: string[]
+  setSelectedProblems: Dispatch<SetStateAction<string[]>>
 }
 
 export default function DialogPlace({
@@ -71,7 +71,7 @@ export default function DialogPlace({
     setSelectedProblems([])
   }
 
-  function toggleProblem(problemId: number) {
+  function toggleProblem(problemId: string) {
     setSelectedProblems((prev) =>
       prev.includes(problemId)
         ? prev.filter((id) => id !== problemId)
