@@ -41,7 +41,7 @@ import { useEffect, useState } from 'react'
 // ]
 
 export default function HistoryPage() {
-  const [dateSelect, setDateSelect] = useState('7days')
+  const [dateSelect, setDateSelect] = useState('7d')
 
   const { data: checkins, isLoading, error } = useCheckins(dateSelect)
 
@@ -74,31 +74,31 @@ export default function HistoryPage() {
               <SelectContent sideOffset={0}>
                 <SelectGroup className="font-sans font-extralight text-gray-800 font-stretch-150%">
                   <SelectItem
-                    value="7days"
+                    value="7d"
                     className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
                   >
                     Últimos 7 dias
                   </SelectItem>
                   <SelectItem
-                    value="1Month"
+                    value="1m"
                     className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
                   >
                     Últimos mês
                   </SelectItem>
                   <SelectItem
-                    value="3Month"
+                    value="3m"
                     className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
                   >
                     Últimos 3 meses
                   </SelectItem>
                   <SelectItem
-                    value="6Month"
+                    value="6m"
                     className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
                   >
                     Últimos 6 meses
                   </SelectItem>
                   <SelectItem
-                    value="lastYear"
+                    value="12m"
                     className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
                   >
                     Último ano

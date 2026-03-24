@@ -188,14 +188,14 @@ export default function ReportsPage() {
               <CardTitle>Status dos Lugares</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
                     data={pieData}
                     dataKey="value"
                     nameKey="name"
                     outerRadius={80}
-                    label
+                    label={({ name, value }) => `${value} ${name}`} 
                   >
                     {pieData.map((_, i) => (
                       <Cell key={i} fill={COLORS[i]} />
@@ -213,7 +213,7 @@ export default function ReportsPage() {
               <CardTitle>Quem mais fez Check-ins</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={topPeople} layout="vertical">
                   <XAxis type="number" />
                   <YAxis type="category" dataKey="name" width={120} />
@@ -230,7 +230,7 @@ export default function ReportsPage() {
               <CardTitle>Problemas mais Frequentes</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={500}>
+              <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={topProblems} layout="vertical">
                   <XAxis type="number" />
                   <YAxis type="category" dataKey="name" width={120} />
@@ -247,7 +247,7 @@ export default function ReportsPage() {
               <CardTitle>Lugares com mais Problemas</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={500}>
+              <ResponsiveContainer width="100%" height={400} className="text-sm">
                 <BarChart data={topPlaces} layout="vertical">
                   <XAxis type="number" />
                   <YAxis type="category" dataKey="name" width={120} />
