@@ -69,6 +69,7 @@ export async function GET(req: Request) {
         checkinItemsProblems,
         eq(checkinItems.id, checkinItemsProblems.checkinItemId)
       )
+      .leftJoin(checkinEdits, eq(checkinEdits.checkinId, checkins.id))
       .leftJoin(problems, eq(checkinItemsProblems.problemId, problems.id))
       .leftJoin(
         checkinItemPhotos,
