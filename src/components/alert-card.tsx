@@ -44,7 +44,7 @@ export const AlertCard: React.FC<AlertCardProps> = ({
             <Button
               size="sm"
               variant="default"
-              className="bg-blue-500 hover:bg-blue-600"
+              className="bg-blue-500 hover:bg-blue-400"
             >
               {textButton}
             </Button>
