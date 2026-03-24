@@ -4,6 +4,8 @@ import { Card, CardDescription, CardTitle } from './ui/card'
 import { CircleCheckIcon, CircleXIcon } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { Checkin } from '@/types/typesPayload'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
 interface CardCheckinProps {
   data: Checkin
@@ -25,7 +27,7 @@ export default function CardCheckin({ data }: CardCheckinProps) {
             <div className='ml-3'>
               <CardTitle className='mb-1 font-semibold'>{data.people?.name || 'Indefinido'}</CardTitle>
               <CardDescription>
-                {data.date} • {data.placeCount} lugares
+                {format(new Date(data.date), 'dd/MM/yyyy', {locale: ptBR})} • {data.placeCount} lugares
               </CardDescription>
             </div>
           </div>

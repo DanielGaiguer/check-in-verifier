@@ -48,6 +48,10 @@ export function useCheckins(range: string) {
       const json = await res.json();
       return json.data as Checkin[];
     },
+    select: (data) =>
+  [...data].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  ),
     enabled: !!range
   })
 }

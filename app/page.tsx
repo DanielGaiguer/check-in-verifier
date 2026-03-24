@@ -3,22 +3,64 @@ import { AlertCard } from '@/components/alert-card'
 import { InfoCard } from '@/components/info-card'
 import { LastCheckins } from '@/components/last-checkins'
 import { useLastCheckins } from '@/hooks/useQuerys/useLastCheckins'
+import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
+import { isSameDay, parseISO } from 'date-fns'
 
 export default function Home() {
   const { checkinData, isLoading, error } = useLastCheckins()
-  const { places, placeCount, isLoading: isLoadingPlaces, error: errorPlaces} = usePlaces()
+  const {
+    places,
+    placeCount,
+    isLoading: isLoadingPlaces,
+    error: errorPlaces,
+  } = usePlaces()
+  const {
+    people,
+    peopleCount,
+    isLoading: isLoadingPeople,
+    error: errorPeople,
+  } = usePeople()
 
-  const date = new Date()
+  const today = new Date()
   const dateFormatted = new Intl.DateTimeFormat('pt-BR', {
     weekday: 'long', // dia da semana
     day: '2-digit', // dia com 2 dígitos
     month: 'long', // mês por extenso
     year: 'numeric', // ano completo
-  }).format(date)
+  }).format(today)
 
-  if (isLoading || isLoadingPlaces) return <p>Carregando...</p>
-  if (error || errorPlaces) return <p>Erro ao carregar os dados.</p>
+  if (isLoading || isLoadingPlaces || isLoadingPeople)
+    return <p>Carregando...</p>
+  if (error || errorPlaces || errorPeople)
+    return <p>Erro ao carregar os dados.</p>
+
+  // Função auxiliar: retorna o número da semana de uma data
+  function getWeekNumber(date: Date) {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
+    const pastDaysOfYear =
+      (date.getTime() - firstDayOfYear.getTime()) / 86400000
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
+  }
+
+  function getTodayNumber() {
+    const firstDayOfYear = new Date(today.getFullYear(), 0, 1)
+    const pastDaysOfYear =
+      (today.getTime() - firstDayOfYear.getTime()) / 86400000
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
+  }
+
+  const currentWeek = getWeekNumber(today)
+  const currentDay = getTodayNumber()
+
+  const weeklyCheckins = checkinData.filter((checkin) => {
+    const checkinDate = new Date(checkin.checkinsDate) // ou createdAt, dependendo da sua propriedade
+    return getWeekNumber(checkinDate) === currentWeek
+  })
+
+  const todayCheckins = checkinData.filter((checkin) =>
+    isSameDay(parseISO(checkin.checkinsDate), new Date())
+  )
 
   return (
     <>
@@ -49,7 +91,7 @@ export default function Home() {
           </div>
           <div className="mt-5 grid grid-cols-2 gap-4 p-1 sm:grid-cols-4">
             <InfoCard
-              title={0}
+              title={todayCheckins.length}
               description="Check-ins de Hoje"
               iconName="ClipboardCheckIcon"
               iconColor="text-blue-400"
@@ -65,7 +107,7 @@ export default function Home() {
               href="/places"
             />
             <InfoCard
-              title={3}
+              title={peopleCount}
               description="Pessoas"
               iconName="UsersRoundIcon"
               iconColor="text-gray-600"
@@ -73,8 +115,8 @@ export default function Home() {
               href="/people"
             />
             <InfoCard
-              title={4}
-              description="Últimos Check-ins"
+              title={weeklyCheckins.length}
+              description="Check-ins da semana"
               iconName="TrendingUp"
               iconColor="text-blue-400"
               iconBgColor="bg-[#87cfeb39]"
@@ -82,7 +124,7 @@ export default function Home() {
             />
           </div>
 
-            <LastCheckins checkins={checkinData} hrefBase="/checkins/" />
+          <LastCheckins checkins={weeklyCheckins} hrefBase="/checkins/" />
         </div>
       </main>
     </>
