@@ -3,9 +3,12 @@ import { AlertCard } from '@/components/alert-card'
 import { InfoCard } from '@/components/info-card'
 import { LastCheckins } from '@/components/last-checkins'
 import { useLastCheckins } from '@/hooks/useQuerys/useLastCheckins'
+import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 
 export default function Home() {
   const { checkinData, isLoading, error } = useLastCheckins()
+  const { places, placeCount, isLoading: isLoadingPlaces, error: errorPlaces} = usePlaces()
+
   const date = new Date()
   const dateFormatted = new Intl.DateTimeFormat('pt-BR', {
     weekday: 'long', // dia da semana
@@ -14,8 +17,8 @@ export default function Home() {
     year: 'numeric', // ano completo
   }).format(date)
 
-  if (isLoading) return <p>Carregando...</p>
-  if (error) return <p>Erro ao carregar os dados.</p>
+  if (isLoading || isLoadingPlaces) return <p>Carregando...</p>
+  if (error || errorPlaces) return <p>Erro ao carregar os dados.</p>
 
   return (
     <>
@@ -54,7 +57,7 @@ export default function Home() {
               href="/history"
             />
             <InfoCard
-              title={12}
+              title={placeCount}
               description="Lugares cadastrados"
               iconName="MapPinIcon"
               iconColor="text-green-700"

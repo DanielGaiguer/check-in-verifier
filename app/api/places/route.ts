@@ -1,5 +1,6 @@
 import { db } from '@/db'
 import { laboratories, placeProblems, places, problems } from '@/db/schema'
+import { count } from 'console'
 import { and, eq, gte, max, sql } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
@@ -65,6 +66,7 @@ export async function GET(req: Request) {
   return NextResponse.json({
     success: true,
     data,
+    count: data.length
   })
 }
 

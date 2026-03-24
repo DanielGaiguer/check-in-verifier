@@ -10,10 +10,10 @@ interface ApiResponse {
 }
 
 export function usePlaces() {
-  const { data: places = [], isLoading, error } = useQuery<
+  const { data, isLoading, error } = useQuery<
     ApiResponse,
     Error,
-    Place[]
+    { places: Place[]; count: number }
   >({
     queryKey: ['places'],
     queryFn: async () => {
@@ -24,14 +24,21 @@ export function usePlaces() {
       return res.json()
     },
 
-    select: (response) =>
-      response.data.map((place) => ({
+    select: (response) => ({
+      count: response.count,
+      places: response.data.map((place) => ({
         ...place,
         createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', {
           locale: ptBR,
         }),
       })),
+    }),
   })
 
-  return { places, isLoading, error }
+  return {
+    places: data?.places ?? [],
+    placeCount: data?.count ?? 0,
+    isLoading,
+    error,
+  }
 }
