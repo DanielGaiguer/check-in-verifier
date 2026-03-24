@@ -10,7 +10,7 @@ import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 //Todo: Fazer estados e dados necessarios
 export default function CheckinsPage() {
   const {
-    peoples,
+    people,
     isLoading: isLoadingPeople,
     error: errorPeople,
   } = usePeople()

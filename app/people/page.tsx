@@ -20,7 +20,7 @@ import {
 import { useState } from 'react'
 
 export default function PeoplePage() {
-  const { peoples, isLoading, error } = usePeople()
+  const { people: peoples, isLoading, error } = usePeople()
   const [name, setName] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)

@@ -15,21 +15,20 @@ interface ApiResponse{
 }
 
 export function usePeople() {
-	  const { data, isLoading, error} = useQuery<ApiResponse>({
+	  const { data: people = [], isLoading, error} = useQuery<People[]>({
     queryKey: ['peoples'],
     queryFn: async () => {
       const res = await fetch('api/people')
       if (!res.ok) throw new Error("Erro ao buscar Pessoas")
       const json = await res.json()
       return json.data
-    }
+    },
+    select: (people) => 
+      people.map((people) => ({
+        ...people,
+        createdAt: format(new Date(people.createdAt), 'dd/MM/yyyy', { locale: ptBR } )
+      }))
   })
 
-	 const peoples: People[] = Array.isArray(data) ? data : []
-
-  peoples.map((people) => {
-    return [people.createdAt = format(new Date(people.createdAt), 'dd/MM/yyyy', {locale: ptBR}), ...peoples]
-  })
-
-	return { peoples, isLoading, error}
+	return { people, isLoading, error}
 }

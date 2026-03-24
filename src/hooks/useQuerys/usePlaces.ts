@@ -10,25 +10,27 @@ interface ApiResponse {
 }
 
 export function usePlaces() {
-  const { data, isLoading, error } = useQuery<ApiResponse>({
+  const { data: places = [], isLoading, error } = useQuery<
+    ApiResponse,
+    Error,
+    Place[]
+  >({
     queryKey: ['places'],
     queryFn: async () => {
       const res = await fetch('/api/places')
-      if (!res) throw new Error('Erro ao buscar lugares')
-      const json = await res.json()
-      return json.data
+
+      if (!res.ok) throw new Error('Erro ao buscar lugares')
+
+      return res.json()
     },
-  })
 
-  const places: Place[] = Array.isArray(data) ? data : []
-
-  places.map((place) => {
-    return [
-      (place.createdAt = format(new Date(place.createdAt), 'dd/MM/yyyy', {
-        locale: ptBR,
+    select: (response) =>
+      response.data.map((place) => ({
+        ...place,
+        createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', {
+          locale: ptBR,
+        }),
       })),
-      ...places,
-    ]
   })
 
   return { places, isLoading, error }
