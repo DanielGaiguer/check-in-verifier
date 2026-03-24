@@ -51,7 +51,6 @@ export default function Home() {
   }
 
   const currentWeek = getWeekNumber(today)
-  const currentDay = getTodayNumber()
 
   const weeklyCheckins = checkinData.filter((checkin) => {
     const checkinDate = new Date(checkin.checkinsDate) // ou createdAt, dependendo da sua propriedade

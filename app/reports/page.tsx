@@ -1,9 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-// import { useQuery } from '@tanstack/react-query'
-// import { supabase } from '@/lib/supabase/client'
-
+import { format, subDays, subMonths } from 'date-fns'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Select,
@@ -12,8 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
-import { format, subDays, subMonths } from 'date-fns'
 
 import {
   BarChart,
@@ -27,19 +23,24 @@ import {
   Cell,
 } from 'recharts'
 
+import { useCheckins } from '@/hooks/useQuerys/useCheckins'
+import { usePeople } from '@/hooks/useQuerys/usePeoples'
+import { usePlaces } from '@/hooks/useQuerys/usePlaces'
+import { useProblems } from '@/hooks/useQuerys/useProblems'
+import { Checkin } from '@/types/typesPayload'
+
 const PERIOD_OPTIONS = [
   { label: 'Últimos 7 dias', value: '7d' },
   { label: 'Último mês', value: '1m' },
   { label: 'Últimos 3 meses', value: '3m' },
   { label: 'Últimos 6 meses', value: '6m' },
-  { label: 'Últimos 12 meses', value: '12m'}
+  { label: 'Últimos 12 meses', value: '12m' },
 ]
 
 const COLORS = ['hsl(142, 71%, 45%)', 'hsl(0, 72%, 51%)']
 
 function getStartDate(period: string): Date {
   const now = new Date()
-
   switch (period) {
     case '7d':
       return subDays(now, 7)
@@ -59,104 +60,101 @@ function getStartDate(period: string): Date {
 export default function ReportsPage() {
   const [period, setPeriod] = useState('1m')
 
-  const startDate = format(getStartDate(period), 'yyyy-MM-dd')
+  const { data: checkins = [], isLoading, error } = useCheckins(period)
+  const {
+    places = [],
+    placeCount,
+    isLoading: isLoadingPlaces,
+    error: errorPlaces,
+  } = usePlaces()
+  const {
+    people = [],
+    peopleCount,
+    isLoading: isLoadingPeople,
+    error: errorPeople,
+  } = usePeople()
 
-  /**
-   * ==============================
-   * MOCK DATA (HARDCODE)
-   * ==============================
-   */
+  const {
+    problems = [],
+    isLoading: isLoadingProblems,
+    error: errorProblems,
+  } = useProblems()
 
-  const reportData = {
-    totalCheckins: 42,
-    totalItems: 120,
-    organizedPercent: 78,
+  const startDateObj = getStartDate(period)
 
-    pieData: [
-      { name: 'Organizados', value: 94 },
-      { name: 'Desorganizados', value: 26 },
-    ],
+  if (isLoading || isLoadingPlaces || isLoadingPeople || isLoadingProblems)
+    return <p>Carregando...</p>
+  if (error || errorPlaces || errorPeople || errorProblems)
+    return <p>Erro ao carregar os dados.</p>
 
-    topPeople: [
-      { name: 'Carlos', count: 12 },
-      { name: 'Ana', count: 9 },
-      { name: 'João', count: 8 },
-      { name: 'Maria', count: 7 },
-      { name: 'Pedro', count: 6 },
-    ],
+  // Filtra check-ins de acordo com o período
+  const filteredCheckins = checkins.filter(
+    (c) => new Date(c.date) >= startDateObj
+  )
 
-    topProblems: [
-      { name: 'Equipamento fora do lugar', count: 15 },
-      { name: 'Falta de etiqueta', count: 11 },
-      { name: 'Cabo solto', count: 8 },
-      { name: 'Material danificado', count: 5 },
-      { name: 'Falta de limpeza', count: 3 },
-    ],
+  let organizedCount = 0
+  let disorganizedCount = 0
 
-    topPlaces: [
-      { name: 'Laboratório A', count: 14 },
-      { name: 'Laboratório B', count: 10 },
-      { name: 'Sala 203', count: 8 },
-      { name: 'Sala 105', count: 6 },
-      { name: 'Depósito', count: 4 },
-    ],
-  }
-
-  const isLoading = false
-
-  /**
-   * ==============================
-   * BACKEND ORIGINAL (COMENTADO)
-   * ==============================
-   */
-
-  /*
-  const { data: reportData, isLoading } = useQuery({
-    queryKey: ['reports', period],
-    queryFn: async () => {
-      const { data: checkins, error: cErr } = await supabase
-        .from('checkins')
-        .select('*, people(name)')
-        .gte('date', startDate)
-
-      if (cErr) throw cErr
-
-      const checkinIds = checkins?.map((c) => c.id) ?? []
-
-      let items: any[] = []
-
-      if (checkinIds.length > 0) {
-        const { data: itemsData } = await supabase
-          .from('checkin_items')
-          .select('*, places(name, laboratories(name))')
-          .in('checkin_id', checkinIds)
-
-        items = itemsData ?? []
-      }
-
-      const disorganizedItemIds = items
-        .filter((i) => !i.is_organized)
-        .map((i) => i.id)
-
-      let problemEntries: any[] = []
-
-      if (disorganizedItemIds.length > 0) {
-        const { data: probData } = await supabase
-          .from('checkin_item_problems')
-          .select('*, problems(name)')
-          .in('checkin_item_id', disorganizedItemIds)
-
-        problemEntries = probData ?? []
-      }
-
-      ...
+  filteredCheckins.forEach((checkin) => {
+    const allOk = checkin.items.every((item) => item.status === 'OK')
+    if (allOk) {
+      organizedCount++
+    } else {
+      disorganizedCount++
     }
   })
-  */
+  // TOTALS
+  const totalCheckins = filteredCheckins.length
+  const totalItems = filteredCheckins.reduce((acc, c) => acc + c.placeCount, 0)
+  // const organizedCount = filteredCheckins.filter((c) => c.isOK).length
+  // const disorganizedCount = filteredCheckins.filter((c) => !c.isOK).length
+
+  const pieData = [
+    { name: 'Organizados', value: organizedCount },
+    { name: 'Desorganizados', value: disorganizedCount },
+  ]
+
+  // TOP PEOPLE
+  const peopleCountMap: Record<string, number> = {}
+  filteredCheckins.forEach((c) => {
+    const name = c.people.name
+    peopleCountMap[name] = (peopleCountMap[name] || 0) + 1
+  })
+  const topPeople = Object.entries(peopleCountMap)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
+
+  // TOP PROBLEMS
+  const problemCountMap: Record<string, number> = {}
+  filteredCheckins.forEach((c) => {
+    c.items.forEach((item) => {
+      item.problems.forEach((p) => {
+        problemCountMap[p.name] = (problemCountMap[p.name] || 0) + 1
+      })
+    })
+  })
+  const topProblems = Object.entries(problemCountMap)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
+
+  // TOP PLACES
+  const placeProblemMap: Record<string, number> = {}
+  filteredCheckins.forEach((c) => {
+    const placeName = c.items[0]?.place.name || c.placeCount.toString()
+    placeProblemMap[placeName] =
+      (placeProblemMap[placeName] || 0) + c.items.length
+  })
+  const topPlaces = Object.entries(placeProblemMap)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 rounded-t-xl bg-gray-50">
+        {/* Header + Período */}
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Relatórios</h1>
@@ -169,10 +167,13 @@ export default function ReportsPage() {
             <SelectTrigger className="w-48">
               <SelectValue />
             </SelectTrigger>
-
             <SelectContent>
               {PERIOD_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value} className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200 ">
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
+                >
                   {opt.label}
                 </SelectItem>
               ))}
@@ -180,92 +181,83 @@ export default function ReportsPage() {
           </Select>
         </div>
 
-        {isLoading ? (
-          <p className="text-muted-foreground text-sm">Carregando...</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* PIE CHART */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Status dos Lugares</CardTitle>
-              </CardHeader>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* PIE CHART */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Status dos Lugares</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={80}
+                    label
+                  >
+                    {pieData.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-              <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={reportData.pieData}
-                      dataKey="value"
-                      nameKey="name"
-                      outerRadius={80}
-                      label
-                    >
-                      {reportData.pieData.map((_, i) => (
-                        <Cell key={i} fill={COLORS[i]} />
-                      ))}
-                    </Pie>
+          {/* TOP PEOPLE */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quem mais fez Check-ins</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={topPeople} layout="vertical">
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" width={120} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="hsl(199, 89%, 48%)" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+          {/* TOP PROBLEMS */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Problemas mais Frequentes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={500}>
+                <BarChart data={topProblems} layout="vertical">
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" width={120} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="hsl(0, 72%, 51%)" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-            {/* TOP PEOPLE */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Quem mais fez Check-ins</CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={reportData.topPeople} layout="vertical">
-                    <XAxis type="number" />
-                    <YAxis type="category" dataKey="name" width={120} />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="hsl(199, 89%, 48%)" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* TOP PROBLEMS */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Problemas mais Frequentes</CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={reportData.topProblems} layout="vertical">
-                    <XAxis type="number" />
-                    <YAxis type="category" dataKey="name" width={120} />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="hsl(0, 72%, 51%)" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* TOP PLACES */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Lugares com mais Problemas</CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={reportData.topPlaces} layout="vertical">
-                    <XAxis type="number" />
-                    <YAxis type="category" dataKey="name" width={120} />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="hsl(38, 92%, 50%)" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+          {/* TOP PLACES */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Lugares com mais Problemas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={500}>
+                <BarChart data={topPlaces} layout="vertical">
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" width={120} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="hsl(38, 92%, 50%)" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </main>
   )

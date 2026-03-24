@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { count } from 'console'
 
 export interface InitialDataCheckin {
   id: string
@@ -16,17 +17,18 @@ interface ApiResponse {
 }
 
 export function useLastCheckins() {
-	const { data, isLoading, error } = useQuery<InitialDataCheckin[]>({
+	const { data, isLoading, error } = useQuery<ApiResponse>({
 		queryKey: ['lastCheckins'],
 		queryFn: async () => {
 			const res = await fetch('/api/checkins?range=month')
 			if (!res.ok) throw new Error("Erro ao buscar check-in")
 			const json: ApiResponse = await res.json()
-			return json.data
+			const count = json.count
+			return json
 		},
 	})
 
 	const checkinData: InitialDataCheckin[] = Array.isArray(data) ? data: []
 
-	return { checkinData, isLoading, error}
+	return { checkinData, checkinsCount: data?.count, isLoading, error}
 }
