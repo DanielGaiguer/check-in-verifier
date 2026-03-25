@@ -1,44 +1,41 @@
-import { Place } from '@/types/place'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { Place } from '@/types/place'
 
-interface ApiResponse {
+interface ApiResponse<T> {
   success: boolean
-  data: Place[]
+  data: T[]
   count: number
 }
 
-export function usePlaces() {
-  const { data, isLoading, error } = useQuery<
-    ApiResponse,
-    Error,
-    { places: Place[]; count: number }
-  >({
-    queryKey: ['places'],
+interface UsePlacesOptions {
+  active?: boolean
+}
+
+export function usePlaces(options?: UsePlacesOptions) {
+  const queryString = options?.active !== undefined ? `?active=${options.active}` : ''
+
+  const queryResult = useQuery({
+    queryKey: ['places', options],
     queryFn: async () => {
-      const res = await fetch('/api/places')
-
+      const res = await fetch(`/api/places${queryString}`)
       if (!res.ok) throw new Error('Erro ao buscar lugares')
-
-      return res.json()
+      return res.json() as Promise<ApiResponse<Place>>
     },
-
     select: (response) => ({
-      count: response.count,
       places: response.data.map((place) => ({
         ...place,
-        createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', {
-          locale: ptBR,
-        }),
+        createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', { locale: ptBR }),
       })),
+      count: response.count,
     }),
   })
 
   return {
-    places: data?.places ?? [],
-    placeCount: data?.count ?? 0,
-    isLoading,
-    error,
+    places: queryResult.data?.places ?? [],
+    placeCount: queryResult.data?.count ?? 0,
+    isLoading: queryResult.isLoading,
+    error: queryResult.error,
   }
 }
