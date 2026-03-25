@@ -1,31 +1,54 @@
 import { db } from "@/db";
 import { laboratories } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-	const labs = await db.select().from(laboratories)
+  const url = new URL(req.url);
+  const activeParam = url.searchParams.get("active");
+  const onlyActive = activeParam !== "false"; // por padrão, mostra apenas ativos
 
-	return NextResponse.json({
-		success: true,
-		data: labs,
-		count: labs.length
-	})
+  let labs;
+  try {
+    labs = await db
+      .select()
+      .from(laboratories)
+      .where(onlyActive ? eq(laboratories.active, true) : undefined);
+  } catch (e) {
+    return NextResponse.json(
+      { success: false, error: e },
+      { status: 400 }
+    );
+  }
+
+  return NextResponse.json({
+    success: true,
+    data: labs,
+    count: labs.length,
+  });
 }
 
 export async function POST(req: Request) {
-	const body = await req.json()
+  const body = await req.json();
 
-	if (!body.name) {
-		return NextResponse.json({success: false, error: "Nome do laboratório não informado"}, {status: 400})
-	}
+  if (!body.name) {
+    return NextResponse.json(
+      { success: false, error: "Nome do laboratório não informado" },
+      { status: 400 }
+    );
+  }
 
-	try{
-		await db.insert(laboratories).values({
-			name: body.name
-		})
-	}catch(e) {
-		return NextResponse.json({success: false, error: e}, {status: 400})
-	}
+  try {
+    await db.insert(laboratories).values({
+      name: body.name,
+      active: true, // novo laboratório já vem como ativo
+    });
+  } catch (e) {
+    return NextResponse.json(
+      { success: false, error: e },
+      { status: 400 }
+    );
+  }
 
-	return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true });
 }
