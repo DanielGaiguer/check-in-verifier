@@ -2,48 +2,45 @@ import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
-interface People {
+export interface People {
   id: string
   name: string
   createdAt: string
 }
 
-interface ApiResponse {
+interface ApiResponse<T> {
   success: boolean
-  data: People[]
+  data: T[]
   count: number
 }
 
-export function usePeople() {
-  const { data, isLoading, error } = useQuery<
-    ApiResponse,
-    Error,
-    { people: People[]; count: number }
-  >({
-    queryKey: ['people'],
+interface UsePeopleOptions {
+  active?: boolean
+}
+
+export function usePeople(options?: UsePeopleOptions) {
+  const queryString = options?.active !== undefined ? `?active=${options.active}` : ''
+
+  const queryResult = useQuery({
+    queryKey: ['people', options],
     queryFn: async () => {
-      const res = await fetch('/api/people')
-
-      if (!res.ok) throw new Error('Erro ao buscar Pessoas')
-
-      return res.json()
+      const res = await fetch(`/api/people${queryString}`)
+      if (!res.ok) throw new Error('Erro ao buscar pessoas')
+      return res.json() as Promise<ApiResponse<People>>
     },
-
     select: (response) => ({
-      count: response.count,
       people: response.data.map((person) => ({
         ...person,
-        createdAt: format(new Date(person.createdAt), 'dd/MM/yyyy', {
-          locale: ptBR,
-        }),
+        createdAt: format(new Date(person.createdAt), 'dd/MM/yyyy', { locale: ptBR }),
       })),
+      count: response.count,
     }),
   })
 
   return {
-    people: data?.people ?? [],
-    peopleCount: data?.count ?? 0,
-    isLoading,
-    error,
+    people: queryResult.data?.people ?? [],
+    peopleCount: queryResult.data?.count ?? 0,
+    isLoading: queryResult.isLoading,
+    error: queryResult.error,
   }
 }
