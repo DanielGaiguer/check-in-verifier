@@ -24,10 +24,10 @@ export default function PeoplePage() {
   const [name, setName] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
-
+  const [id, setId] = useState('')
+ 
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
-
 
   function handleDelete() {
     console.log('deletado')
@@ -46,23 +46,17 @@ export default function PeoplePage() {
             </h4>
           </div>
           <div>
-              <Button
-                className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
-                onClick={() => {
-                  setInternalOpen?.(true)
-                  setName('')
-                }}
-              >
-                <PlusIcon className="mr-1 mb-0.5" />
-                Nova Pessoa
-              </Button>
-            <DialogPeople
-              setName={setName}
-              name={name}
-              forEdit={false}
-              internalOpen={internalOpen}
-              setInternalOpen={setInternalOpen}
-            />
+            <Button
+              className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+              onClick={() => {
+                setInternalOpen?.(true)
+                setName('')
+                setId('')
+              }}
+            >
+              <PlusIcon className="mr-1 mb-0.5" />
+              Nova Pessoa
+            </Button>
           </div>
         </div>
         <div className="mt-5">
@@ -101,14 +95,18 @@ export default function PeoplePage() {
                         onClick={() => {
                           setInternalOpen(true)
                           setName(people.name)
+                          setId(people.id)
                         }}
                       >
                         <PencilIcon className="text-black" size={25} />
                       </Button>
-                      <Button className="bg-white hover:bg-blue-50" onClick={() => {
-                        setOpenDelete(true)
-                        setName(people.name)
-                      } }>
+                      <Button
+                        className="bg-white hover:bg-blue-50"
+                        onClick={() => {
+                          setOpenDelete(true)
+                          setName(people.name)
+                        }}
+                      >
                         <Trash2Icon className="text-red-400" size={25} />
                       </Button>
                     </div>
@@ -129,14 +127,21 @@ export default function PeoplePage() {
             <DialogPeople
               setName={setName}
               name={name}
-              forEdit={true}
+              forEdit={!!id}
               setInternalOpen={setInternalOpen}
               internalOpen={internalOpen}
+              id={id}
+              setId={setId}
             />
           )}
 
           {openDelete && (
-            <DialogDelete title={name} open={openDelete} onOpenChange={setOpenDelete} handleDelete={handleDelete}/>
+            <DialogDelete
+              title={name}
+              open={openDelete}
+              onOpenChange={setOpenDelete}
+              handleDelete={handleDelete}
+            />
           )}
         </div>
       </div>

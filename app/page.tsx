@@ -43,15 +43,8 @@ export default function Home() {
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
   }
 
-  function getTodayNumber() {
-    const firstDayOfYear = new Date(today.getFullYear(), 0, 1)
-    const pastDaysOfYear =
-      (today.getTime() - firstDayOfYear.getTime()) / 86400000
-    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
-  }
-
   const currentWeek = getWeekNumber(today)
-
+  
   const weeklyCheckins = checkinData.filter((checkin) => {
     const checkinDate = new Date(checkin.checkinsDate) // ou createdAt, dependendo da sua propriedade
     return getWeekNumber(checkinDate) === currentWeek

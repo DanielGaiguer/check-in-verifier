@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from './ui/button'
 import { PlusIcon } from 'lucide-react'
+import { useCreateUser } from '@/hooks/useMutation/useCreateUser'
+import { toast } from 'react-toastify'
+import { useUpdateUser } from '@/hooks/useMutation/useUpdateUser'
 
 interface DialogPeopleProtocol {
   setName: Dispatch<SetStateAction<string>>
@@ -18,6 +21,8 @@ interface DialogPeopleProtocol {
   onOpenChange?: (open: boolean) => void
   internalOpen?: boolean
   setInternalOpen?: Dispatch<SetStateAction<boolean>>
+  id?: string
+  setId?: Dispatch<SetStateAction<string>>
 }
 
 export default function DialogPeople({
@@ -28,34 +33,39 @@ export default function DialogPeople({
   onOpenChange,
   internalOpen,
   setInternalOpen,
+  id,
+  setId
 }: DialogPeopleProtocol) {
-  function handleSubmit(e: { preventDefault: () => void }) {
-    e.preventDefault()
-    console.log('enviou')
+  const createUserMutation = useCreateUser()
+  const updateUserMutation = useUpdateUser()
+
+  function handleSubmit(e: React.FormEvent) {
+  e.preventDefault()
+
+  if (id && id.trim()) {
+    updateUserMutation.mutate({ id, name })
+    toast.success('Pessoa atualizada com sucesso.')
+  } else {
+    createUserMutation.mutate({ name })
+    toast.success('Pessoa cadastrada com sucesso.')
   }
-  
+
+  setInternalOpen?.(false)
+  setName('')
+  setId?.('') // se quiser limpar
+}
+
+  console.log(id)
+
   return (
     <Dialog
-      open={forEdit ? open : internalOpen}
-      onOpenChange={forEdit ? onOpenChange : setInternalOpen}
+      open={internalOpen}
+      onOpenChange={setInternalOpen}
     >
-      {/* {!forEdit && (
-        <Button
-          className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
-          onClick={() => {
-            setInternalOpen?.(true)
-            setName("")
-          }}
-        >
-          <PlusIcon className="mr-1 mb-0.5" />
-          Nova Pessoa
-        </Button>
-      )} */}
-
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
-            {name ? "Editar Pessoa" : "Nova Pessoa"}
+            {name ? 'Editar Pessoa' : 'Nova Pessoa'}
           </DialogTitle>
         </DialogHeader>
 
@@ -86,10 +96,10 @@ export default function DialogPeople({
             </Button>
             <Button
               type="submit"
-              disabled={!name.trim() || !name }
+              disabled={!name.trim() || !name}
               className="cursor-pointer bg-blue-400 hover:bg-blue-300"
             >
-              Criar
+              Salvar
             </Button>
           </div>
         </form>
