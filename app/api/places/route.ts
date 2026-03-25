@@ -1,6 +1,5 @@
 import { db } from '@/db'
 import { laboratories, placeProblems, places, problems } from '@/db/schema'
-import { count } from 'console'
 import { and, eq, gte, max, sql } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
@@ -11,6 +10,11 @@ interface PostPlaceProtocol {
 }
 
 export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const activeParam = url.searchParams.get('active')
+  // Se ?active=false → retorna todos; se true ou null → apenas ativos
+  const onlyActive = activeParam !== 'false'
+
   let response
 
   try {
@@ -22,7 +26,8 @@ export async function GET(req: Request) {
         sortOrder: places.sortOrder,
         createdAt: places.createdAt,
         labName: laboratories.name,
-        problemName: problems.name, // renomeei para não confundir
+        problemName: problems.name,
+        problemActive: problems.active
       })
       .from(places)
       .innerJoin(laboratories, eq(places.labId, laboratories.id))
@@ -30,10 +35,7 @@ export async function GET(req: Request) {
       .leftJoin(problems, eq(problems.id, placeProblems.problemId))
   } catch (e) {
     return NextResponse.json(
-      {
-        success: false,
-        error: e,
-      },
+      { success: false, error: e },
       { status: 400 }
     )
   }
@@ -52,7 +54,8 @@ export async function GET(req: Request) {
         }
       }
 
-      if (row.problemName) {
+      // Adiciona problema apenas se estiver ativo ou se não filtrar
+      if (row.problemName && (!onlyActive || row.problemActive)) {
         acc[row.id].problems.push(row.problemName)
       }
 
@@ -87,16 +90,10 @@ export async function POST(req: Request) {
         .select({ maxSort: max(places.sortOrder) })
         .from(places)
         .where(eq(places.labId, body.labId))
-      let maxSortOrder = result[0]?.maxSort
+      const maxSortOrder = result[0]?.maxSort
       body.sortOrder = (maxSortOrder || 0) + 1
     } catch (e) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: e,
-        },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: e }, { status: 400 })
     }
   }
 
@@ -104,15 +101,8 @@ export async function POST(req: Request) {
     try {
       await db
         .update(places)
-        .set({
-          sortOrder: sql`${places.sortOrder} + 1`,
-        })
-        .where(
-          and(
-            eq(places.labId, body.labId),
-            gte(places.sortOrder, body.sortOrder)
-          )
-        )
+        .set({ sortOrder: sql`${places.sortOrder} + 1` })
+        .where(and(eq(places.labId, body.labId), gte(places.sortOrder, body.sortOrder)))
 
       inserted = await db
         .insert(places)
@@ -123,28 +113,13 @@ export async function POST(req: Request) {
         })
         .returning()
     } catch (e) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: e,
-        },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: e }, { status: 400 })
     }
   }
 
   if (!inserted || !inserted[0]) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Não foi possível inserir o lugar.',
-      },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Não foi possível inserir o lugar.' }, { status: 500 })
   }
 
-  return NextResponse.json({
-    success: true,
-    data: inserted[0],
-  })
+  return NextResponse.json({ success: true, data: inserted[0] })
 }
