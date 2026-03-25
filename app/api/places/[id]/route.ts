@@ -42,32 +42,41 @@ export async function PATCH(
     )
   }
 
-	return NextResponse.json({
-		success: true, 
-		data: `Local ${body.name} atualizado com sucesso.`
-	})
+  return NextResponse.json({
+    success: true,
+    data: `Local ${body.name} atualizado com sucesso.`,
+  })
 }
 
-export async function DELETE(req: Request, context: {params: Promise<{id: string}> } ) {
-	const { id } = await context.params
-		
-	if (!id) {
-		return NextResponse.json({
-			success: false,
-			error: "ID do local não informado."
-		}, {status: 400})
-	}
-	try{
-		await db.delete(places).where(eq(places.id, id))
-	}catch(e) {
-		NextResponse.json({
-			success: false, 
-			error: e
-		}, {status: 400})
-	}
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params
 
-	return NextResponse.json({
-		success: true, 
-		data: `Local ${id} deletado com sucesso.`
-	})
+  if (!id) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'ID do local não informado.',
+      },
+      { status: 400 }
+    )
+  }
+  try {
+    await db.update(places).set({ active: false }).where(eq(places.id, id))
+  } catch (e) {
+    NextResponse.json(
+      {
+        success: false,
+        error: e,
+      },
+      { status: 400 }
+    )
+  }
+
+  return NextResponse.json({
+    success: true,
+    data: `Local ${id} deletado com sucesso.`,
+  })
 }

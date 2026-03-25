@@ -23,16 +23,10 @@ export async function PATCH(
         .set({ name: body.name })
         .where(eq(problems.id, id))
     }
-    if (!body.name && body.description) {
-      await db
-        .update(problems)
-        .set({ description: body.description })
-        .where(eq(problems.id, id))
-    }
     if (body.name && body.description) {
       await db
         .update(problems)
-        .set({ name: body.name, description: body.description })
+        .set({ name: body.name })
         .where(eq(problems.id, id))
     }
   } catch (e) {
@@ -58,7 +52,7 @@ export async function DELETE(
   const { id } = await context.params
 
   try {
-    await db.delete(problems).where(eq(problems.id, id))
+    await db.update(problems).set({ active: false }).where(eq(problems.id, id))
   } catch (e) {
     NextResponse.json(
       {
