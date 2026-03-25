@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-async function updatePeople(data: { id: string; name: string }) {
+async function deletePeople(data: { id: string; }) {
   const response = await fetch(`/api/people/${data.id}`, {
-    method: 'PATCH',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ name: data.name }),
   })
 
   if (!response.ok) {
@@ -17,11 +16,11 @@ async function updatePeople(data: { id: string; name: string }) {
 }
 
 
-export function useUpdatePeople() {
+export function useDeletePeople() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: updatePeople,
+    mutationFn: deletePeople,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['people'] })
     },

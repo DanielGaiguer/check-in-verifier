@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-async function createUser(data: { name: string }) {
+async function createPeople(data: { name: string }) {
   const response = await fetch('/api/people', {
     method: 'POST',
     headers: {
@@ -16,11 +16,11 @@ async function createUser(data: { name: string }) {
   return response.json()
 }
 
-export function useCreateUser() {
+export function useCreatePeople() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: createUser,
+    mutationFn: createPeople,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['people'] })
     },

@@ -7,9 +7,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Dispatch, SetStateAction } from 'react'
 import { Button } from './ui/button'
-import { useCreateUser } from '@/hooks/useMutation/useCreatePeople'
+import { useCreatePeople } from '@/hooks/useMutation/useCreatePeople'
 import { toast } from 'react-toastify'
-import { useUpdateUser } from '@/hooks/useMutation/useUpdatePeople'
+import { useUpdatePeople } from '@/hooks/useMutation/useUpdatePeople'
 
 interface DialogPeopleProtocol {
   setName: Dispatch<SetStateAction<string>>
@@ -34,8 +34,8 @@ export default function DialogPeople({
   id,
   setId
 }: DialogPeopleProtocol) {
-  const createUserMutation = useCreateUser()
-  const updateUserMutation = useUpdateUser()
+  const createUserMutation = useCreatePeople()
+  const updateUserMutation = useUpdatePeople()
 
   function handleSubmit(e: React.FormEvent) {
   e.preventDefault()
