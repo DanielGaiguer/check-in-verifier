@@ -3,15 +3,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { Button } from './ui/button'
-import { PlusIcon } from 'lucide-react'
-import { useCreateUser } from '@/hooks/useMutation/useCreateUser'
+import { useCreateUser } from '@/hooks/useMutation/useCreatePeople'
 import { toast } from 'react-toastify'
-import { useUpdateUser } from '@/hooks/useMutation/useUpdateUser'
+import { useUpdateUser } from '@/hooks/useMutation/useUpdatePeople'
 
 interface DialogPeopleProtocol {
   setName: Dispatch<SetStateAction<string>>
