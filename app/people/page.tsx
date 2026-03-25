@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useDeletePeople } from '@/hooks/useMutation/useDeletePeople'
 
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import {
@@ -18,21 +19,25 @@ import {
   Trash2Icon,
 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function PeoplePage() {
+  const deletePeopleMutation = useDeletePeople()
   const { people: peoples, isLoading, error } = usePeople()
   const [name, setName] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
   const [id, setId] = useState('')
- 
+
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
 
-  
 
   function handleDelete() {
-    
+    deletePeopleMutation.mutate({
+      id: id,
+    })
+    toast.success('Pessoa deletada com sucesso.')
   }
 
   return (
@@ -107,6 +112,7 @@ export default function PeoplePage() {
                         onClick={() => {
                           setOpenDelete(true)
                           setName(people.name)
+                          setId(people.id)
                         }}
                       >
                         <Trash2Icon className="text-red-400" size={25} />
@@ -125,17 +131,15 @@ export default function PeoplePage() {
             </Card>
           )}
 
-          {internalOpen && (
-            <DialogPeople
-              setName={setName}
-              name={name}
-              forEdit={!!id}
-              setInternalOpen={setInternalOpen}
-              internalOpen={internalOpen}
-              id={id}
-              setId={setId}
-            />
-          )}
+          <DialogPeople
+            setName={setName}
+            name={name}
+            forEdit={!!id}
+            setInternalOpen={setInternalOpen}
+            internalOpen={internalOpen}
+            id={id}
+            setId={setId}
+          />
 
           {openDelete && (
             <DialogDelete

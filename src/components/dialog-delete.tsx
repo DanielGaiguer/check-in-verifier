@@ -37,7 +37,7 @@ export default function DialogDelete({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Label>Tem certeza que dejesa deletar {title}?</Label>
-          <div className='flex flex-row justify-end'>
+          <div className="flex flex-row justify-end">
             <Button
               type="button"
               variant="outline"
@@ -47,9 +47,12 @@ export default function DialogDelete({
               Cancelar
             </Button>
             <Button
-              type="submit"
+              type="button"
               className="cursor-pointer bg-blue-400 hover:bg-blue-300"
-              onClick={() => handleDelete()}
+              onClick={() => {
+                handleDelete()
+                onOpenChange(false)
+              }}
             >
               Deletar
             </Button>
