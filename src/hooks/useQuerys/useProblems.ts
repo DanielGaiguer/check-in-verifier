@@ -5,24 +5,36 @@ export interface Problem {
   name: string
 }
 
-interface ApiResponse {
+interface ApiResponse<T> {
   success: boolean
-  data: Problem[]
+  data: T[]
   count: number
 }
 
-export function useProblems() {
-  const { data, isLoading, error } = useQuery<Problem[]>({
-    queryKey: ['problems'],
+interface UseProblemsOptions {
+  active?: boolean
+}
+
+export function useProblems(options?: UseProblemsOptions) {
+  const queryString = options?.active !== undefined ? `?active=${options.active}` : ''
+
+  const queryResult = useQuery({
+    queryKey: ['problems', options],
     queryFn: async () => {
-      const res = await fetch('/api/problems')
+      const res = await fetch(`/api/problems${queryString}`)
       if (!res.ok) throw new Error('Erro ao buscar problemas')
-      const json: ApiResponse = await res.json()
-      return json.data
+      return res.json() as Promise<ApiResponse<Problem>>
     },
+    select: (response) => ({
+      problems: response.data,
+      count: response.count,
+    }),
   })
 
-  const problems: Problem[] = Array.isArray(data) ? data : []
-	
-	return { problems, isLoading, error}
-}	
+  return {
+    problems: queryResult.data?.problems ?? [],
+    problemsCount: queryResult.data?.count ?? 0,
+    isLoading: queryResult.isLoading,
+    error: queryResult.error,
+  }
+}
