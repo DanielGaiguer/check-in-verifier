@@ -22,7 +22,7 @@ export function useCreateProblem() {
   return useMutation({
     mutationFn: createProblem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['problem'] })
+      queryClient.invalidateQueries({ queryKey: ['problems'] })
     },
   })
 } 

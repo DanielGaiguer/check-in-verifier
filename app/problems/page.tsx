@@ -10,6 +10,7 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card'
+import { useDeleteProblem } from '@/hooks/useMutation/useDeleteProblem'
 
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import {
@@ -21,8 +22,11 @@ import {
 } from 'lucide-react'
 
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function ProblemsPage() {
+  const deleteProblemMutation = useDeleteProblem()
+
   const { problems, isLoading, error } = useProblems()
 
   const [name, setName] = useState('')
@@ -33,9 +37,13 @@ export default function ProblemsPage() {
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
 
-  function handleDelete() {
-    console.log('deletado')
-  }
+    function handleDelete() {
+      deleteProblemMutation.mutate({
+        id: id,
+      })
+      toast.success('Problema deletado com sucesso.')
+    }
+  
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">

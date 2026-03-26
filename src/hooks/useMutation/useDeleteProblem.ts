@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-async function deletePeople(data: { id: string; }) {
-  const response = await fetch(`/api/people/${data.id}`, {
+async function deleteProblem(data: { id: string; }) {
+  const response = await fetch(`/api/problems/${data.id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -16,13 +16,13 @@ async function deletePeople(data: { id: string; }) {
 }
 
 
-export function useDeletePeople() {
+export function useDeleteProblem() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: deletePeople,
+    mutationFn: deleteProblem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['people'] })
+      queryClient.invalidateQueries({ queryKey: ['problems'] })
     },
   })
 }

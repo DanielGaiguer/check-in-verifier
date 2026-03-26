@@ -1,19 +1,20 @@
-import { db } from "@/db"
-import { problems } from "@/db/schema"
-import { NextResponse } from "next/server"
-import { eq } from "drizzle-orm"
+import { db } from '@/db'
+import { problems } from '@/db/schema'
+import { NextResponse } from 'next/server'
+import { eq } from 'drizzle-orm'
 
-//GET /api/problems?active=true 
+//GET /api/problems?active=true
 //GET /api/problems
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url)
-    const activeOnly = url.searchParams.get("active") === "true"
+    const activeParam = url.searchParams.get('active')
+    const onlyActive = activeParam !== 'false'
 
     const result = await db
       .select()
       .from(problems)
-      .where(activeOnly ? eq(problems.active, true) : undefined) // filtra ativos se pedido
+      .where(onlyActive ? eq(problems.active, true) : undefined) // filtra ativos se pedido
 
     return NextResponse.json({
       success: true,

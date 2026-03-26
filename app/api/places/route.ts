@@ -27,17 +27,15 @@ export async function GET(req: Request) {
         createdAt: places.createdAt,
         labName: laboratories.name,
         problemName: problems.name,
-        problemActive: problems.active
+        problemActive: problems.active,
       })
       .from(places)
       .innerJoin(laboratories, eq(places.labId, laboratories.id))
       .leftJoin(placeProblems, eq(placeProblems.placeId, places.id))
       .leftJoin(problems, eq(problems.id, placeProblems.problemId))
+      .where(onlyActive ? eq(places.active, true) : undefined)
   } catch (e) {
-    return NextResponse.json(
-      { success: false, error: e },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: e }, { status: 400 })
   }
 
   const grouped = response.reduce(
@@ -69,7 +67,7 @@ export async function GET(req: Request) {
   return NextResponse.json({
     success: true,
     data,
-    count: data.length
+    count: data.length,
   })
 }
 
@@ -102,7 +100,12 @@ export async function POST(req: Request) {
       await db
         .update(places)
         .set({ sortOrder: sql`${places.sortOrder} + 1` })
-        .where(and(eq(places.labId, body.labId), gte(places.sortOrder, body.sortOrder)))
+        .where(
+          and(
+            eq(places.labId, body.labId),
+            gte(places.sortOrder, body.sortOrder)
+          )
+        )
 
       inserted = await db
         .insert(places)
@@ -118,7 +121,10 @@ export async function POST(req: Request) {
   }
 
   if (!inserted || !inserted[0]) {
-    return NextResponse.json({ success: false, error: 'Não foi possível inserir o lugar.' }, { status: 500 })
+    return NextResponse.json(
+      { success: false, error: 'Não foi possível inserir o lugar.' },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({ success: true, data: inserted[0] })
