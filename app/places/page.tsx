@@ -35,6 +35,9 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useUpdatePlaces } from '@/hooks/useMutation/useUpdatePlace'
+import { useDeletePlace } from '@/hooks/useMutation/useDeletePlace'
+import { toast } from 'react-toastify'
 
 interface Place {
   id: string
@@ -105,6 +108,7 @@ export default function PlacesPage() {
   const { places, isLoading, error } = usePlaces()
   const { problems, isLoading: isLoadingProblems } = useProblems()
   const updateOrder = useUpdatePlacesOrder()
+  const deletePlace = useDeletePlace()
 
   const [placeId, setPlaceId] = useState<string | null>(null)
   const [name, setName] = useState('')
@@ -139,7 +143,6 @@ export default function PlacesPage() {
     const reordered = arrayMove(places, oldIndex, newIndex)
     const updated = reordered.map((p, index) => ({ ...p, sortOrder: index }))
 
-
     // Atualiza o backend (quando estiver pronto) e cache imediatamente
     updateOrder.mutate(updated)
   }
@@ -167,9 +170,12 @@ export default function PlacesPage() {
   }
 
   function handleDelete() {
-    console.log('deletado')
+    if (!placeId) return toast.error('Erro ao tentar deletar local')
+    deletePlace.mutate({
+      id: placeId,
+    })
+    toast.success('Local deletado com sucesso.')
   }
-
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -181,7 +187,10 @@ export default function PlacesPage() {
               Arraste para reordenar os lugares do check-in
             </h4>
           </div>
-          <Button onClick={handleCreate} className="cursor-pointer w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
+          <Button
+            onClick={handleCreate}
+            className="w-40 cursor-pointer rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+          >
             <PlusIcon className="mr-1 mb-0.5" />
             Novo Lugar
           </Button>
@@ -208,6 +217,7 @@ export default function PlacesPage() {
                       onDelete={() => {
                         setName(place.name)
                         setOpenDelete(true)
+                        setPlaceId(place.id)
                       }}
                     />
                   ))}
