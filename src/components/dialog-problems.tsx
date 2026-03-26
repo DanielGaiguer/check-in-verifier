@@ -29,38 +29,31 @@ export default function DialogProblems({
   setName,
   name,
   forEdit = false,
-  open,
-  onOpenChange,
   internalOpen,
   setInternalOpen,
   id,
-  setId
+  setId,
 }: DialogProblemsProtocol) {
-  function handleSubmit(e: { preventDefault: () => void }) {
-    const createProblemMutation = useCreateProblem()
-    const updateProblemMutation = useUpdateProblem()
+  const createProblemMutation = useCreateProblem()
+  const updateProblemMutation = useUpdateProblem()
 
-    function handleSubmit(e: React.FormEvent) {
-      e.preventDefault()
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
 
-      if (id && id.trim()) {
-        updateProblemMutation.mutate({ id, name })
-        toast.success('Pessoa atualizada com sucesso.')
-      } else {
-        createProblemMutation.mutate({ name })
-        toast.success('Pessoa cadastrada com sucesso.')
-      }
-
-      setInternalOpen?.(false)
-      setName('')
-      setId?.('') 
+    if (id && id.trim()) {
+      updateProblemMutation.mutate({ id, name })
+      toast.success('Problema atualizado com sucesso.')
+    } else {
+      createProblemMutation.mutate({ name })
+      toast.success('Problema cadastrado com sucesso.')
     }
+
+    setInternalOpen?.(false)
+    setName('')
+    setId?.('')
   }
   return (
-    <Dialog
-      open={forEdit ? open : internalOpen}
-      onOpenChange={forEdit ? onOpenChange : setInternalOpen}
-    >
+    <Dialog open={internalOpen} onOpenChange={setInternalOpen}>
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
@@ -79,17 +72,12 @@ export default function DialogProblems({
             />
           </div>
 
-          {/* BOTÕES */}
           <div className="mt-4 flex justify-end gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => {
-                if (forEdit) {
-                  onOpenChange?.(false)
-                } else {
-                  setInternalOpen?.(false)
-                }
+                setInternalOpen?.(false)
               }}
               className="cursor-pointer"
             >

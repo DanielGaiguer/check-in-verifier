@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 async function createProblem(data: { name: string }) {
-  const response = await fetch('/api/problem', {
+  const response = await fetch('/api/problems', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

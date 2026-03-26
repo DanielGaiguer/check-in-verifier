@@ -63,13 +63,6 @@ export default function ProblemsPage() {
               Novo Problema
             </Button>
 
-            <DialogProblems
-              setName={setName}
-              name={name}
-              forEdit={false}
-              internalOpen={internalOpen}
-              setInternalOpen={setInternalOpen}
-            />
           </div>
         </div>
 
@@ -128,17 +121,15 @@ export default function ProblemsPage() {
             </Card>
           )}
 
-          {internalOpen && (
             <DialogProblems
               setName={setName}
               name={name}
-              forEdit={true}
+              forEdit={!!id}
               internalOpen={internalOpen}
               setInternalOpen={setInternalOpen}
               id={id}
               setId={setId}
             />
-          )}
 
           {openDelete && (
             <DialogDelete

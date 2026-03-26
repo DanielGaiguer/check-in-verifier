@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 async function updateProblem(data: { id: string; name: string }) {
-  const response = await fetch(`/api/problem/${data.id}`, {
+  const response = await fetch(`/api/problems/${data.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export function useUpdateProblem() {
   return useMutation({
     mutationFn: updateProblem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['problem'] })
+      queryClient.invalidateQueries({ queryKey: ['problems'] })
     },
   })
 } 

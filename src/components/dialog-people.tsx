@@ -52,9 +52,6 @@ export default function DialogPeople({
   setName('')
   setId?.('') // se quiser limpar
 }
-
-  console.log(id)
-
   return (
     <Dialog
       open={internalOpen}
