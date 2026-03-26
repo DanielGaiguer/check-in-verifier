@@ -66,7 +66,7 @@ export async function DELETE(
   try {
     await db.update(places).set({ active: false }).where(eq(places.id, id))
   } catch (e) {
-    NextResponse.json(
+    return NextResponse.json(
       {
         success: false,
         error: e,

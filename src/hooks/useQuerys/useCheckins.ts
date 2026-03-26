@@ -39,7 +39,7 @@ export function useCheckins(range: string) {
   return useQuery<Checkin[]>({
     queryKey: ['checkins', range],
     queryFn: async () => {
-      const res = await fetch(`/api/historyCheckins?${reqParams}`)
+      const res = await fetch(`/api/history-checkins?${reqParams}`)
       if (!res.ok) throw new Error('Erro ao buscar checkins')
       const json = await res.json()
       // Garantir que 'date' seja do tipo Date
