@@ -2,7 +2,13 @@
 
 import { useState } from 'react'
 import { format, subDays, subMonths } from 'date-fns'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Select,
   SelectContent,
@@ -65,19 +71,19 @@ export default function ReportsPage() {
     placeCount,
     isLoading: isLoadingPlaces,
     error: errorPlaces,
-  } = usePlaces({active: false})
+  } = usePlaces({ active: false })
   const {
     people = [],
     peopleCount,
     isLoading: isLoadingPeople,
     error: errorPeople,
-  } = usePeople({active: false})
+  } = usePeople({ active: false })
 
   const {
     problems = [],
     isLoading: isLoadingProblems,
     error: errorProblems,
-  } = useProblems({active: false})
+  } = useProblems({ active: false })
 
   const startDateObj = getStartDate(period)
 
@@ -105,13 +111,14 @@ export default function ReportsPage() {
   // TOTALS
   const totalCheckins = filteredCheckins.length
   const totalItems = filteredCheckins.reduce((acc, c) => acc + c.placeCount, 0)
-  // const organizedCount = filteredCheckins.filter((c) => c.isOK).length
-  // const disorganizedCount = filteredCheckins.filter((c) => !c.isOK).length
 
   const pieData = [
     { name: 'Organizados', value: organizedCount },
     { name: 'Desorganizados', value: disorganizedCount },
   ]
+
+  const percentOrganized =
+    (organizedCount / (organizedCount + disorganizedCount)) * 100
 
   // TOP PEOPLE
   const peopleCountMap: Record<string, number> = {}
@@ -180,6 +187,33 @@ export default function ReportsPage() {
           </Select>
         </div>
 
+        <div className="mt-3 grid grid-cols-2 gap-4 p-1 sm:grid-cols-3 mb-4">
+          <Card className="flex min-h-30 w-full flex-col shadow-xs">
+            <CardContent className="flex h-full flex-col items-center justify-center text-center">
+              <CardTitle className="text-3xl text-blue-400">
+                {totalCheckins}
+              </CardTitle>
+              <CardDescription>Total de Check-ins</CardDescription>
+            </CardContent>
+          </Card>
+          <Card className="flex min-h-30 w-full flex-col shadow-xs">
+            <CardContent className="flex h-full flex-col items-center justify-center text-center">
+              <CardTitle className="text-3xl text-green-400">
+                {percentOrganized}%
+              </CardTitle>
+              <CardDescription>Organizados</CardDescription>
+            </CardContent>
+          </Card>
+          <Card className="flex min-h-30 w-full flex-col shadow-xs">
+            <CardContent className="flex h-full flex-col items-center justify-center text-center">
+              <CardTitle className="text-3xl">
+                {percentOrganized}
+              </CardTitle>
+              <CardDescription>Locais verificados</CardDescription>
+            </CardContent>
+          </Card>
+        </div>
+
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* PIE CHART */}
           <Card>
@@ -194,7 +228,7 @@ export default function ReportsPage() {
                     dataKey="value"
                     nameKey="name"
                     outerRadius={80}
-                    label={({ name, value }) => `${value} ${name}`} 
+                    label={({ name, value }) => `${value} ${name}`}
                   >
                     {pieData.map((_, i) => (
                       <Cell key={i} fill={COLORS[i]} />
@@ -246,7 +280,11 @@ export default function ReportsPage() {
               <CardTitle>Lugares com mais Problemas</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={400} className="text-sm">
+              <ResponsiveContainer
+                width="100%"
+                height={400}
+                className="text-sm"
+              >
                 <BarChart data={topPlaces} layout="vertical">
                   <XAxis type="number" />
                   <YAxis type="category" dataKey="name" width={120} />

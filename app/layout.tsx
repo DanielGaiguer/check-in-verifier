@@ -49,7 +49,7 @@ export default function RootLayout({
                 <Sidebar />
                 <main className="flex-1">
                   {/* Mobile */}
-                  <div className="sticky top-0 h-14 z-1000 rounded-t-2xl border-b border-gray-300 bg-gray-50 shadow-2xs md:hidden">
+                  <div className="sticky top-0 h-14 z-50 rounded-t-2xl border-b border-gray-300 bg-gray-50 shadow-2xs md:hidden">
                     <SidebarSheet />
                   </div>
                   <Header />
