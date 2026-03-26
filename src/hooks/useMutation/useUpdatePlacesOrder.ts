@@ -6,10 +6,7 @@ export function useUpdatePlacesOrder() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (newPlaces: Place[]) => {
-      await new Promise((res) => setTimeout(res, 500)) // delay de 1s
-      return updatePlacesOrder(newPlaces)
-    },
+    mutationFn: updatePlacesOrder,
 
     // roda antes de enviar para o servidor
     onMutate: async (newPlaces: Place[]) => {

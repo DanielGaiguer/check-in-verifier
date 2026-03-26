@@ -56,7 +56,7 @@ export default function LaboratoriesPage() {
               }}
             >
               <PlusIcon className="mr-1 mb-0.5" />
-              Novo Problema
+              Novo Laboratório
             </Button>
 
             <DialogLaboratories

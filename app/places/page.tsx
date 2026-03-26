@@ -113,7 +113,6 @@ export default function PlacesPage() {
   const [selectedProblems, setSelectedProblems] = useState<string[]>([])
   const [originalProblems, setOriginalProblems] = useState<string[]>([])
   const [placeSortOrder, setPlaceSortOrder] = useState<number>(0)
-  const [isUpdatingOrder, setIsUpdatingOrder] = useState(false)
 
   const [openDialog, setOpenDialog] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
@@ -140,15 +139,9 @@ export default function PlacesPage() {
     const reordered = arrayMove(places, oldIndex, newIndex)
     const updated = reordered.map((p, index) => ({ ...p, sortOrder: index }))
 
-    setIsUpdatingOrder(true)
 
     // Atualiza o backend (quando estiver pronto) e cache imediatamente
-    updateOrder.mutate(updated, {
-      onSettled: () => {
-        // desativa loading
-        setIsUpdatingOrder(false)
-      },
-    })
+    updateOrder.mutate(updated)
   }
 
   function handleEdit(place: Place) {
@@ -188,7 +181,7 @@ export default function PlacesPage() {
               Arraste para reordenar os lugares do check-in
             </h4>
           </div>
-          <Button onClick={handleCreate}>
+          <Button onClick={handleCreate} className="cursor-pointer w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
             <PlusIcon className="mr-1 mb-0.5" />
             Novo Lugar
           </Button>
@@ -259,11 +252,6 @@ export default function PlacesPage() {
             onOpenChange={setOpenDelete}
             handleDelete={handleDelete}
           />
-        )}
-        {isUpdatingOrder && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white">
-            <span>Carregando...</span>
-          </div>
         )}
       </div>
     </main>

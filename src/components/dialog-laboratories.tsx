@@ -39,15 +39,6 @@ export default function DialogLaboratories({
       open={forEdit ? open : internalOpen}
       onOpenChange={forEdit ? onOpenChange : setInternalOpen}
     >
-      {/* {!forEdit && (
-        <Button
-          className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
-          onClick={() => setInternalOpen?.(true)}
-        >
-          <PlusIcon className="mr-1 mb-0.5" />
-          Novo Problema
-        </Button>
-      )} */}
 
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>

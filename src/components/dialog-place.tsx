@@ -104,7 +104,7 @@ export default function DialogPlace({
             <button
               type="button"
               onClick={() => setLabDropdownOpen(!labDropdownOpen)}
-              className="flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-300 bg-gray-100 px-3 focus:border-blue-400"
+              className="flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100 px-3 focus:border-blue-400"
             >
               <span className={`${!labId && 'text-gray-400'}`}>{labName || 'Selecione um laboratório'}</span>
               <svg className="h-4 w-4 opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -169,7 +169,7 @@ export default function DialogPlace({
           {/* BOTÕES */}
           <div className="mt-4 flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={closeDialog}>Cancelar</Button>
-            <Button type="submit" disabled={!name.trim() || !labId || selectedProblems.length === 0}>Salvar</Button>
+            <Button type="submit" disabled={!name.trim() || !labId || selectedProblems.length === 0} className="cursor-pointer bg-blue-400 hover:bg-blue-300" >Salvar</Button>
           </div>
         </form>
       </DialogContent>
