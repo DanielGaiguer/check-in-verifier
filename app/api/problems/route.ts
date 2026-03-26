@@ -2,14 +2,14 @@ import { db } from '@/db'
 import { problems } from '@/db/schema'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
+import { getActiveFilter } from '@/utils/getActiveFilter'
 
 //GET /api/problems?active=true
 //GET /api/problems
 export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const onlyActive = getActiveFilter(url)
   try {
-    const url = new URL(req.url)
-    const activeParam = url.searchParams.get('active')
-    const onlyActive = activeParam !== 'false'
 
     const result = await db
       .select()

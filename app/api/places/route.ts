@@ -1,5 +1,6 @@
 import { db } from '@/db'
 import { laboratories, placeProblems, places, problems } from '@/db/schema'
+import { getActiveFilter } from '@/utils/getActiveFilter'
 import { and, eq, gte, max, sql } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
@@ -11,9 +12,7 @@ interface PostPlaceProtocol {
 
 export async function GET(req: Request) {
   const url = new URL(req.url)
-  const activeParam = url.searchParams.get('active')
-  // Se ?active=false → retorna todos; se true ou null → apenas ativos
-  const onlyActive = activeParam !== 'false'
+  const onlyActive = getActiveFilter(url)
 
   let response
 
