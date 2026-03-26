@@ -27,7 +27,6 @@ import { useCheckins } from '@/hooks/useQuerys/useCheckins'
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
-import { Checkin } from '@/types/typesPayload'
 
 const PERIOD_OPTIONS = [
   { label: 'Últimos 7 dias', value: '7d' },
@@ -66,19 +65,19 @@ export default function ReportsPage() {
     placeCount,
     isLoading: isLoadingPlaces,
     error: errorPlaces,
-  } = usePlaces()
+  } = usePlaces({active: false})
   const {
     people = [],
     peopleCount,
     isLoading: isLoadingPeople,
     error: errorPeople,
-  } = usePeople()
+  } = usePeople({active: false})
 
   const {
     problems = [],
     isLoading: isLoadingProblems,
     error: errorProblems,
-  } = useProblems()
+  } = useProblems({active: false})
 
   const startDateObj = getStartDate(period)
 
