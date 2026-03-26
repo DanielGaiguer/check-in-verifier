@@ -9,6 +9,9 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from './ui/button'
 import { PlusIcon } from 'lucide-react'
 import DialogDelete from './dialog-delete'
+import { useCreateProblem } from '@/hooks/useMutation/useCreateProblem'
+import { useUpdateProblem } from '@/hooks/useMutation/useUpdateProblem'
+import { toast } from 'react-toastify'
 
 interface DialogProblemsProtocol {
   setName: Dispatch<SetStateAction<string>>
@@ -18,6 +21,8 @@ interface DialogProblemsProtocol {
   onOpenChange?: (open: boolean) => void
   internalOpen?: boolean
   setInternalOpen?: Dispatch<SetStateAction<boolean>>
+  id?: string
+  setId?: Dispatch<SetStateAction<string>>
 }
 
 export default function DialogProblems({
@@ -28,27 +33,34 @@ export default function DialogProblems({
   onOpenChange,
   internalOpen,
   setInternalOpen,
+  id,
+  setId
 }: DialogProblemsProtocol) {
   function handleSubmit(e: { preventDefault: () => void }) {
-    e.preventDefault()
-    console.log('enviou')
-  }
+    const createProblemMutation = useCreateProblem()
+    const updateProblemMutation = useUpdateProblem()
 
+    function handleSubmit(e: React.FormEvent) {
+      e.preventDefault()
+
+      if (id && id.trim()) {
+        updateProblemMutation.mutate({ id, name })
+        toast.success('Pessoa atualizada com sucesso.')
+      } else {
+        createProblemMutation.mutate({ name })
+        toast.success('Pessoa cadastrada com sucesso.')
+      }
+
+      setInternalOpen?.(false)
+      setName('')
+      setId?.('') 
+    }
+  }
   return (
     <Dialog
       open={forEdit ? open : internalOpen}
       onOpenChange={forEdit ? onOpenChange : setInternalOpen}
     >
-      {/* {!forEdit && (
-        <Button
-          className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
-          onClick={() => setInternalOpen?.(true)}
-        >
-          <PlusIcon className="mr-1 mb-0.5" />
-          Novo Problema
-        </Button>
-      )} */}
-
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
@@ -88,11 +100,10 @@ export default function DialogProblems({
               disabled={!name.trim() || !name}
               className="cursor-pointer bg-blue-400 hover:bg-blue-300"
             >
-              Criar
+              Salvar
             </Button>
           </div>
         </form>
-
       </DialogContent>
     </Dialog>
   )

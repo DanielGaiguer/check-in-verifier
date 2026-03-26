@@ -32,7 +32,6 @@ export default function PeoplePage() {
   if (isLoading) return <p>Carregando...</p>
   if (error) return <p>Erro ao carregar os problemas.</p>
 
-
   function handleDelete() {
     deletePeopleMutation.mutate({
       id: id,

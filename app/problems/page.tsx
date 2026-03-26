@@ -26,6 +26,7 @@ export default function ProblemsPage() {
   const { problems, isLoading, error } = useProblems()
 
   const [name, setName] = useState('')
+  const [id, setId] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
 
@@ -55,6 +56,7 @@ export default function ProblemsPage() {
               onClick={() => {
                 setInternalOpen(true)
                 setName('')
+                setId('')
               }}
             >
               <PlusIcon className="mr-1 mb-0.5" />
@@ -89,12 +91,6 @@ export default function ProblemsPage() {
                     <CardTitle className="text-md font-sans font-normal">
                       {problem.name}
                     </CardTitle>
-
-                    {/* {problem.createdAt && (
-                      <CardDescription className="font-sans text-sm">
-                        Criado em {problem.createdAt}
-                      </CardDescription>
-                    )} */}
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -103,6 +99,7 @@ export default function ProblemsPage() {
                       onClick={() => {
                         setInternalOpen(true)
                         setName(problem.name)
+                        setId(problem.id)
                       }}
                     >
                       <PencilIcon className="text-black" size={25} />
@@ -113,6 +110,7 @@ export default function ProblemsPage() {
                       onClick={() => {
                         setOpenDelete(true)
                         setName(problem.name)
+                        setId(problem.id)
                       }}
                     >
                       <Trash2Icon className="text-red-400" size={25} />
@@ -137,6 +135,8 @@ export default function ProblemsPage() {
               forEdit={true}
               internalOpen={internalOpen}
               setInternalOpen={setInternalOpen}
+              id={id}
+              setId={setId}
             />
           )}
 

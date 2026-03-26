@@ -21,10 +21,6 @@ export default function DialogDelete({
   onOpenChange,
   handleDelete,
 }: DialogDeleteProtocol) {
-  function handleSubmit(e: { preventDefault: () => void }) {
-    e.preventDefault()
-    console.log('enviou')
-  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,7 +31,7 @@ export default function DialogDelete({
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4">
           <Label>Tem certeza que dejesa deletar {title}?</Label>
           <div className="flex flex-row justify-end">
             <Button
