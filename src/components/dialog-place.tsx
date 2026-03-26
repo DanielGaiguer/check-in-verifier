@@ -1,81 +1,90 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+'use client'
+
+import { Dispatch, SetStateAction, useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { useEffect, useState } from 'react'
-import { Button } from './ui/button'
-import { CheckIcon, PlusIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { CheckIcon } from 'lucide-react'
 import { Problem } from '@/hooks/useQuerys/useProblems'
-import { Checkbox } from './ui/checkbox'
-import { Dispatch, SetStateAction } from 'react'
+import { useUpdatePlaces } from '@/hooks/useMutation/useUpdatePlace'
 
 interface DialogPlaceProtocol {
   dialogOpen: boolean
   setDialogOpen: Dispatch<SetStateAction<boolean>>
-
   name: string
   setName: Dispatch<SetStateAction<string>>
-
   labId: string
   setLabId: Dispatch<SetStateAction<string>>
-
+  labName: string
+  setLabName: Dispatch<SetStateAction<string>>
   uniqueLabs: string[]
-
   problems: Problem[]
   isLoadingProblems: boolean
-
   selectedProblems: string[]
   setSelectedProblems: Dispatch<SetStateAction<string[]>>
+  originalProblems: string[]
+  placeId: string
+  placeSortOrder: number
 }
 
 export default function DialogPlace({
   dialogOpen,
   setDialogOpen,
-  setName,
   name,
+  setName,
   labId,
   setLabId,
+  labName,
+  setLabName,
   uniqueLabs,
   problems,
   isLoadingProblems,
   selectedProblems,
   setSelectedProblems,
+  originalProblems,
+  placeId,
+  placeSortOrder,
 }: DialogPlaceProtocol) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  useEffect(() => {
-    if (dialogOpen && selectedProblems.length > 0) {
-      setSelectedProblems(selectedProblems)
-    }
-  }, [dialogOpen, selectedProblems, setSelectedProblems])
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    console.log('Criou/Atualizou lugar:', { labId, name, selectedProblems })
-    setDialogOpen(false)
-    setName('')
-    setLabId('')
-    setSelectedProblems([])
-  }
+  const updatePlaceMutation = useUpdatePlaces()
+  const [labDropdownOpen, setLabDropdownOpen] = useState(false)
 
   function closeDialog() {
     setDialogOpen(false)
     setName('')
     setLabId('')
+    setLabName('')
     setSelectedProblems([])
   }
 
   function toggleProblem(problemId: string) {
     setSelectedProblems((prev) =>
-      prev.includes(problemId)
-        ? prev.filter((id) => id !== problemId)
-        : [...prev, problemId]
+      prev.includes(problemId) ? prev.filter((id) => id !== problemId) : [...prev, problemId]
+    )
+  }
+
+  function selectLab(lab: string) {
+    setLabId(lab)
+    setLabName(lab)
+    setLabDropdownOpen(false)
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const toAdd = selectedProblems.filter((id) => !originalProblems.includes(id))
+    const toRemove = originalProblems.filter((id) => !selectedProblems.includes(id))
+
+    updatePlaceMutation.mutate(
+      {
+        id: placeId,
+        labId,
+        name,
+        sortOrder: placeSortOrder,
+        toAdd,
+        toRemove,
+      },
+      { onSuccess: closeDialog }
     )
   }
 
@@ -84,56 +93,35 @@ export default function DialogPlace({
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
-            Novo Lugar
+            {placeId ? 'Editar Lugar' : 'Novo Lugar'}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* LABORATÓRIO */}
           <div className="relative">
-            <Label htmlFor="lab" className="mb-1 block text-sm font-medium">
-              Laboratório
-            </Label>
-
-            {/* Trigger */}
+            <Label htmlFor="lab" className="mb-1 block text-sm font-medium">Laboratório</Label>
             <button
               type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-300 bg-gray-100 px-3 focus:border-blue-400"
+              onClick={() => setLabDropdownOpen(!labDropdownOpen)}
+              className="flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-300 bg-gray-100 px-3 focus:border-blue-400"
             >
-              <span className={`${!labId && 'text-gray-400'}`}>
-                {labId || 'Selecione um laboratório'}
-              </span>
-
-              <svg
-                className="h-4 w-4 opacity-50"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.937a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z"
-                  clipRule="evenodd"
-                />
+              <span className={`${!labId && 'text-gray-400'}`}>{labName || 'Selecione um laboratório'}</span>
+              <svg className="h-4 w-4 opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.937a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
               </svg>
             </button>
-
-            {/* Dropdown */}
-            {isOpen && (
+            {labDropdownOpen && (
               <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md">
-                {uniqueLabs?.map((lab) => (
+                {uniqueLabs.map((lab) => (
                   <li
                     key={lab}
-                    onClick={() => {
-                      setLabId(lab)
-                      setIsOpen(false)
-                    }}
+                    onClick={() => selectLab(lab)}
                     className={`cursor-pointer rounded-md px-3 py-2 hover:bg-green-100 ${labId === lab ? 'bg-green-200' : ''}`}
                   >
-                    {lab === labId ? (
-                      <div className={`flex flex-row items-center`}>
-                        <CheckIcon className="mr-2 h-4 w-4 text-gray-500" />
+                    {labId === lab ? (
+                      <div className="flex items-center gap-2">
+                        <CheckIcon className="h-4 w-4 text-gray-500" />
                         {lab}
                       </div>
                     ) : (
@@ -144,47 +132,33 @@ export default function DialogPlace({
               </ul>
             )}
           </div>
+
           {/* NOME DO LUGAR */}
           <div>
-            <Label htmlFor="name" className="mb-1 block text-sm font-medium">
-              Nome do Lugar
-            </Label>
+            <Label htmlFor="name" className="mb-1 block text-sm font-medium">Nome do Lugar</Label>
             <Input
               id="name"
               placeholder="Ex: Bancada A"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100! px-3"
+              className="focus:border-2.5 h-10 w-full rounded-md border-2 border-gray-400 bg-gray-100 px-3"
             />
           </div>
 
-          {/* PROBLEMAS POSSÍVEIS */}
+          {/* PROBLEMAS */}
           <div>
-            <Label className="mb-1 block text-sm font-medium">
-              Problemas Possíveis
-            </Label>
-
+            <Label className="mb-1 block text-sm font-medium">Problemas Possíveis</Label>
             <div className="max-h-40 space-y-2 overflow-y-auto rounded-md border p-3">
-              {isLoadingProblems && (
-                <p className="text-sm text-gray-500">Carregando problemas...</p>
-              )}
-
+              {isLoadingProblems && <p className="text-sm text-gray-500">Carregando problemas...</p>}
               {problems.map((problem) => (
-                <div
-                  key={problem.id}
-                  className="flex items-center rounded-md hover:bg-gray-100"
-                >
+                <div key={problem.id} className="flex items-center rounded-md hover:bg-gray-100">
                   <Checkbox
                     id={`problem-${problem.id}`}
                     checked={selectedProblems.includes(problem.id)}
                     onCheckedChange={() => toggleProblem(problem.id)}
                     className="border-gray-400 data-[state=checked]:border-gray-300 data-[state=checked]:bg-gray-400"
                   />
-
-                  <Label
-                    htmlFor={`problem-${problem.id}`}
-                    className="ml-3 cursor-pointer text-sm select-none"
-                  >
+                  <Label htmlFor={`problem-${problem.id}`} className="ml-3 cursor-pointer text-sm select-none">
                     {problem.name}
                   </Label>
                 </div>
@@ -194,21 +168,8 @@ export default function DialogPlace({
 
           {/* BOTÕES */}
           <div className="mt-4 flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={closeDialog}
-              className="cursor-pointer"
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={!name.trim() || !labId || selectedProblems.length == 0}
-              className="cursor-pointer bg-blue-400 hover:bg-blue-300"
-            >
-              Criar
-            </Button>
+            <Button type="button" variant="outline" onClick={closeDialog}>Cancelar</Button>
+            <Button type="submit" disabled={!name.trim() || !labId || selectedProblems.length === 0}>Salvar</Button>
           </div>
         </form>
       </DialogContent>

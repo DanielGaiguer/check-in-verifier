@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import DialogDelete from '@/components/dialog-delete'
+import DialogPlace from '@/components/dialog-place'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -12,6 +13,11 @@ import {
   PlusIcon,
 } from 'lucide-react'
 
+import { usePlaces } from '@/hooks/useQuerys/usePlaces'
+import { useProblems } from '@/hooks/useQuerys/useProblems'
+import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
+
+import { useState } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -21,7 +27,6 @@ import {
   useSensors,
   DragEndEvent,
 } from '@dnd-kit/core'
-
 import {
   SortableContext,
   useSortable,
@@ -29,21 +34,23 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable'
-
 import { CSS } from '@dnd-kit/utilities'
-import { usePlaces } from '@/hooks/useQuerys/usePlaces'
-import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
-import { useProblems } from '@/hooks/useQuerys/useProblems'
-import DialogPlace from '@/components/dialog-place'
-import DialogDelete from '@/components/dialog-delete'
 
-/* ---------------- SORTABLE CARD ---------------- */
+interface Place {
+  id: string
+  name: string
+  labId?: string
+  labName?: string
+  sortOrder: number
+  problems?: string[]
+}
+
 function SortablePlace({
   place,
   onEdit,
   onDelete,
 }: {
-  place: any
+  place: Place
   onEdit: () => void
   onDelete: () => void
 }) {
@@ -94,58 +101,76 @@ function SortablePlace({
   )
 }
 
-/* ---------------- PAGE ---------------- */
 export default function PlacesPage() {
   const { places, isLoading, error } = usePlaces()
   const { problems, isLoading: isLoadingProblems } = useProblems()
-  const [labId, setLabId] = useState('')
+  const updateOrder = useUpdatePlacesOrder()
+
+  const [placeId, setPlaceId] = useState<string | null>(null)
   const [name, setName] = useState('')
-  const [selectedProblems, setSelectedProblems] = useState<number[]>([])
+  const [labId, setLabId] = useState('')
+  const [labName, setLabName] = useState('')
+  const [selectedProblems, setSelectedProblems] = useState<string[]>([])
+  const [originalProblems, setOriginalProblems] = useState<string[]>([])
+  const [placeSortOrder, setPlaceSortOrder] = useState<number>(0)
+  const [isUpdatingOrder, setIsUpdatingOrder] = useState(false)
+
   const [openDialog, setOpenDialog] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
-
-  // const queryClient = useQueryClient()
-  const updateOrder = useUpdatePlacesOrder()
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
+  if (isLoading) return <p>Carregando...</p>
+  if (error) return <p>Erro ao carregar os lugares.</p>
+
   const uniqueLabs = Array.from(
     new Set(places.filter((p) => p.labName).map((p) => p.labName))
   )
 
-  if (isLoading) return <p>Carregando...</p>
-  if (error) return <p>Erro ao carregar os lugares.</p>
-
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     if (!over || active.id === over.id) return
+
     const oldIndex = places.findIndex((p) => p.id === active.id)
     const newIndex = places.findIndex((p) => p.id === over.id)
+
     const reordered = arrayMove(places, oldIndex, newIndex)
     const updated = reordered.map((p, index) => ({ ...p, sortOrder: index }))
-    updateOrder.mutate(updated)
+
+    setIsUpdatingOrder(true)
+
+    // Atualiza o backend (quando estiver pronto) e cache imediatamente
+    updateOrder.mutate(updated, {
+      onSettled: () => {
+        // desativa loading
+        setIsUpdatingOrder(false)
+      },
+    })
   }
 
-  function handleEdit(
-    placeId: string,
-    labId: string,
-    labName: string,
-    placeName: string,
-    placeProblems: string[],
-    sortOrder: number
-  ) {
-    setLabId(labName)
-    setName(placeName)
+  function handleEdit(place: Place) {
+    setPlaceId(place.id)
+    setLabId(place.labId ?? '')
+    setLabName(place.labName ?? '')
+    setName(place.name)
+    setSelectedProblems(place.problems ?? [])
+    setOriginalProblems(place.problems ?? [])
+    setPlaceSortOrder(place.sortOrder)
     setOpenDialog(true)
   }
 
   function handleCreate() {
-    setOpenDialog(true)
+    setPlaceId(null)
     setLabId('')
+    setLabName('')
     setName('')
+    setSelectedProblems([])
+    setOriginalProblems([])
+    setPlaceSortOrder(places.length)
+    setOpenDialog(true)
   }
 
   function handleDelete() {
@@ -163,37 +188,15 @@ export default function PlacesPage() {
               Arraste para reordenar os lugares do check-in
             </h4>
           </div>
-          <Button asChild onClick={() => handleCreate()}>
-            <Button className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300">
-              <PlusIcon className="mr-1 mb-0.5" />
-              Novo Lugar
-            </Button>
+          <Button onClick={handleCreate}>
+            <PlusIcon className="mr-1 mb-0.5" />
+            Novo Lugar
           </Button>
-          <DialogPlace
-            dialogOpen={openDialog}
-            setDialogOpen={setOpenDialog}
-            name={name}
-            setName={setName}
-            labId={labId}
-            setLabId={setLabId}
-            uniqueLabs={uniqueLabs}
-            problems={problems}
-            isLoadingProblems={isLoadingProblems}
-            selectedProblems={selectedProblems}
-            setSelectedProblems={setSelectedProblems}
-          />
         </div>
 
         {/* LIST */}
         <div className="mt-5">
-          {places.length === 0 ? (
-            <Card className="flex items-center justify-center py-10">
-              <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
-              <h4 className="mb-5 font-light text-gray-500">
-                Ainda não foi cadastrado nenhum lugar.
-              </h4>
-            </Card>
-          ) : (
+          {places.length > 0 ? (
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -208,16 +211,7 @@ export default function PlacesPage() {
                     <SortablePlace
                       key={place.id}
                       place={place}
-                      onEdit={() =>
-                        handleEdit(
-                          place.id,
-                          place.labId,
-                          place.labName,
-                          place.name,
-                          place.problems,
-                          place.sortOrder
-                        )
-                      }
+                      onEdit={() => handleEdit(place)}
                       onDelete={() => {
                         setName(place.name)
                         setOpenDelete(true)
@@ -227,32 +221,50 @@ export default function PlacesPage() {
                 </div>
               </SortableContext>
             </DndContext>
-          )}
-          {openDialog && (
-            <DialogPlace
-              dialogOpen={openDialog}
-              setDialogOpen={setOpenDialog}
-              name={name}
-              setName={setName}
-              labId={labId}
-              setLabId={setLabId}
-              uniqueLabs={uniqueLabs}
-              problems={problems}
-              isLoadingProblems={isLoadingProblems}
-              selectedProblems={selectedProblems}
-              setSelectedProblems={setSelectedProblems}
-            />
-          )}
-
-          {openDelete && (
-            <DialogDelete
-              title={name}
-              open={openDelete}
-              onOpenChange={setOpenDelete}
-              handleDelete={handleDelete}
-            />
+          ) : (
+            <Card className="flex flex-col items-center justify-center py-10">
+              <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
+              <h4 className="mb-5 font-light text-gray-500">
+                Ainda não foi cadastrado nenhum lugar.
+              </h4>
+            </Card>
           )}
         </div>
+
+        {/* DIALOG PLACE */}
+        <DialogPlace
+          dialogOpen={openDialog}
+          setDialogOpen={setOpenDialog}
+          name={name}
+          setName={setName}
+          labId={labId}
+          labName={labName}
+          setLabName={setLabName}
+          setLabId={setLabId}
+          uniqueLabs={uniqueLabs}
+          problems={problems}
+          isLoadingProblems={isLoadingProblems}
+          selectedProblems={selectedProblems}
+          setSelectedProblems={setSelectedProblems}
+          originalProblems={originalProblems}
+          placeId={placeId || ''}
+          placeSortOrder={placeSortOrder}
+        />
+
+        {/* DIALOG DELETE */}
+        {openDelete && (
+          <DialogDelete
+            title={name}
+            open={openDelete}
+            onOpenChange={setOpenDelete}
+            handleDelete={handleDelete}
+          />
+        )}
+        {isUpdatingOrder && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white">
+            <span>Carregando...</span>
+          </div>
+        )}
       </div>
     </main>
   )

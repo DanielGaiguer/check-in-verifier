@@ -25,6 +25,7 @@ export async function GET(req: Request) {
         sortOrder: places.sortOrder,
         createdAt: places.createdAt,
         labName: laboratories.name,
+        problemId: problems.id,
         problemName: problems.name,
         problemActive: problems.active,
       })
@@ -53,7 +54,10 @@ export async function GET(req: Request) {
 
       // Adiciona problema apenas se estiver ativo ou se não filtrar
       if (row.problemName && (!onlyActive || row.problemActive)) {
-        acc[row.id].problems.push(row.problemName)
+        acc[row.id].problems.push({
+          id: row.problemId,
+          name: row.problemName,
+        })
       }
 
       return acc

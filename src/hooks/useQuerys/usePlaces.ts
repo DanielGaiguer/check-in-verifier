@@ -21,15 +21,21 @@ export function usePlaces(options?: UsePlacesOptions) {
     queryFn: async () => {
       const res = await fetch(`/api/places${queryString}`)
       if (!res.ok) throw new Error('Erro ao buscar lugares')
-      return res.json() as Promise<ApiResponse<Place>>
+      const data = (await res.json()) as ApiResponse<Place>
+
+      // Ordena pelo sortOrder antes de retornar
+      const orderedPlaces = data.data
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((place) => ({
+          ...place,
+          createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', { locale: ptBR }),
+        }))
+
+      return {
+        places: orderedPlaces,
+        count: data.count,
+      }
     },
-    select: (response) => ({
-      places: response.data.map((place) => ({
-        ...place,
-        createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', { locale: ptBR }),
-      })),
-      count: response.count,
-    }),
   })
 
   return {
