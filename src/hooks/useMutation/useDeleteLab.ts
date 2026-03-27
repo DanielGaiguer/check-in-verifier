@@ -1,26 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-async function updateLab(data: { id: string; name: string }) {
+async function deleteLab(data: { id: string; }) {
   const response = await fetch(`/api/laboratories/${data.id}`, {
-    method: 'PATCH',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ name: data.name }),
   })
 
   if (!response.ok) {
-    throw new Error('Erro ao atualizar laboratório.')
+    throw new Error('Erro ao deletar laboratório.')
   }
 
   return response.json()
 }
 
-export function useUpdateLab() {
+
+export function useDeleteLab() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: updateLab,
+    mutationFn: deleteLab,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['laboratories'] })
     },

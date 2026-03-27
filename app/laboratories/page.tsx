@@ -10,6 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useCreateLab } from '@/hooks/useMutation/useCreateLab'
+import { useDeleteLab } from '@/hooks/useMutation/useDeleteLab'
+import { useUpdateLab } from '@/hooks/useMutation/useUpdateLab'
 
 import { useLaboratories } from '@/hooks/useQuerys/useLaboratories'
 import {
@@ -19,11 +22,15 @@ import {
   Trash2Icon,
 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function LaboratoriesPage() {
   const { laboratories, isLoading, error } = useLaboratories()
+  const deleteLabMutation = useDeleteLab()
+
 
   const [name, setName] = useState('')
+  const [id, setId] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
 
@@ -31,7 +38,10 @@ export default function LaboratoriesPage() {
   if (error) return <p>Erro ao buscar laboratórios</p>
 
   function handleDelete() {
-    console.log('deletado')
+    deleteLabMutation.mutate({
+      id,
+    })
+    toast.success('Laboratório deletado com sucesso.')
   }
 
   return (
@@ -53,19 +63,13 @@ export default function LaboratoriesPage() {
               onClick={() => {
                 setInternalOpen(true)
                 setName('')
+                setId('')
               }}
             >
               <PlusIcon className="mr-1 mb-0.5" />
               Novo Laboratório
             </Button>
 
-            <DialogLaboratories
-              setName={setName}
-              name={name}
-              forEdit={false}
-              internalOpen={internalOpen}
-              setInternalOpen={setInternalOpen}
-            />
           </div>
         </div>
 
@@ -103,6 +107,7 @@ export default function LaboratoriesPage() {
                       onClick={() => {
                         setInternalOpen(true)
                         setName(lab.name)
+                        setId(lab.id)
                       }}
                     >
                       <PencilIcon className="text-black" size={25} />
@@ -113,6 +118,7 @@ export default function LaboratoriesPage() {
                       onClick={() => {
                         setOpenDelete(true)
                         setName(lab.name)
+                        setId(lab.id)
                       }}
                     >
                       <Trash2Icon className="text-red-400" size={25} />
@@ -130,15 +136,14 @@ export default function LaboratoriesPage() {
             </Card>
           )}
 
-          {internalOpen && (
             <DialogLaboratories
               setName={setName}
               name={name}
-              forEdit={true}
+              forEdit={!!id}
               setInternalOpen={setInternalOpen}
               internalOpen={internalOpen}
+              id={id}
             />
-          )}
 
           {openDelete && (
             <DialogDelete

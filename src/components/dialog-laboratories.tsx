@@ -9,37 +9,50 @@ import { Input } from '@/components/ui/input'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from './ui/button'
 import { PlusIcon } from 'lucide-react'
+import { useCreateLab } from '@/hooks/useMutation/useCreateLab'
+import { useUpdateLab } from '@/hooks/useMutation/useUpdateLab'
+import { toast } from 'react-toastify'
 
 interface DialogLaboratoriesProtocol {
   setName: Dispatch<SetStateAction<string>>
   name: string
   forEdit?: boolean
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
   internalOpen?: boolean
   setInternalOpen?: Dispatch<SetStateAction<boolean>>
+  id: string
 }
 
 export default function DialogLaboratories({
   setName,
   name,
-  forEdit = false,
-  open,
-  onOpenChange,
+  forEdit,
   internalOpen,
   setInternalOpen,
+  id,
 }: DialogLaboratoriesProtocol) {
+  const createLabMutation = useCreateLab()
+  const updateLabMutation = useUpdateLab()
+
   function handleSubmit(e: { preventDefault: () => void }) {
     e.preventDefault()
-    console.log('enviou')
+    if (forEdit) {
+      updateLabMutation.mutate({
+        id,
+        name,
+      })
+      toast.success('Laboratorio atualizado com sucesso.')
+      return
+    }
+
+    createLabMutation.mutate({
+      name,
+    })
+    toast.success('Laboratorio criado com sucesso.')
+    return
   }
 
   return (
-    <Dialog
-      open={forEdit ? open : internalOpen}
-      onOpenChange={forEdit ? onOpenChange : setInternalOpen}
-    >
-
+    <Dialog open={internalOpen} onOpenChange={setInternalOpen}>
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
@@ -47,7 +60,7 @@ export default function DialogLaboratories({
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4">
           <div>
             <Input
               id="name"
@@ -64,22 +77,19 @@ export default function DialogLaboratories({
               type="button"
               variant="outline"
               onClick={() => {
-                if (forEdit) {
-                  onOpenChange?.(false)
-                } else {
-                  setInternalOpen?.(false)
-                }
+                setInternalOpen?.(false)
               }}
               className="cursor-pointer"
             >
               Cancelar
             </Button>
             <Button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               disabled={!name.trim() || !name}
               className="cursor-pointer bg-blue-400 hover:bg-blue-300"
             >
-              Criar
+              Salvar
             </Button>
           </div>
         </form>

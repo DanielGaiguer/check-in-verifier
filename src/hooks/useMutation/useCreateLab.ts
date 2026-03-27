@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-async function createLaboratories(data: { name: string }) {
+async function createLab(data: { name: string }) {
   const response = await fetch('/api/laboratories', {
     method: 'POST',
     headers: {
@@ -16,11 +16,11 @@ async function createLaboratories(data: { name: string }) {
   return response.json()
 }
 
-export function useCreateLaboratories() {
+export function useCreateLab() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: createLaboratories,
+    mutationFn: createLab,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['laboratories'] })
     },
