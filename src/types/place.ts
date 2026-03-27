@@ -5,5 +5,5 @@ export interface Place {
   sortOrder: number
   createdAt: string
 	labName: string
-  problems: string[]
+  problems: {id: string, name: string}[]
 }

@@ -44,7 +44,7 @@ interface Place {
   labId?: string
   labName?: string
   sortOrder: number
-  problems?: string[]
+  problems?: {id: string, name: string}[]
 }
 
 function SortablePlace({

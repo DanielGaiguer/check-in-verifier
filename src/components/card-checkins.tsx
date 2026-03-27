@@ -25,7 +25,7 @@ export default function CardCheckin({ data }: CardCheckinProps) {
   const ICONS = {
     organized: <CircleCheckIcon className="text-green-400" />,
     disorganized: <CircleXIcon className="text-red-400" />,
-    not_checked: <CircleCheckIcon className="text-gray-400" />,
+    not_checked: <CircleXIcon className="text-gray-400" />,
   }
 
   const BADGES = {

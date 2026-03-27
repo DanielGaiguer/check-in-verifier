@@ -12,8 +12,6 @@ import { useState } from 'react'
 import { Checkbox } from './ui/checkbox'
 import {
   Field,
-  FieldDescription,
-  FieldGroup,
   FieldLabel,
   FieldLegend,
   FieldSet,
@@ -24,7 +22,7 @@ import FieldObservation from './field-observation'
 interface placeCardProps {
   title: string
   subTitle: string
-  arrayProblems: string[]
+  arrayProblems: {id: string, name: string}[]
 }
 
 //TODO: Deixar interativo, colocar state, e tipar a requisicao do componente, olocar map com dados
@@ -34,9 +32,18 @@ export default function PlaceCard({
   arrayProblems,
 }: placeCardProps) {
   const [status, setStatus] = useState<boolean | undefined>(undefined)
+  const [selectedProblems, setSelectedProblems] = useState<string[]>([])
+
+  function toggleProblem(problem: string) {
+    setSelectedProblems((prev) =>
+      prev.includes(problem)
+        ? prev.filter((p) => p !== problem)
+        : [...prev, problem]
+    )
+  }
 
   return (
-    <Card className="gap-0 mt-2">
+    <Card className="mt-2 gap-0">
       <CardHeader className="flex flex-row justify-between">
         <div>
           <CardTitle>{title}</CardTitle>
@@ -62,20 +69,25 @@ export default function PlaceCard({
       <CardContent>
         {status === false && (
           <div className="mt-4">
-            <FieldSet className="gap-1.5 space-y-0" >
+            <FieldSet className="gap-1.5 space-y-0">
               <FieldLegend variant="label" className="mb-2.5">
                 Problemas encontrados *
               </FieldLegend>
               {arrayProblems.map((problem) => (
-                <Field orientation="horizontal" className="space-y-0" key={problem}>
+                <Field
+                  orientation="horizontal"
+                  className="space-y-0"
+                  key={problem.id}
+                >
                   <Checkbox
                     className="h-5 w-5 rounded-3xl"
-                    id={problem}
-                    name={problem}
-                    key={problem}
+                    id={problem.id}
+                    name={problem.id}
+                    checked={selectedProblems.includes(problem.id)}
+                    onCheckedChange={() => toggleProblem(problem.id)}
                   />
-                  <FieldLabel htmlFor={problem} className="text-sm font-normal">
-                    {problem}
+                  <FieldLabel htmlFor={problem.id} className="text-sm font-normal">
+                    {problem.name}
                   </FieldLabel>
                 </Field>
               ))}
@@ -93,7 +105,11 @@ export default function PlaceCard({
                   console.log('Arquivo carregado:', file)
                 }
               />
-              <FieldObservation description='Observação (Opcional)' placeholder="Adicione uma observação..." class="mt-6 gap-1"/>
+              <FieldObservation
+                description="Observação (Opcional)"
+                placeholder="Adicione uma observação..."
+                class="mt-6 gap-1"
+              />
             </Field>
           </div>
         )}
