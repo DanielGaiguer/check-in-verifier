@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       problemId,
     }))
 
-    await db.insert(placeProblems).values(values)
+    await db.insert(placeProblems).values(values).onConflictDoNothing()
 
     return NextResponse.json({
       success: true,
