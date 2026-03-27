@@ -130,8 +130,12 @@ export default function PlacesPage() {
   if (error) return <p>Erro ao carregar os lugares.</p>
 
   const uniqueLabs = Array.from(
-    new Set(places.filter((p) => p.labName).map((p) => p.labName))
-  )
+    new Map(
+      places
+        .filter((p) => p.labId && p.labName)
+        .map((p) => [p.labId, p.labName])
+    ).entries()
+  ).map(([id, name]) => ({ id, name }))
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -252,6 +256,7 @@ export default function PlacesPage() {
           originalProblems={originalProblems}
           placeId={placeId || ''}
           placeSortOrder={placeSortOrder}
+          edit={!!placeId}
         />
 
         {/* DIALOG DELETE */}
