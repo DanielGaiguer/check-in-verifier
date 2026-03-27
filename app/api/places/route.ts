@@ -53,7 +53,7 @@ export async function GET(req: Request) {
         }
       }
 
-      // Adiciona problema apenas se estiver ativo ou se não filtrar
+    
       if (row.problemName && (!onlyActive || row.problemActive)) {
         acc[row.id].problems.push({
           id: row.problemId,
@@ -120,7 +120,7 @@ export async function POST(req: Request) {
       const place = inserted[0]
 
       if (!place) {
-        throw new Error('Erro ao criar place')
+        throw new Error('Erro ao criar lugar')
       }
 
       if (body.problemIds && body.problemIds.length > 0) {

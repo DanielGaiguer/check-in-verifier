@@ -156,8 +156,14 @@ export default function PlacesPage() {
     setLabId(place.labId ?? '')
     setLabName(place.labName ?? '')
     setName(place.name)
-    setSelectedProblems(place.problems ?? [])
-    setOriginalProblems(place.problems ?? [])
+
+    const problemIds = (place.problems ?? []).map((p: any) =>
+      typeof p === 'string' ? p : p.id
+    )
+
+    setSelectedProblems(problemIds)
+    setOriginalProblems(problemIds)
+
     setPlaceSortOrder(place.sortOrder)
     setOpenDialog(true)
   }

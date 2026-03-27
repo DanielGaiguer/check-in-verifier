@@ -1,6 +1,6 @@
 'use client'
 
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -65,7 +65,6 @@ export default function DialogPlace({
     setName('')
     setLabId('')
     setLabName('')
-    setSelectedProblems([])
   }
 
   function toggleProblem(problemId: string) {
@@ -75,6 +74,7 @@ export default function DialogPlace({
         : [...prev, problemId]
     )
   }
+
   function selectLab(lab: { id: string; name: string }) {
     setLabId(lab.id)
     setLabName(lab.name)
@@ -110,11 +110,15 @@ export default function DialogPlace({
     createPlaceMutatation.mutate({
       labId: labId,
       name: name,
-      problemIds: selectedProblems
+      problemIds: selectedProblems,
     })
 
     toast.success('Local cadastrado com sucesso.')
+    closeDialog()
   }
+
+  console.log(selectedProblems)
+  console.log(problems)
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
