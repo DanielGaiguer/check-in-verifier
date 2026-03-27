@@ -117,9 +117,6 @@ export default function DialogPlace({
     closeDialog()
   }
 
-  console.log(selectedProblems)
-  console.log(problems)
-
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
