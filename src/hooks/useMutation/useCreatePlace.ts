@@ -6,7 +6,7 @@ async function createPlace(data: {
   sortOrder?: number
   problemIds: string[]
 }) {
-  const response = await fetch('/api/place', {
+  const response = await fetch('/api/places', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -14,36 +14,16 @@ async function createPlace(data: {
     body: JSON.stringify({
       labId: data.labId,
       name: data.name,
-      sortOrder: data.sortOrder ?? [],
+      sortOrder: data.sortOrder ?? 0,
+      problemIds: data.problemIds,
     }),
   })
-
-  const result = await response.json()
 
   if (!response.ok) {
     throw new Error('Erro ao cadastrar local')
   }
 
-  const placeId = result.data.id
-
-  if (data.problemIds.length > 0) {
-    const responseProblems = await fetch('/api/place-problems', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        placeId,
-        problemIds: data.problemIds,
-      }),
-    })
-
-    if (!responseProblems.ok) {
-      throw new Error('Erro ao cadastrar problemas do local')
-    }
-  }
-
-  return result
+  return response.json()
 }
 
 export function useCreatePlace() {
@@ -52,7 +32,7 @@ export function useCreatePlace() {
   return useMutation({
     mutationFn: createPlace,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['place'] })
+      queryClient.invalidateQueries({ queryKey: ['places'] })
     },
   })
 }

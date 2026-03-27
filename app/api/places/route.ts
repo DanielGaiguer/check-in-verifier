@@ -8,6 +8,7 @@ interface PostPlaceProtocol {
   labId: string
   name: string
   sortOrder?: number
+  problemIds?: string[]
 }
 
 export async function GET(req: Request) {
@@ -73,62 +74,78 @@ export async function GET(req: Request) {
     count: data.length,
   })
 }
-
 export async function POST(req: Request) {
   const body: PostPlaceProtocol = await req.json()
-  let inserted
 
   if (!body.labId || !body.name) {
-    return NextResponse.json({
-      success: false,
-      error: `Informações sobre o lugar estão faltando.`,
-    })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Informações sobre o lugar estão faltando.',
+      },
+      { status: 400 }
+    )
   }
 
-  if (!body.sortOrder) {
-    try {
-      const result = await db
-        .select({ maxSort: max(places.sortOrder) })
-        .from(places)
-        .where(eq(places.labId, body.labId))
-      const maxSortOrder = result[0]?.maxSort
-      body.sortOrder = (maxSortOrder || 0) + 1
-    } catch (e) {
-      return NextResponse.json({ success: false, error: e }, { status: 400 })
-    }
-  }
+  try {
+    const result = await db.transaction(async (tx) => {
+      let sortOrder = body.sortOrder
 
-  if (body.sortOrder) {
-    try {
-      await db
+      if (!sortOrder) {
+        const maxSortResult = await tx
+          .select({ maxSort: max(places.sortOrder) })
+          .from(places)
+          .where(eq(places.labId, body.labId))
+
+        const maxSortOrder = maxSortResult[0]?.maxSort
+        sortOrder = (maxSortOrder || 0) + 1
+      }
+
+      await tx
         .update(places)
         .set({ sortOrder: sql`${places.sortOrder} + 1` })
         .where(
-          and(
-            eq(places.labId, body.labId),
-            gte(places.sortOrder, body.sortOrder)
-          )
+          and(eq(places.labId, body.labId), gte(places.sortOrder, sortOrder))
         )
 
-      inserted = await db
+      const inserted = await tx
         .insert(places)
         .values({
           labId: body.labId,
           name: body.name,
-          sortOrder: body.sortOrder,
+          sortOrder,
         })
         .returning()
-    } catch (e) {
-      return NextResponse.json({ success: false, error: e }, { status: 400 })
-    }
-  }
 
-  if (!inserted || !inserted[0]) {
+      const place = inserted[0]
+
+      if (!place) {
+        throw new Error('Erro ao criar place')
+      }
+
+      if (body.problemIds && body.problemIds.length > 0) {
+        const values = body.problemIds.map((problemId) => ({
+          placeId: place.id,
+          problemId,
+        }))
+
+        await tx.insert(placeProblems).values(values).onConflictDoNothing()
+      }
+
+      return place
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: result,
+    })
+  } catch (e) {
     return NextResponse.json(
-      { success: false, error: 'Não foi possível inserir o lugar.' },
-      { status: 500 }
+      {
+        success: false,
+        error: e,
+      },
+      { status: 400 }
     )
   }
-
-  return NextResponse.json({ success: true, data: inserted[0] })
 }
