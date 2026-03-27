@@ -107,20 +107,12 @@ export default function DialogPlace({
       return
     }
 
-    // createPlaceMutatation.mutate({
-    //   labId: labId,
-    //   name: name,
-    //   problemIds: selectedProblems
-    // })
+    createPlaceMutatation.mutate({
+      labId: labId,
+      name: name,
+      problemIds: selectedProblems
+    })
 
-    console.log(
-      'labId:',
-      labId,
-      'name:',
-      name,
-      'problemsIds: ',
-      selectedProblems
-    )
     toast.success('Local cadastrado com sucesso.')
   }
 
