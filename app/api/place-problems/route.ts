@@ -58,8 +58,17 @@ export async function POST(req: Request) {
   }
 }
 
+import { inArray } from 'drizzle-orm' // ✅ importa a função correta
+
 export async function DELETE(req: Request) {
   const body = await req.json()
+
+  if (!body.placeId || !body.problemIds?.length) {
+    return NextResponse.json(
+      { success: false, error: 'placeId e problemIds são obrigatórios' },
+      { status: 400 }
+    )
+  }
 
   try {
     await db
@@ -67,18 +76,12 @@ export async function DELETE(req: Request) {
       .where(
         and(
           eq(placeProblems.placeId, body.placeId),
-          eq(placeProblems.problemId, body.problemId)
+          inArray(placeProblems.problemId, body.problemIds)
         )
       )
 
     return NextResponse.json({ success: true })
   } catch (e) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: e,
-      },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: e }, { status: 400 })
   }
 }

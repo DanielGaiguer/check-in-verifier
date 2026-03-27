@@ -8,7 +8,6 @@ export async function updatePlaceWithProblems(data: {
   toAdd: string[]
   toRemove: string[]
 }) {
-  
   await fetch(`/api/places/${data.id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -26,24 +25,23 @@ export async function updatePlaceWithProblems(data: {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         placeId: data.id,
-        problemId: data.toAdd,
+        problemIds: data.toAdd, // ✅ agora o backend espera "problemIds"
       }),
     })
   }
 
-  // 3 remove problems
-  for (const problemId of data.toRemove) {
+  // remove problems
+  if (data.toRemove.length > 0) {
     await fetch(`/api/place-problems`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         placeId: data.id,
-        problemId,
+        problemIds: data.toRemove,
       }),
     })
   }
 }
-
 
 export function useUpdatePlaces() {
   const queryClient = useQueryClient()
