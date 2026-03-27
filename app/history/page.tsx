@@ -11,34 +11,8 @@ import {
 } from '@/components/ui/select'
 import { useCheckins } from '@/hooks/useQuerys/useCheckins'
 import { ClipboardCheckIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-// const data = [
-//   {
-//     isOK: true,
-//     people: 'Daniel',
-//     date: '07/03/2026 às 11:29',
-//     countPlaces: 4,
-//   },
-//   {
-//     isOK: false,
-//     people: 'Joao',
-//     date: '06/03/2026 às 11:29',
-//     countPlaces: 4,
-//   },
-//   {
-//     isOK: true,
-//     people: 'Daniel',
-//     date: '05/03/2026 às 11:29',
-//     countPlaces: 4,
-//   },
-//   {
-//     isOK: false,
-//     people: 'Isis',
-//     date: '04/03/2026 às 11:29',
-//     countPlaces: 4,
-//   },
-// ]
 
 export default function HistoryPage() {
   const [dateSelect, setDateSelect] = useState('7d')
