@@ -35,7 +35,6 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useUpdatePlaces } from '@/hooks/useMutation/useUpdatePlace'
 import { useDeletePlace } from '@/hooks/useMutation/useDeletePlace'
 import { toast } from 'react-toastify'
 
