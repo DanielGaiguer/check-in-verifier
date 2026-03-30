@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/file-upload'
 import { supabase } from '@/db/supabaseClient'
 
-type UploadedFile = {
+export type UploadedFile = {
   file: File
   url: string
   tempId: string

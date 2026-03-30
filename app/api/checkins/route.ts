@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { checkins, people } from '@/db/schema'
+import { checkinItemPhotos, checkinItems, checkinItemsProblems, checkins, people } from '@/db/schema'
 import {
   SearchParamsProps,
   switchWheteClause,
@@ -51,19 +51,71 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-	const body = await req.json()
-	let result
+  try {
+    const body = await req.json()
 
-	try{
-		result = await db.insert(checkins).values({peopleId: body.peopleId, date: body.date, observation: body.observation??""}).returning()
-	}catch(e) {
-		return NextResponse.json({
-			success: false,
-			error: e
-		}, { status: 400})
-	}
-	return NextResponse.json({
-		success: true,
-		data: result[0]
-	})
+    // Validações básicas
+    if (!body.peopleId || !body.items || !Array.isArray(body.items)) {
+      return NextResponse.json(
+        { success: false, error: 'Payload inválido.' },
+        { status: 400 }
+      )
+    }
+
+    // 1️⃣ Inserir o checkin
+    const [newCheckin] = await db
+      .insert(checkins)
+      .values({
+        peopleId: body.peopleId,
+        date: body.date,
+        observation: body.observation ?? '',
+      })
+      .returning()
+
+    // 2️⃣ Inserir os itens do check-in
+    for (const item of body.items) {
+      const [newItem] = await db
+        .insert(checkinItems)
+        .values({
+          checkinId: newCheckin.id,
+          placeId: item.itemId,
+          status: item.status, // 'organized' | 'disorganized'
+          observation: item.observation ?? '',
+        })
+        .returning()
+
+      // 3️⃣ Inserir problemas do item
+      if (item.problems && item.problems.length > 0) {
+        for (const problem of item.problems) {
+          const [newItemProblem] = await db
+            .insert(checkinItemsProblems)
+            .values({
+              checkinItemId: newItem.id,
+              problemId: problem.problemId,
+              active: true,
+            })
+            .returning()
+
+          // 4️⃣ Inserir fotos de cada problema
+          if (problem.photos && problem.photos.length > 0) {
+            const photosToInsert = problem.photos.map((photo: any) => ({
+              checkinItemProblemId: newItemProblem.id,
+              photoUrl: photo.url,
+            }))
+            await db.insert(checkinItemPhotos).values(photosToInsert)
+          }
+        }
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: newCheckin,
+    })
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error },
+      { status: 500 }
+    )
+  }
 }

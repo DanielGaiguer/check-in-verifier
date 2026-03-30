@@ -40,7 +40,7 @@ export default function SelectCard({
             <SelectGroup>
               {/* <SelectLabel>Fruits</SelectLabel> */}
               {people.map((people) => (
-                <SelectItem value={people.name} key={people.id}>{people.name}</SelectItem>
+                <SelectItem value={people.id} key={people.id}>{people.name}</SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
