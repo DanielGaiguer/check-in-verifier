@@ -6,21 +6,21 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from './ui/select'
+import { Dispatch, SetStateAction } from 'react'
 
 interface selectCardProps {
   textHeader: string
   placeHolder: string
-  options?: string[]
+  onChange: Dispatch<SetStateAction<string>>
 }
 
 export default function SelectCard({
   textHeader,
   placeHolder,
-  options,
+  onChange
 }: selectCardProps) {
   const { people, isLoading, error } = usePeople()
 
@@ -32,7 +32,7 @@ export default function SelectCard({
     <Card className="mt-5">
       <CardHeader>
         <h6 className="text-sm font-semibold">{textHeader}</h6>
-        <Select>
+        <Select onValueChange={(value) => onChange(value)}>
           <SelectTrigger className="w-full max-w-80">
             <SelectValue placeholder={placeHolder} className="text-sm" />
           </SelectTrigger>

@@ -10,36 +10,66 @@ import {
 } from './ui/card'
 import { useState } from 'react'
 import { Checkbox } from './ui/checkbox'
-import {
-  Field,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from './ui/field'
+import { Field, FieldLabel, FieldLegend, FieldSet } from './ui/field'
 import { FileUploadCircularProgress } from './drop-files'
 import FieldObservation from './field-observation'
+import { Problem } from '@/types/typesPayload'
 
-interface placeCardProps {
+// Props do PlaceCard
+interface PlaceCardProps {
   title: string
   subTitle: string
-  arrayProblems: {id: string, name: string}[]
+  arrayProblems: Problem[] // problemas possíveis do local
+  status?: 'organized' | 'disorganized' // estado inicial opcional
+  observation?: string // observação inicial opcional
+  selectedProblems?: Problem[] // problemas já selecionados
+  onStatusChange?: (status: 'organized' | 'disorganized') => void
+  onProblemsChange?: (problems: Problem[]) => void
+  onObservationChange?: (obs: string) => void
 }
 
-//TODO: Deixar interativo, colocar state, e tipar a requisicao do componente, olocar map com dados
 export default function PlaceCard({
   title,
   subTitle,
   arrayProblems,
-}: placeCardProps) {
-  const [status, setStatus] = useState<boolean | undefined>(undefined)
-  const [selectedProblems, setSelectedProblems] = useState<string[]>([])
+  status: initialStatus,
+  observation: initialObservation,
+  selectedProblems: initialProblems,
+  onStatusChange,
+  onProblemsChange,
+  onObservationChange,
+}: PlaceCardProps) {
+  const [status, setStatus] = useState<
+    'organized' | 'disorganized' | undefined
+  >(initialStatus)
+  const [selectedProblems, setSelectedProblems] = useState<Problem[]>(
+    initialProblems || []
+  )
+  const [observation, setObservation] = useState<string>(
+    initialObservation || ''
+  )
 
-  function toggleProblem(problem: string) {
-    setSelectedProblems((prev) =>
-      prev.includes(problem)
-        ? prev.filter((p) => p !== problem)
-        : [...prev, problem]
-    )
+  function toggleProblem(problem: Problem) {
+    let updatedProblems: Problem[]
+    if (selectedProblems.some((p) => p.problemId === problem.problemId)) {
+      updatedProblems = selectedProblems.filter(
+        (p) => p.problemId !== problem.problemId
+      )
+    } else {
+      updatedProblems = [...selectedProblems, problem]
+    }
+    setSelectedProblems(updatedProblems)
+    onProblemsChange?.(updatedProblems)
+  }
+
+  function handleStatusChange(newStatus: 'organized' | 'disorganized') {
+    setStatus(newStatus)
+    onStatusChange?.(newStatus)
+  }
+
+  function handleObservationChange(value: string) {
+    setObservation(value)
+    onObservationChange?.(value)
   }
 
   return (
@@ -51,50 +81,59 @@ export default function PlaceCard({
         </div>
         <div>
           <Button
-            className={`dm:w-45 mr-4 w-35 bg-gray-100 text-black hover:bg-green-400 hover:text-white ${status ? 'bg-green-500 text-white' : 'bg-gray-100'}`}
-            onClick={() => setStatus(true)}
+            className={`dm:w-45 mr-4 w-35 ${
+              status === 'organized'
+                ? 'bg-green-500 text-white hover:bg-green-600' // hover mais escuro se selecionado
+                : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'
+            }`}
+            onClick={() => handleStatusChange('organized')}
           >
             <CircleCheckIcon />
-            <p className=" ">Organizado</p>
+            <p>Organizado</p>
           </Button>
+
           <Button
-            className={`dm:w-45 mr-4 w-38 bg-gray-100 text-black hover:bg-red-400 hover:text-white ${status === false ? 'bg-red-500 text-white' : 'bg-gray-100'}`}
-            onClick={() => setStatus(false)}
+            className={`dm:w-45 mr-4 w-38 ${
+              status === 'disorganized'
+                ? 'bg-red-500 text-white hover:bg-red-600'
+                : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'
+            }`}
+            onClick={() => handleStatusChange('disorganized')}
           >
             <CircleXIcon />
-            <p className="">Desorganizado</p>
+            <p>Desorganizado</p>
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
-        {status === false && (
-          <div className="mt-4">
-            <FieldSet className="gap-1.5 space-y-0">
-              <FieldLegend variant="label" className="mb-2.5">
-                Problemas encontrados *
-              </FieldLegend>
-              {arrayProblems.map((problem) => (
-                <Field
-                  orientation="horizontal"
-                  className="space-y-0"
-                  key={problem.id}
+      {status === 'disorganized' && (
+        <CardContent>
+          <FieldSet className="gap-1.5 space-y-0">
+            <FieldLegend variant="label" className="mb-2.5">
+              Problemas encontrados *
+            </FieldLegend>
+            {arrayProblems.map((problem) => (
+              <Field
+                orientation="horizontal"
+                className="space-y-0"
+                key={problem.problemId}
+              >
+                <Checkbox
+                  id={problem.problemId}
+                  name={problem.problemId}
+                  checked={selectedProblems.some(
+                    (p) => p.problemId === problem.problemId
+                  )}
+                  onCheckedChange={() => toggleProblem(problem)}
+                />
+                <FieldLabel
+                  htmlFor={problem.problemId}
+                  className="text-sm font-normal"
                 >
-                  <Checkbox
-                    className="h-5 w-5 rounded-3xl"
-                    id={problem.id}
-                    name={problem.id}
-                    checked={selectedProblems.includes(problem.id)}
-                    onCheckedChange={() => toggleProblem(problem.id)}
-                  />
-                  <FieldLabel htmlFor={problem.id} className="text-sm font-normal">
-                    {problem.name}
-                  </FieldLabel>
-                </Field>
-              ))}
-            </FieldSet>
-          </div>
-        )}
-        {status === false && (
+                  {problem.name}
+                </FieldLabel>
+              </Field>
+            ))}
+          </FieldSet>
           <div className="mt-5">
             <Field className="gap-0">
               <FieldLegend variant="label" className="mb-0">
@@ -103,18 +142,19 @@ export default function PlaceCard({
               <FileUploadCircularProgress
                 onFileUploaded={(file) =>
                   console.log('Arquivo carregado:', file)
-                  // Salvar estado no banco de dados
                 }
               />
               <FieldObservation
                 description="Observação (Opcional)"
                 placeholder="Adicione uma observação..."
                 class="mt-6 gap-1"
+                value={observation}
+                onChange={handleObservationChange}
               />
             </Field>
           </div>
-        )}
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   )
 }

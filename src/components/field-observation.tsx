@@ -1,19 +1,27 @@
-import { Field, FieldDescription } from "./ui/field";
-import { Textarea } from "./ui/textarea";
+import { Field, FieldDescription } from './ui/field'
+import { Textarea } from './ui/textarea'
 
-interface FieldObservationProps{
-	description: string,
-	placeholder: string
-	class?: string
+interface FieldObservationProps {
+  description?: string
+  placeholder?: string
+  class?: string
+  value?: string
+  onChange?: (value: string) => void
 }
 
-export default function FieldObservation({...props}: FieldObservationProps) {
-	return (
-		<Field className={props.class}>
-			<FieldDescription className="text-black gap-0">{props.description}</FieldDescription>
-			<FieldDescription>
-				<Textarea placeholder={props.placeholder} className="font-stretch-150% gap-0 h-23"/>
-			</FieldDescription>
-		</Field>
-	)
+export default function FieldObservation({ ...props }: FieldObservationProps) {
+  return (
+    <Field className={props.class}>
+      <FieldDescription className="gap-0 text-black">
+        {props.description}
+      </FieldDescription>
+      <FieldDescription>
+        <Textarea
+          placeholder={props.placeholder}
+          className="h-23 gap-0 font-stretch-150%"
+          onChange={(e) => props.onChange?.(e.target.value)}
+        />
+      </FieldDescription>
+    </Field>
+  )
 }

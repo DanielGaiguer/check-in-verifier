@@ -1,4 +1,3 @@
-// typesPayload.ts
 export interface Photo {
   photoId: string
   url: string
