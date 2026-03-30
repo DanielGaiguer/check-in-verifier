@@ -4,24 +4,24 @@ import { eq, max } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
 export async function GET(req: Request) {
-  const body = await req.json()
-  if (!body.checkinItemProblemId) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Dados incompletos',
-      },
-      { status: 400 }
-    )
-  }
+  // const body = await req.json()
+  // if (!body.checkinItemProblemId) {
+  //   return NextResponse.json(
+  //     {
+  //       success: false,
+  //       error: 'Dados incompletos',
+  //     },
+  //     { status: 400 }
+  //   )
+  // }
   let result
   try {
     result = await db
       .select()
       .from(checkinItemPhotos)
-      .where(
-        eq(checkinItemPhotos.checkinItemProblemId, body.checkinItemProblemId)
-      )
+      // .where(
+      //   eq(checkinItemPhotos.checkinItemProblemId, body.checkinItemProblemId)
+      // )
   } catch (e) {
     return NextResponse.json(
       {

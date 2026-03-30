@@ -54,7 +54,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    // Validações básicas
     if (!body.peopleId || !body.items || !Array.isArray(body.items)) {
       return NextResponse.json(
         { success: false, error: 'Payload inválido.' },
@@ -62,7 +61,7 @@ export async function POST(req: Request) {
       )
     }
 
-    // 1️⃣ Inserir o checkin
+
     const [newCheckin] = await db
       .insert(checkins)
       .values({
@@ -72,19 +71,17 @@ export async function POST(req: Request) {
       })
       .returning()
 
-    // 2️⃣ Inserir os itens do check-in
     for (const item of body.items) {
       const [newItem] = await db
         .insert(checkinItems)
         .values({
           checkinId: newCheckin.id,
           placeId: item.itemId,
-          status: item.status, // 'organized' | 'disorganized'
+          status: item.status, 
           observation: item.observation ?? '',
         })
         .returning()
 
-      // 3️⃣ Inserir problemas do item
       if (item.problems && item.problems.length > 0) {
         for (const problem of item.problems) {
           const [newItemProblem] = await db
@@ -96,7 +93,6 @@ export async function POST(req: Request) {
             })
             .returning()
 
-          // 4️⃣ Inserir fotos de cada problema
           if (problem.photos && problem.photos.length > 0) {
             const photosToInsert = problem.photos.map((photo: any) => ({
               checkinItemProblemId: newItemProblem.id,

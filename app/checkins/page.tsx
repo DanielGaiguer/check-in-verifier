@@ -79,21 +79,21 @@ export default function CheckinsPage() {
       items,
     }
 
-    console.log(payload)
-    // fetch('/api/checkins', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     if (data.success) {
-    //       toast.success('Check-in salvo com sucesso!')
-    //     } else {
-    //       toast.error('Erro ao salvar check-in: ' + data.error)
-    //     }
-    //   })
-    //   .catch((err) => toast.error('Erro na requisição: ' + err))
+    // console.log(payload)
+    fetch('/api/checkins', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          toast.success('Check-in salvo com sucesso!')
+        } else {
+          toast.error('Erro ao salvar check-in: ' + data.error)
+        }
+      })
+      .catch((err) => toast.error('Erro na requisição: ' + err))
   }
 
   return (
