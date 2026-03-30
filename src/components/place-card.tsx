@@ -103,6 +103,7 @@ export default function PlaceCard({
               <FileUploadCircularProgress
                 onFileUploaded={(file) =>
                   console.log('Arquivo carregado:', file)
+                  // Salvar estado no banco de dados
                 }
               />
               <FieldObservation

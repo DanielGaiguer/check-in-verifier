@@ -57,20 +57,21 @@ export function FileUploadCircularProgress({
           // Gera um nome único para evitar sobrescrita
           const fileName = `${crypto.randomUUID()}-${file.name}`
 
-          // Upload para Supabase
-          const { error: uploadError } = await supabase.storage
+          const { data, error } = await supabase.storage
             .from('checkin-uploads')
             .upload(`uploads/${fileName}`, file)
 
-          if (uploadError) throw uploadError
+          if (error) {
+            console.error('SUPABASE ERROR:', error)
+            throw error
+          }
 
-          // URL pública do arquivo
           const url = supabase.storage
             .from('checkin-uploads')
             .getPublicUrl(`uploads/${fileName}`).data.publicUrl
-
           // Sucesso no upload
           onSuccess(file)
+
 
           const newUploadedFile: UploadedFile = {
             file,
@@ -112,7 +113,7 @@ export function FileUploadCircularProgress({
       onValueChange={setFiles}
       maxFiles={5}
       maxSize={5 * 1024 * 1024} // 5MB
-      className="mt-2 md:max-w-[30%] max-w-[50%] rounded-xl bg-gray-100" //w-full max-w-md
+      className="mt-2 max-w-[50%] rounded-xl bg-gray-100 md:max-w-[30%]" //w-full max-w-md
       onUpload={onUpload}
       onFileReject={onFileReject}
       multiple
@@ -122,7 +123,9 @@ export function FileUploadCircularProgress({
           <div className="flex items-center justify-center rounded-full border p-2.5">
             <CameraIcon className="text-muted-foreground size-6" />
           </div>
-          <p className="text-sm font-medium">Arraste e solte os Arquivos aqui</p>
+          <p className="text-sm font-medium">
+            Arraste e solte os Arquivos aqui
+          </p>
           <p className="text-muted-foreground text-xs">
             Ou clique em Carregar (até 5MB cada)
           </p>
@@ -136,12 +139,16 @@ export function FileUploadCircularProgress({
 
       <FileUploadList orientation="horizontal">
         {uploadedFiles.map((fileObj) => (
-          <FileUploadItem key={fileObj.tempId} value={fileObj.file} className="p-0">
+          <FileUploadItem
+            key={fileObj.tempId}
+            value={fileObj.file}
+            className="p-0"
+          >
             <FileUploadItemPreview className="size-20 [&>svg]:size-12">
               <img
                 src={fileObj.url}
                 alt={fileObj.file.name}
-                className="w-full h-full object-cover rounded"
+                className="h-full w-full rounded object-cover"
               />
             </FileUploadItemPreview>
             <FileUploadItemProgress variant="circular" size={40} />
