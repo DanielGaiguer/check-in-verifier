@@ -1,5 +1,11 @@
 import { db } from '@/db'
-import { checkinItemPhotos, checkinItems, checkinItemsProblems, checkins, people } from '@/db/schema'
+import {
+  checkinItemPhotos,
+  checkinItems,
+  checkinItemsProblems,
+  checkins,
+  people,
+} from '@/db/schema'
 import {
   SearchParamsProps,
   switchWheteClause,
@@ -12,47 +18,43 @@ import { NextResponse } from 'next/server'
 //http://localhost:3000/api/checkins?from=2026-01-10&to=2026-01-15
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
+  const range = searchParams.get('range')
+  const from = searchParams.get('from')
+  const to = searchParams.get('to')
 
-  const params: SearchParamsProps = {
-    range: searchParams.get('range') as SearchParamsProps['range'] | undefined,
-    from: searchParams.get('from') || undefined,
-    to: searchParams.get('to') || undefined,
+  if (!range && (!from || !to)) {
+    return NextResponse.json(
+      { success: false, error: 'Parâmetros da requisição não informados.' },
+      { status: 400 }
+    )
   }
 
-	if (!params.range && (!params.to || !params.from)){
-		return NextResponse.json({success: false, error: "Parametros da requisição não informados."}, {status: 400})
-	}
-
-  const whereClause = switchWheteClause(params)
-	let checkinsFilter
-
-	try{
-		checkinsFilter = await db
-			.select({
-				id: checkins.id,
-				peopleId: checkins.peopleId,
-				peopleName: people.name,
-				checkinsDate: checkins.date,
-				observation: checkins.observation,
-				createdAt: checkins.createdAt
-			})
-			.from(checkins)
-			.innerJoin(people, eq(checkins.peopleId, people.id))
-			.where(whereClause)
-	}catch(e) {
-		return NextResponse.json({success: false, error: e}, {status: 400})
-	}
-
-  return NextResponse.json({ 
-		success: true,
-		data: checkinsFilter,
-		count: checkinsFilter.length 
-	})
+  try {
+    const checkinsFilter = await db
+      .select({
+        id: checkins.id,
+        peopleId: checkins.peopleId,
+        peopleName: people.name,
+        checkinsDate: checkins.date,
+        observation: checkins.observation,
+        createdAt: checkins.createdAt,
+      })
+      .from(checkins)
+      .innerJoin(people, eq(checkins.peopleId, people.id))
+    return NextResponse.json({
+      success: true,
+      data: checkinsFilter,
+      count: checkinsFilter.length,
+    })
+  } catch (e) {
+    return NextResponse.json({ success: false, error: e }, { status: 500 })
+  }
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
+    console.log('Payload recebido:', JSON.stringify(body, null, 2))
 
     if (!body.peopleId || !body.items || !Array.isArray(body.items)) {
       return NextResponse.json(
@@ -60,7 +62,6 @@ export async function POST(req: Request) {
         { status: 400 }
       )
     }
-
 
     const [newCheckin] = await db
       .insert(checkins)
@@ -76,31 +77,27 @@ export async function POST(req: Request) {
         .insert(checkinItems)
         .values({
           checkinId: newCheckin.id,
-          placeId: item.itemId,
-          status: item.status, 
+          placeId: item.place.id, // correto
+          status: item.status,
           observation: item.observation ?? '',
         })
         .returning()
 
-      if (item.problems && item.problems.length > 0) {
-        for (const problem of item.problems) {
-          const [newItemProblem] = await db
-            .insert(checkinItemsProblems)
-            .values({
-              checkinItemId: newItem.id,
-              problemId: problem.problemId,
-              active: true,
-            })
-            .returning()
+      if (item.photos && item.photos.length > 0) {
+        const photosToInsert = item.photos.map((photo: any) => ({
+          checkinItemId: newItem.id,
+          photoUrl: photo.url, 
+        }))
+        await db.insert(checkinItemPhotos).values(photosToInsert)
+      }
 
-          if (problem.photos && problem.photos.length > 0) {
-            const photosToInsert = problem.photos.map((photo: any) => ({
-              checkinItemProblemId: newItemProblem.id,
-              photoUrl: photo.url,
-            }))
-            await db.insert(checkinItemPhotos).values(photosToInsert)
-          }
-        }
+      if (item.problems && item.problems.length > 0) {
+        const problemsToInsert = item.problems.map((problem: any) => ({
+          checkinItemId: newItem.id,
+          problemId: problem.problemId,
+          active: true, // somente campos existentes no schema
+        }))
+        await db.insert(checkinItemsProblems).values(problemsToInsert)
       }
     }
 
@@ -109,9 +106,7 @@ export async function POST(req: Request) {
       data: newCheckin,
     })
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error },
-      { status: 500 }
-    )
+    console.error(error)
+    return NextResponse.json({ success: false, error }, { status: 500 })
   }
 }

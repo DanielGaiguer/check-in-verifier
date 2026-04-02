@@ -73,18 +73,13 @@ export async function GET(req: Request) {
       .leftJoin(problems, eq(checkinItemsProblems.problemId, problems.id))
       .leftJoin(
         checkinItemPhotos,
-        eq(checkinItemsProblems.id, checkinItemPhotos.checkinItemProblemId)
+        eq(checkinItems.id, checkinItemPhotos.checkinItemId)
       )
       .where(whereClause)
 
-    // Transformar em estrutura hierárquica
-    // Criamos um Map para armazenar os checkins.
-    // A chave será o checkinId e o valor será o objeto do checkin.
     const checkinsMap = new Map<string, any>()
 
-    // Percorre cada linha retornada do banco
     for (const row of rawData) {
-      // Cria o checkin no map se ainda não existir
       if (!checkinsMap.has(row.checkinId)) {
         checkinsMap.set(row.checkinId, {
           checkinId: row.checkinId,
@@ -97,13 +92,12 @@ export async function GET(req: Request) {
           observation: row.observation,
           placeCount: 0,
           items: [],
-          edits: [], // adiciona array de edits
+          edits: [], 
         })
       }
 
       const checkin = checkinsMap.get(row.checkinId)
 
-      // --- Itens ---
       let item = checkin.items.find((i: any) => i.itemId === row.itemId)
       if (!item && row.itemId) {
         item = {
@@ -117,12 +111,12 @@ export async function GET(req: Request) {
           status: row.itemStatus,
           observation: row.itemObservation,
           problems: [],
+          photos: [],
         }
         checkin.items.push(item)
         checkin.placeCount += 1
       }
 
-      // --- Problemas do item ---
       if (item && row.problemId) {
         let problem = item.problems.find(
           (p: any) => p.problemId === row.problemId
@@ -131,14 +125,13 @@ export async function GET(req: Request) {
           problem = {
             problemId: row.problemId,
             name: row.problemName,
-            photos: [],
           }
           item.problems.push(problem)
         }
 
-        if (problem && row.photoId) {
-          if (!problem.photos.find((p: any) => p.photoId === row.photoId)) {
-            problem.photos.push({
+        if (item && row.photoId) {
+          if (!item.photos.find((p: any) => p.photoId === row.photoId)) {
+            item.photos.push({
               photoId: row.photoId,
               url: row.photoUrl,
             })

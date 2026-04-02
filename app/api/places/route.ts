@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { laboratories, placeProblems, places, problems } from '@/db/schema'
+import { checkinItemPhotos, laboratories, placeProblems, places, problems } from '@/db/schema'
 import { getActiveFilter } from '@/utils/getActiveFilter'
 import { and, eq, gte, max, sql } from 'drizzle-orm'
 import { NextResponse } from 'next/server'

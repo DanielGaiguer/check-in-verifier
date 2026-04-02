@@ -26,6 +26,7 @@ export default function DetailsCheckin() {
   const id = Array.isArray(params.id) ? params.id[0] : params.id
 
   const { data: checkin, isLoading, error } = useDetailsCheckin(id || '')
+  console.log(checkin)
 
   if (isLoading) return <p>Carregando checkins...</p>
   if (error) return <p>Erro ao carregar checkins</p>
@@ -135,21 +136,20 @@ export default function DetailsCheckin() {
                       <Badge className="mr-5 h-5 bg-red-100 text-red-600">
                         {problem.name}
                       </Badge>
-                      <p className="mt-1 text-sm">{item.observation}</p>
-                      <div className='flex'>
-                        {problem.photos &&
-                          problem.photos.map((photo) => (
-                            <Image
-                              key={photo.photoId}
-                              src={photo.url}
-                              alt="Foto do problema"
-                              width={85}
-                              height={85}
-                              className="mt-1 rounded-2xl mr-3"
-                            />
-                          ))}
-                      </div>
                     </div>
+                  ))}
+                  <p className="mt-1 text-sm">{item.observation}</p>
+                  {item.photos.map((photo) => (
+                      <div className="flex" key={photo.photoId}>
+                        <Image
+                          key={photo.photoId}
+                          src={photo.url}
+                          alt="Foto do problema"
+                          width={85}
+                          height={85}
+                          className="mt-1 mr-3 rounded-2xl"
+                        />
+                      </div>
                   ))}
                 </CardContent>
               )}

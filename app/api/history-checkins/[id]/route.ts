@@ -61,7 +61,7 @@ export async function GET(req: Request) {
       .leftJoin(problems, eq(checkinItemsProblems.problemId, problems.id))
       .leftJoin(
         checkinItemPhotos,
-        eq(checkinItemsProblems.id, checkinItemPhotos.checkinItemProblemId)
+        eq(checkinItems.id, checkinItemPhotos.checkinItemId)
       )
       .leftJoin(checkinEdits, eq(checkins.id, checkinEdits.checkinId))
       .where(eq(checkins.id, id))
@@ -83,7 +83,7 @@ export async function GET(req: Request) {
           observation: row.observation,
           placeCount: 0,
           items: [],
-          edits: [], // array de edits
+          edits: [],
         })
       }
 
@@ -104,12 +104,12 @@ export async function GET(req: Request) {
           status: row.itemStatus,
           observation: row.itemObservation,
           problems: [],
+          photos: [],
         }
         checkin.items.push(item)
         checkin.placeCount += 1
       }
 
-      // --- Problemas ---
       if (item && row.problemId) {
         let problem = item.problems.find(
           (p: any) => p.problemId === row.problemId
@@ -118,14 +118,13 @@ export async function GET(req: Request) {
           problem = {
             problemId: row.problemId,
             name: row.problemName,
-            photos: [],
           }
           item.problems.push(problem)
         }
 
-        if (problem && row.photoId) {
-          if (!problem.photos.find((p: any) => p.photoId === row.photoId)) {
-            problem.photos.push({
+        if (item && row.photoId) {
+          if (!item.photos.find((p: any) => p.photoId === row.photoId)) {
+            item.photos.push({
               photoId: row.photoId,
               url: row.photoUrl,
             })

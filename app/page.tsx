@@ -88,7 +88,7 @@ export default function Home() {
               iconName="ClipboardCheckIcon"
               iconColor="text-blue-400"
               iconBgColor="bg-[#87cfeb39]"
-              href="/history"
+              href="/checkins"
             />
             <InfoCard
               title={placeCount}

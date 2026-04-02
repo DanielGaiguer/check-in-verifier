@@ -14,7 +14,7 @@ import { Checkbox } from './ui/checkbox'
 import { Field, FieldLabel, FieldLegend, FieldSet } from './ui/field'
 import { FileUploadCircularProgress, UploadedFile } from './drop-files'
 import FieldObservation from './field-observation'
-import { Problem, Photo } from '@/types/typesPayload' // <- usar global
+import { Problem, Photo } from '@/types/typesPayload'
 
 interface PlaceCardProps {
   title: string
@@ -26,7 +26,7 @@ interface PlaceCardProps {
   onStatusChange?: (status: 'organized' | 'disorganized') => void
   onProblemsChange?: (problems: Problem[]) => void
   onObservationChange?: (obs: string) => void
-  onFilesChange?: (problemId: string, files: Photo[]) => void
+  onFilesChange?: (files: Photo[]) => void
 }
 
 export default function PlaceCard({
@@ -41,28 +41,17 @@ export default function PlaceCard({
   onObservationChange,
   onFilesChange,
 }: PlaceCardProps) {
-  const [status, setStatus] = useState<
-    'organized' | 'disorganized' | undefined
-  >(initialStatus)
-  const [selectedProblems, setSelectedProblems] = useState<Problem[]>(
-    initialProblems?.map((p) => ({ ...p, photos: p.photos || [] })) || []
-  )
-  const [observation, setObservation] = useState<string>(
-    initialObservation || ''
-  )
-  const [problemFiles, setProblemFiles] = useState<Record<string, Photo[]>>({})
+  const [status, setStatus] = useState<'organized' | 'disorganized' | undefined>(initialStatus)
+  const [selectedProblems, setSelectedProblems] = useState<Problem[]>(initialProblems || [])
+  const [observation, setObservation] = useState<string>(initialObservation || '')
+  const [files, setFiles] = useState<Photo[]>([])
 
   function toggleProblem(problem: Problem) {
     let updatedProblems: Problem[]
     if (selectedProblems.some((p) => p.problemId === problem.problemId)) {
-      updatedProblems = selectedProblems.filter(
-        (p) => p.problemId !== problem.problemId
-      )
+      updatedProblems = selectedProblems.filter((p) => p.problemId !== problem.problemId)
     } else {
-      updatedProblems = [
-        ...selectedProblems,
-        { ...problem, photos: problem.photos || [] },
-      ]
+      updatedProblems = [...selectedProblems, problem]
     }
     setSelectedProblems(updatedProblems)
     onProblemsChange?.(updatedProblems)
@@ -78,21 +67,11 @@ export default function PlaceCard({
     onObservationChange?.(value)
   }
 
-  function handleFileUpload(problemId: string, file: UploadedFile) {
-    const newPhoto: Photo = {
-      photoId: file.tempId,
-      url: file.url,
-    }
-    const updatedFiles = [...(problemFiles[problemId] || []), newPhoto]
-    setProblemFiles((prev) => ({ ...prev, [problemId]: updatedFiles }))
-
-    // Atualiza o selectedProblems mantendo photos sempre como array
-    const updatedSelectedProblems = selectedProblems.map((p) =>
-      p.problemId === problemId ? { ...p, photos: updatedFiles } : p
-    )
-    setSelectedProblems(updatedSelectedProblems)
-    onProblemsChange?.(updatedSelectedProblems)
-    onFilesChange?.(problemId, updatedFiles)
+  function handleFileUpload(file: UploadedFile) {
+    const newPhoto: Photo = { photoId: file.tempId, url: file.url }
+    const updatedFiles = [...files, newPhoto]
+    setFiles(updatedFiles)
+    onFilesChange?.(updatedFiles)
   }
 
   return (
@@ -104,11 +83,7 @@ export default function PlaceCard({
         </div>
         <div className="flex gap-2">
           <Button
-            className={`dm:w-45 mr-4 w-35 ${
-              status === 'organized'
-                ? 'bg-green-500 text-white hover:bg-green-600'
-                : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'
-            }`}
+            className={`dm:w-45 mr-4 w-35 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
             onClick={() => handleStatusChange('organized')}
           >
             <CircleCheckIcon />
@@ -116,11 +91,7 @@ export default function PlaceCard({
           </Button>
 
           <Button
-            className={`dm:w-45 mr-4 w-38 ${
-              status === 'disorganized'
-                ? 'bg-red-500 text-white hover:bg-red-600'
-                : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'
-            }`}
+            className={`dm:w-45 mr-4 w-38 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
             onClick={() => handleStatusChange('disorganized')}
           >
             <CircleXIcon />
@@ -132,52 +103,21 @@ export default function PlaceCard({
       {status === 'disorganized' && (
         <CardContent>
           <FieldSet className="gap-1.5 space-y-0">
-            <FieldLegend variant="label" className="mb-2.5">
-              Problemas encontrados *
-            </FieldLegend>
-
+            <FieldLegend variant="label" className="mb-2.5">Problemas encontrados *</FieldLegend>
             {arrayProblems.map((problem) => (
-              <Field
-                key={problem.problemId}
-                orientation="horizontal"
-                className="space-y-0"
-              >
+              <Field key={problem.problemId} orientation="horizontal" className="space-y-0">
                 <Checkbox
                   id={problem.problemId}
-                  checked={selectedProblems.some(
-                    (p) => p.problemId === problem.problemId
-                  )}
+                  checked={selectedProblems.some((p) => p.problemId === problem.problemId)}
                   onCheckedChange={() => toggleProblem(problem)}
                 />
-                <FieldLabel
-                  htmlFor={problem.problemId}
-                  className="text-sm font-normal"
-                >
-                  {problem.name}
-                </FieldLabel>
+                <FieldLabel htmlFor={problem.problemId} className="text-sm font-normal">{problem.name}</FieldLabel>
               </Field>
             ))}
           </FieldSet>
 
           <div className="mt-4">
-            <FileUploadCircularProgress
-              onFileUploaded={(file) => {
-                // Para cada problema selecionado, adiciona a foto
-                const updatedSelectedProblems = selectedProblems.map((p) => ({
-                  ...p,
-                  photos: [
-                    ...(p.photos || []),
-                    { photoId: file.tempId, url: file.url },
-                  ],
-                }))
-                setSelectedProblems(updatedSelectedProblems)
-                onProblemsChange?.(updatedSelectedProblems)
-                // Se precisar notificar arquivos por problema
-                updatedSelectedProblems.forEach((p) =>
-                  onFilesChange?.(p.problemId, p.photos!)
-                )
-              }}
-            />
+            <FileUploadCircularProgress onFileUploaded={handleFileUpload} />
           </div>
 
           <div className="mt-5">

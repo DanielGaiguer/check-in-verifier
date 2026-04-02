@@ -5,14 +5,11 @@ import PlaceCard from '@/components/place-card'
 import SelectCard from '@/components/select-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { Problem, Photo, Item } from '@/types/typesPayload'
-import { UploadedFile } from '@/components/drop-files'
 
-// Definimos o payload localmente
 export interface CheckinPayload {
   date: string
   createdAt: string
@@ -23,12 +20,12 @@ export interface CheckinPayload {
 }
 
 export default function CheckinsPage() {
-  const { people, isLoading: isLoadingPeople, error: errorPeople } = usePeople()
   const { places, isLoading: isLoadingPlace, error: errorPlace } = usePlaces()
 
   const [selectedPersonId, setSelectedPersonId] = useState<string>('')
   const [generalObservation, setGeneralObservation] = useState<string>('')
 
+  // Estado por item/lugar
   const [placeStatus, setPlaceStatus] = useState<
     Record<string, 'organized' | 'disorganized'>
   >({})
@@ -38,12 +35,10 @@ export default function CheckinsPage() {
   const [itemObservations, setItemObservations] = useState<
     Record<string, string>
   >({})
-  const [itemFiles, setItemFiles] = useState<
-    Record<string, Record<string, Photo[]>>
-  >({})
+  const [itemFiles, setItemFiles] = useState<Record<string, Photo[]>>({})
 
-  if (isLoadingPeople || isLoadingPlace) return <p>Carregando...</p>
-  if (errorPeople || errorPlace) return <p>Erro ao carregar os lugares.</p>
+  if (isLoadingPlace) return <p>Carregando...</p>
+  if (errorPlace) return <p>Erro ao carregar os lugares.</p>
 
   function handleSubmit() {
     if (!selectedPersonId) {
@@ -61,13 +56,16 @@ export default function CheckinsPage() {
 
     const items: Item[] = places.map((place) => ({
       itemId: place.id,
-      place,
+      place: {
+        id: place.id,
+        name: place.name,
+        labName: place.labName,
+        labId: place.labId,
+      },
       status: placeStatus[place.id]!,
-      observation: itemObservations[place.id],
-      problems: (itemProblems[place.id] || []).map((p) => ({
-        ...p,
-        photos: itemFiles[place.id]?.[p.problemId] || [],
-      })),
+      observation: itemObservations[place.id] || '',
+      problems: itemProblems[place.id] || [],
+      photos: itemFiles[place.id] || [],
     }))
 
     const payload: CheckinPayload = {
@@ -79,7 +77,6 @@ export default function CheckinsPage() {
       items,
     }
 
-    // console.log(payload)
     fetch('/api/checkins', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -89,6 +86,12 @@ export default function CheckinsPage() {
       .then((data) => {
         if (data.success) {
           toast.success('Check-in salvo com sucesso!')
+          setPlaceStatus({})
+          setItemProblems({})
+          setItemObservations({})
+          setItemFiles({})
+          setGeneralObservation('')
+          setSelectedPersonId('')
         } else {
           toast.error('Erro ao salvar check-in: ' + data.error)
         }
@@ -120,11 +123,8 @@ export default function CheckinsPage() {
             title={place.name}
             subTitle={place.labName}
             arrayProblems={
-              place.problems?.map((p) => ({
-                problemId: p.id,
-                name: p.name,
-                photos: [],
-              })) || []
+              place.problems?.map((p) => ({ problemId: p.id, name: p.name })) ||
+              []
             }
             status={placeStatus[place.id]}
             onStatusChange={(status) =>
@@ -137,11 +137,8 @@ export default function CheckinsPage() {
             onObservationChange={(obs) =>
               setItemObservations((prev) => ({ ...prev, [place.id]: obs }))
             }
-            onFilesChange={(problemId, files) =>
-              setItemFiles((prev) => ({
-                ...prev,
-                [place.id]: { ...(prev[place.id] || {}), [problemId]: files },
-              }))
+            onFilesChange={(files) =>
+              setItemFiles((prev) => ({ ...prev, [place.id]: files }))
             }
           />
         ))}

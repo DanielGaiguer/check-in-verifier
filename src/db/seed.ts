@@ -123,7 +123,7 @@ async function seed() {
         for (let p = 0; p < photoCount; p++) {
           await db.insert(checkinItemPhotos).values({
             id: uuid(),
-            checkinItemProblemId,
+            checkinItemId,
             photoUrl: `https://picsum.photos/200/200?random=${Math.floor(
               Math.random() * 1000
             )}`,

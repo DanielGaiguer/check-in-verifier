@@ -6,7 +6,6 @@ export interface Photo {
 export interface Problem {
   problemId: string
   name: string
-  photos: Photo[]
 }
 
 export interface Place {
@@ -22,6 +21,7 @@ export interface Item {
   status: string
   observation: string
   problems: Problem[]
+  photos: Photo[]
 }
 
 export interface People {

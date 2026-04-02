@@ -123,14 +123,14 @@ export const checkinItemPhotos = pgTable(
   'checkin_item_photos',
   {
     id: uuid('id').defaultRandom().primaryKey().notNull().unique(),
-    checkinItemProblemId: uuid('checkin_item_problem_id')
-      .references(() => checkinItemsProblems.id, { onDelete: 'cascade' })
+    checkinItemId: uuid('checkin_item_id')
+      .references(() => checkinItems.id, { onDelete: 'cascade' })
       .notNull(),
     photoUrl: text('photo_url').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [
-    index('idx_checkin_item_photos_problem').on(table.checkinItemProblemId),
+    index('idx_checkin_item_photos_problem').on(table.checkinItemId),
   ]
 )
 
