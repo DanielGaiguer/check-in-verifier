@@ -101,7 +101,7 @@ export default function ReportsPage() {
   let disorganizedCount = 0
 
   filteredCheckins.forEach((checkin) => {
-    const allOk = checkin.items.every((item) => item.status === 'OK')
+    const allOk = checkin.items.every((item) => item.status === 'organized')
     if (allOk) {
       organizedCount++
     } else {
