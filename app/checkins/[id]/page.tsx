@@ -138,19 +138,20 @@ export default function DetailsCheckin() {
                       </Badge>
                     </div>
                   ))}
-                  <p className="mt-1 text-sm">{item.observation}</p>
-                  {item.photos.map((photo) => (
-                      <div className="flex" key={photo.photoId}>
-                        <Image
-                          key={photo.photoId}
-                          src={photo.url}
-                          alt="Foto do problema"
-                          width={85}
-                          height={85}
-                          className="mt-1 mr-3 rounded-2xl"
-                        />
-                      </div>
-                  ))}
+                  <p className="mt-4 text-sm">Observação:</p>
+                  <p className="text-sm">{item.observation}</p>
+                  <div className="mt-2 flex flex-row gap-3 overflow-x-auto">
+                    {item.photos.map((photo) => (
+                      <Image
+                        key={photo.photoId}
+                        src={photo.url}
+                        alt="Foto do problema"
+                        width={130}
+                        height={130}
+                        className="shrink-0 rounded-xl"
+                      />
+                    ))}
+                  </div>
                 </CardContent>
               )}
             </Card>

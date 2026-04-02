@@ -9,6 +9,7 @@ import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { Problem, Photo, Item } from '@/types/typesPayload'
+import { useRouter } from 'next/navigation'
 
 export interface CheckinPayload {
   date: string
@@ -21,6 +22,7 @@ export interface CheckinPayload {
 
 export default function CheckinsPage() {
   const { places, isLoading: isLoadingPlace, error: errorPlace } = usePlaces()
+  const router = useRouter()
 
   const [selectedPersonId, setSelectedPersonId] = useState<string>('')
   const [generalObservation, setGeneralObservation] = useState<string>('')
@@ -85,13 +87,14 @@ export default function CheckinsPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          toast.success('Check-in salvo com sucesso!')
+          toast.success('Check-in realizado com sucesso!')
           setPlaceStatus({})
           setItemProblems({})
           setItemObservations({})
           setItemFiles({})
           setGeneralObservation('')
           setSelectedPersonId('')
+          router.push('/')
         } else {
           toast.error('Erro ao salvar check-in: ' + data.error)
         }
