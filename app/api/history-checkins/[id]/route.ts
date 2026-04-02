@@ -38,6 +38,7 @@ export async function GET(req: Request) {
         itemObservation: checkinItems.observation,
         placeId: places.id,
         placeName: places.name,
+        placeOrder: places.sortOrder,
         labId: laboratories.id,
         labName: laboratories.name,
         problemId: problems.id,
@@ -89,7 +90,6 @@ export async function GET(req: Request) {
 
       const checkin = checkinsMap.get(row.checkinId)
 
-      // --- Itens ---
       let item = checkin.items.find((i: any) => i.itemId === row.itemId)
 
       if (!item && row.itemId) {
@@ -98,6 +98,7 @@ export async function GET(req: Request) {
           place: {
             id: row.placeId,
             name: row.placeName,
+            order: row.placeOrder,
             labId: row.labId,
             labName: row.labName,
           },

@@ -22,7 +22,6 @@ import { useParams } from 'next/navigation'
 export default function DetailsCheckin() {
   const params = useParams()
 
-  // Garante que seja uma string
   const id = Array.isArray(params.id) ? params.id[0] : params.id
 
   const { data: checkin, isLoading, error } = useDetailsCheckin(id || '')
@@ -83,79 +82,82 @@ export default function DetailsCheckin() {
             </Card>
           )}
 
-          {checkin?.items.map((item) => (
-            <Card
-              key={item.itemId}
-              className={`mt-2 hover:shadow-md ${
-                item.status === 'organized'
-                  ? 'border-green-400'
-                  : item.status === 'disorganized'
-                    ? 'border-red-400'
-                    : 'border-gray-400'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="ml-4 flex items-center">
-                  {item.status === 'organized' ? (
-                    <CircleCheckIcon className="text-green-400" />
-                  ) : item.status === 'disorganized' ? (
-                    <CircleXIcon className="text-red-400" />
-                  ) : (
-                    <CircleXIcon className="text-gray-400" />
-                  )}
-                  <div className="ml-3">
-                    <CardTitle className="font-normal">
-                      {item.place.name}
-                    </CardTitle>
-                    <CardDescription className="mt-1 text-sm">
-                      {item.place.labName}
-                    </CardDescription>
-                  </div>
-                </div>
-                <div>
-                  {item.status === 'organized' ? (
-                    <Badge className="mr-5 bg-green-100 text-green-600">
-                      Organizado
-                    </Badge>
-                  ) : item.status === 'disorganized' ? (
-                    <Badge className="mr-5 bg-red-100 text-red-600">
-                      Desorganizado
-                    </Badge>
-                  ) : (
-                    <Badge className="mr-5 bg-gray-100 text-gray-600">
-                      Não checado
-                    </Badge>
-                  )}
-                </div>
-              </div>
-              {item.status === 'disorganized' && (
-                <CardContent>
-                  <p className="text-sm">Problemas:</p>
-                  {item.problems.map((problem) => (
-                    <div key={problem.problemId} className="mt-1 ml-2">
-                      <Badge className="mr-5 h-5 bg-red-100 text-red-600">
-                        {problem.name}
-                      </Badge>
+          {checkin?.items
+            .slice() 
+            .sort((a, b) => (a.place.order ?? 0) - (b.place.order ?? 0))
+            .map((item) => (
+              <Card
+                key={item.itemId}
+                className={`mt-2 hover:shadow-md ${
+                  item.status === 'organized'
+                    ? 'border-green-400'
+                    : item.status === 'disorganized'
+                      ? 'border-red-400'
+                      : 'border-gray-400'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="ml-4 flex items-center">
+                    {item.status === 'organized' ? (
+                      <CircleCheckIcon className="text-green-400" />
+                    ) : item.status === 'disorganized' ? (
+                      <CircleXIcon className="text-red-400" />
+                    ) : (
+                      <CircleXIcon className="text-gray-400" />
+                    )}
+                    <div className="ml-3">
+                      <CardTitle className="font-normal">
+                        {item.place.name}
+                      </CardTitle>
+                      <CardDescription className="mt-1 text-sm">
+                        {item.place.labName}
+                      </CardDescription>
                     </div>
-                  ))}
-                  <p className="mt-4 text-sm">Observação:</p>
-                  <p className="text-sm">{item.observation}</p>
-                  <div className="mt-2 flex flex-row gap-3 overflow-x-auto">
-                    {item.photos.map((photo) => (
-                      <Image
-                        key={photo.photoId}
-                        src={photo.url}
-                        alt="Foto do problema"
-                        width={130}
-                        height={130}
-                        className="shrink-0 rounded-xl"
-                      />
-                    ))}
                   </div>
-                </CardContent>
-              )}
-            </Card>
-          ))}
+                  <div>
+                    {item.status === 'organized' ? (
+                      <Badge className="mr-5 bg-green-100 text-green-600">
+                        Organizado
+                      </Badge>
+                    ) : item.status === 'disorganized' ? (
+                      <Badge className="mr-5 bg-red-100 text-red-600">
+                        Desorganizado
+                      </Badge>
+                    ) : (
+                      <Badge className="mr-5 bg-gray-100 text-gray-600">
+                        Não checado
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                {item.status === 'disorganized' && (
+                  <CardContent>
+                    <p className="text-sm">Problemas:</p>
+                    {item.problems.map((problem) => (
+                      <div key={problem.problemId} className="mt-1 ml-2">
+                        <Badge className="mr-5 h-5 bg-red-100 text-red-600">
+                          {problem.name}
+                        </Badge>
+                      </div>
+                    ))}
+                    <p className="mt-4 text-sm">Observação:</p>
+                    <p className="text-sm">{item.observation}</p>
+                    <div className="mt-2 flex flex-row gap-3 overflow-x-auto">
+                      {item.photos.map((photo) => (
+                        <Image
+                          key={photo.photoId}
+                          src={photo.url}
+                          alt="Foto do problema"
+                          width={130}
+                          height={130}
+                          className="shrink-0 rounded-xl"
+                        />
+                      ))}
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            ))}
 
           {checkin?.edits?.length ? (
             <Card className="mt-3">
