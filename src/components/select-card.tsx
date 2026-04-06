@@ -22,7 +22,7 @@ export default function SelectCard({
   placeHolder,
   onChange
 }: selectCardProps) {
-  const { people, isLoading, error } = usePeople()
+  const { people, isLoading, error } = usePeople({ active: true })
 
   
   if (isLoading) return <p>Carregando...</p>

@@ -1,4 +1,5 @@
 'use client'
+import SelectCard from '@/components/select-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -7,7 +8,10 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card'
+import { Field, FieldLabel, FieldTitle } from '@/components/ui/field'
+import { Textarea } from '@/components/ui/textarea'
 import { useDetailsCheckin } from '@/hooks/useQuerys/useDetailsCheckin'
+import { Title } from '@radix-ui/react-dialog'
 import { format } from 'date-fns'
 import {
   CircleCheckIcon,
@@ -18,8 +22,14 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
+import { Dialog } from 'radix-ui'
+import { useState } from 'react'
 
 export default function DetailsCheckin() {
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedPersonId, setSelectedPersonId] = useState<string>('')
+  const [reason, setReason] = useState<string>('')
+
   const params = useParams()
 
   const id = Array.isArray(params.id) ? params.id[0] : params.id
@@ -62,10 +72,11 @@ export default function DetailsCheckin() {
           <div>
             <Button
               variant={'ghost'}
+              onClick={() => setDialogOpen(true)}
               className="cursor-pointer border border-gray-300 p-5 font-normal text-shadow-2xs"
             >
               <PencilIcon className="mr-2" />
-              Registar Alteração
+              Registrar Alteração
             </Button>
           </div>
         </div>
@@ -83,7 +94,7 @@ export default function DetailsCheckin() {
           )}
 
           {checkin?.items
-            .slice() 
+            .slice()
             .sort((a, b) => (a.place.order ?? 0) - (b.place.order ?? 0))
             .map((item) => (
               <Card
@@ -142,6 +153,7 @@ export default function DetailsCheckin() {
                     ))}
                     <p className="mt-4 text-sm">Observação:</p>
                     <p className="text-sm">{item.observation}</p>
+                    <p className="mt-4 text-sm">Fotos Anexadas:</p>
                     <div className="mt-2 flex flex-row gap-3 overflow-x-auto">
                       {item.photos.map((photo) => (
                         <Image
@@ -180,6 +192,49 @@ export default function DetailsCheckin() {
             </Card>
           ) : null}
         </div>
+        {dialogOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="animate-fadeIn absolute inset-0 bg-black/30 backdrop-blur-sm"
+              onClick={() => setDialogOpen(false)}
+            />
+
+            <div className="animate-modalIn relative z-10 w-full max-w-lg rounded-xl bg-white p-6 shadow-lg">
+              <h1 className="font-sans text-2xl font-semibold tracking-tight">
+                Registrar Alteração
+              </h1>
+              <SelectCard
+                textHeader="Responsável pela alteração *"
+                placeHolder="Selecione a pessoa"
+                onChange={setSelectedPersonId}
+              />
+              <div className="mt-3 ml-1.5">
+                <Field>
+                  <FieldLabel htmlFor="">
+                    Qual o motivo da alteração?
+                  </FieldLabel>
+                  <Textarea
+                    onChange={(e) => setReason(e.target.value)}
+                    value={reason}
+                    placeholder="Motivo da alteração"
+                  />
+                </Field>
+              </div>
+              <div className="mt-5 flex justify-end">
+                <Button
+                  onClick={() => setDialogOpen(false)}
+                  className="w-25"
+                  variant={'outline'}
+                >
+                  Cancelar
+                </Button>
+                <Button className="ml-5 w-25 bg-green-400 text-gray-800 hover:bg-green-300">
+                  Salvar
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   )

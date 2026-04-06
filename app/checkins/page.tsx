@@ -62,6 +62,7 @@ export default function CheckinsPage() {
         id: place.id,
         name: place.name,
         labName: place.labName,
+        order: place.sortOrder,
         labId: place.labId,
       },
       status: placeStatus[place.id]!,
