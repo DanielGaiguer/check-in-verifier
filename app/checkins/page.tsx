@@ -6,10 +6,11 @@ import SelectCard from '@/components/select-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Problem, Photo, Item } from '@/types/typesPayload'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import { useDetailsCheckin } from '@/hooks/useQuerys/useDetailsCheckin'
 
 export interface CheckinPayload {
   date: string
@@ -20,29 +21,67 @@ export interface CheckinPayload {
   items: Item[]
 }
 
-export default function CheckinsPage() {
-  const { places, isLoading: isLoadingPlace, error: errorPlace } = usePlaces()
+interface CheckinsPageProps {
+  mode?: 'create' | 'edit'
+}
+
+export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
   const router = useRouter()
+  const params = useParams()
 
-  const [selectedPersonId, setSelectedPersonId] = useState<string>('')
-  const [generalObservation, setGeneralObservation] = useState<string>('')
+  const id =
+    params?.id && !Array.isArray(params.id) ? params.id : params?.id?.[0]
 
-  // Estado por item/lugar
+  const { places, isLoading: isLoadingPlace, error: errorPlace } = usePlaces()
+
+  const { data: checkin } = useDetailsCheckin(mode === 'edit' && id ? id : '')
+
+  const [selectedPersonId, setSelectedPersonId] = useState('')
+  const [generalObservation, setGeneralObservation] = useState('')
+
   const [placeStatus, setPlaceStatus] = useState<
     Record<string, 'organized' | 'disorganized'>
   >({})
+
   const [itemProblems, setItemProblems] = useState<Record<string, Problem[]>>(
     {}
   )
+
   const [itemObservations, setItemObservations] = useState<
     Record<string, string>
   >({})
+
   const [itemFiles, setItemFiles] = useState<Record<string, Photo[]>>({})
+  useEffect(() => {
+    if (!checkin || mode !== 'edit') return
+
+    setSelectedPersonId(checkin.people.id)
+    setGeneralObservation(checkin.observation || '')
+
+    const status: Record<string, 'organized' | 'disorganized'> = {}
+    const problems: Record<string, Problem[]> = {}
+    const observations: Record<string, string> = {}
+    const photos: Record<string, Photo[]> = {}
+
+    checkin.items.forEach((item) => {
+      const placeId = item.place.id
+
+      status[placeId] = item.status as 'organized' | 'disorganized'
+      problems[placeId] = item.problems || []
+      observations[placeId] = item.observation || ''
+      photos[placeId] = item.photos || []
+    })
+
+    setPlaceStatus(status)
+    setItemProblems(problems)
+    setItemObservations(observations)
+    setItemFiles(photos)
+  }, [checkin, mode])
 
   if (isLoadingPlace) return <p>Carregando...</p>
   if (errorPlace) return <p>Erro ao carregar os lugares.</p>
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!selectedPersonId) {
       toast.error('Campo Responsável é obrigatório.')
       return
@@ -51,6 +90,7 @@ export default function CheckinsPage() {
     const unfilledPlaces = places.filter(
       (place) => placeStatus[place.id] === undefined
     )
+
     if (unfilledPlaces.length > 0) {
       toast.error('Todos os lugares precisam ter um status definido.')
       return
@@ -80,35 +120,44 @@ export default function CheckinsPage() {
       items,
     }
 
-    fetch('/api/checkins', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          toast.success('Check-in realizado com sucesso!')
-          setPlaceStatus({})
-          setItemProblems({})
-          setItemObservations({})
-          setItemFiles({})
-          setGeneralObservation('')
-          setSelectedPersonId('')
-          router.push('/')
-        } else {
-          toast.error('Erro ao salvar check-in: ' + data.error)
+    try {
+      const response = await fetch(
+        mode === 'edit' ? `/api/checkins/${id}` : '/api/checkins',
+        {
+          method: mode === 'edit' ? 'PATCH' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
         }
-      })
-      .catch((err) => toast.error('Erro na requisição: ' + err))
+      )
+
+      const data = await response.json()
+
+      if (!data.success) {
+        toast.error('Erro ao salvar check-in: ' + data.error)
+        return
+      }
+
+      toast.success(
+        mode === 'edit'
+          ? 'Check-in atualizado com sucesso!'
+          : 'Check-in realizado com sucesso!'
+      )
+
+      router.push('/')
+    } catch (err) {
+      toast.error('Erro na requisição: ' + err)
+    }
   }
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
         <h1 className="font-sans text-2xl font-semibold tracking-tight">
-          Novo Check-in
+          {mode === 'edit' ? 'Editar Check-in' : 'Novo Check-in'}
         </h1>
+
         <h4 className="text-sm text-gray-500">
           Preencha o status de cada lugar
         </h4>
@@ -127,22 +176,36 @@ export default function CheckinsPage() {
             title={place.name}
             subTitle={place.labName}
             arrayProblems={
-              place.problems?.map((p) => ({ problemId: p.id, name: p.name })) ||
-              []
+              place.problems?.map((p) => ({
+                problemId: p.id,
+                name: p.name,
+              })) || []
             }
             status={placeStatus[place.id]}
             onStatusChange={(status) =>
-              setPlaceStatus((prev) => ({ ...prev, [place.id]: status }))
+              setPlaceStatus((prev) => ({
+                ...prev,
+                [place.id]: status,
+              }))
             }
             selectedProblems={itemProblems[place.id]}
             onProblemsChange={(problems) =>
-              setItemProblems((prev) => ({ ...prev, [place.id]: problems }))
+              setItemProblems((prev) => ({
+                ...prev,
+                [place.id]: problems,
+              }))
             }
             onObservationChange={(obs) =>
-              setItemObservations((prev) => ({ ...prev, [place.id]: obs }))
+              setItemObservations((prev) => ({
+                ...prev,
+                [place.id]: obs,
+              }))
             }
             onFilesChange={(files) =>
-              setItemFiles((prev) => ({ ...prev, [place.id]: files }))
+              setItemFiles((prev) => ({
+                ...prev,
+                [place.id]: files,
+              }))
             }
           />
         ))}
@@ -165,7 +228,7 @@ export default function CheckinsPage() {
             className="bg-blue-400 p-5.5 text-sm hover:bg-blue-300"
             onClick={handleSubmit}
           >
-            Finalizar Check-in
+            {mode === 'edit' ? 'Salvar Alterações' : 'Finalizar Check-in'}
           </Button>
         </div>
       </div>

@@ -15,32 +15,34 @@ interface selectCardProps {
   textHeader: string
   placeHolder: string
   onChange: Dispatch<SetStateAction<string>>
+  value?: string // agora aceita value
 }
 
 export default function SelectCard({
   textHeader,
   placeHolder,
-  onChange
+  onChange,
+  value
 }: selectCardProps) {
   const { people, isLoading, error } = usePeople({ active: true })
 
-  
   if (isLoading) return <p>Carregando...</p>
-  if (error) return <p>Erro ao carregar os pessoas.</p>
-  
+  if (error) return <p>Erro ao carregar as pessoas.</p>
+
   return (
     <Card className="mt-5">
       <CardHeader>
         <h6 className="text-sm font-semibold">{textHeader}</h6>
-        <Select onValueChange={(value) => onChange(value)}>
+        <Select value={value} onValueChange={(value) => onChange(value)}>
           <SelectTrigger className="w-full max-w-80">
             <SelectValue placeholder={placeHolder} className="text-sm" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {/* <SelectLabel>Fruits</SelectLabel> */}
-              {people.map((people) => (
-                <SelectItem value={people.id} key={people.id}>{people.name}</SelectItem>
+              {people.map((person) => (
+                <SelectItem value={person.id} key={person.id}>
+                  {person.name}
+                </SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>

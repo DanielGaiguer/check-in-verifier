@@ -4,44 +4,38 @@ import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 export async function GET(req: Request) {
-	const body = await req.json()
-	if (!body.checkinId) {
-		return NextResponse.json(
-			{
-				success: false,
-				error: 'Dados incompletos',
-			},
-			{ status: 400 }
-		)
-	}
-	let result
-	try {
-		result = await db
-			.select()
-			.from(checkinEdits)
-			.where(
-				eq(checkinEdits.checkinId, body.checkinId)
-			)
-	} catch (e) {
-		return NextResponse.json(
-			{
-				success: false,
-				error: e,
-			},
-			{ status: 400 }
-		)
-	}
+  const { searchParams } = new URL(req.url)
+  const checkinId = searchParams.get('checkinId')
 
-	return NextResponse.json({
-		success: true,
-		data: result,
-	})
+  if (!checkinId) {
+    return NextResponse.json(
+      { success: false, error: 'Dados incompletos' },
+      { status: 400 }
+    )
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(checkinEdits)
+      .where(eq(checkinEdits.checkinId, checkinId))
+
+    return NextResponse.json({
+      success: true,
+      data: result,
+    })
+  } catch (e) {
+    return NextResponse.json(
+      { success: false, error: e },
+      { status: 400 }
+    )
+  }
 }
 
 export async function POST(req: Request) {
 	const body = await req.json()
 
-	if (!body.checkinId || !body.problemId || !body.editedBy || !body.reason) {
+	if (!body.checkinId || !body.editedBy || !body.reason) {
 		return NextResponse.json(
 			{
 				success: false,
@@ -55,7 +49,6 @@ export async function POST(req: Request) {
 			checkinId: body.checkinId,
 			editedBy: body.editedBy,
 			reason: body.reason,
-			changes: body.changes ?? ""
 		})
 	} catch (e) {
 		return NextResponse.json(
