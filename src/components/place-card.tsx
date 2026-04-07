@@ -86,6 +86,14 @@ export default function PlaceCard({
     setStatus(initialStatus)
   }, [initialStatus])
 
+  useEffect(() => {
+    setSelectedProblems(initialProblems || [])
+  }, [initialProblems])
+
+  useEffect(() => {
+    setObservation(initialObservation || '')
+  }, [initialObservation])
+
   return (
     <Card className="mt-2 gap-0">
       <CardHeader className="flex flex-row justify-between">

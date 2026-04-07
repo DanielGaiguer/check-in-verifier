@@ -176,45 +176,42 @@ export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
           />
         </div>
 
-        {places.map((place) => (
-          <PlaceCard
-            key={place.id}
-            title={place.name}
-            subTitle={place.labName}
-            arrayProblems={
-              ('problems' in place ? place.problems : [])?.map((p) => ({
-                problemId: p.id,
+        {(mode === 'edit'
+          ? checkin?.items.map((item) => item.place)
+          : places
+        )?.map((place) => {
+          // pega os problemas do checkin.items ou do state
+          const problemsArray =
+            mode === 'edit'
+              ? itemProblems[place.id] || [] // já inicializado no useEffect
+              : [] // no create, começa vazio
+
+          return (
+            <PlaceCard
+              key={place.id}
+              title={place.name}
+              subTitle={place.labName}
+              arrayProblems={problemsArray.map((p) => ({
+                problemId: p.problemId || p.problemId,
                 name: p.name,
-              })) || []
-            }
-            status={placeStatus[place.id]}
-            onStatusChange={(status) =>
-              setPlaceStatus((prev) => ({
-                ...prev,
-                [place.id]: status,
-              }))
-            }
-            selectedProblems={itemProblems[place.id]}
-            onProblemsChange={(problems) =>
-              setItemProblems((prev) => ({
-                ...prev,
-                [place.id]: problems,
-              }))
-            }
-            onObservationChange={(obs) =>
-              setItemObservations((prev) => ({
-                ...prev,
-                [place.id]: obs,
-              }))
-            }
-            onFilesChange={(files) =>
-              setItemFiles((prev) => ({
-                ...prev,
-                [place.id]: files,
-              }))
-            }
-          />
-        ))}
+              }))}
+              status={placeStatus[place.id]}
+              selectedProblems={itemProblems[place.id]}
+              onStatusChange={(status) =>
+                setPlaceStatus((prev) => ({ ...prev, [place.id]: status }))
+              }
+              onProblemsChange={(problems) =>
+                setItemProblems((prev) => ({ ...prev, [place.id]: problems }))
+              }
+              onObservationChange={(obs) =>
+                setItemObservations((prev) => ({ ...prev, [place.id]: obs }))
+              }
+              onFilesChange={(files) =>
+                setItemFiles((prev) => ({ ...prev, [place.id]: files }))
+              }
+            />
+          )
+        })}
 
         <div className="mt-3">
           <Card>
