@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Checkbox } from './ui/checkbox'
 import { Field, FieldLabel, FieldLegend, FieldSet } from './ui/field'
 import { FileUploadCircularProgress, UploadedFile } from './drop-files'
@@ -41,15 +41,23 @@ export default function PlaceCard({
   onObservationChange,
   onFilesChange,
 }: PlaceCardProps) {
-  const [status, setStatus] = useState<'organized' | 'disorganized' | undefined>(initialStatus)
-  const [selectedProblems, setSelectedProblems] = useState<Problem[]>(initialProblems || [])
-  const [observation, setObservation] = useState<string>(initialObservation || '')
+  const [status, setStatus] = useState<
+    'organized' | 'disorganized' | undefined
+  >(initialStatus)
+  const [selectedProblems, setSelectedProblems] = useState<Problem[]>(
+    initialProblems || []
+  )
+  const [observation, setObservation] = useState<string>(
+    initialObservation || ''
+  )
   const [files, setFiles] = useState<Photo[]>([])
 
   function toggleProblem(problem: Problem) {
     let updatedProblems: Problem[]
     if (selectedProblems.some((p) => p.problemId === problem.problemId)) {
-      updatedProblems = selectedProblems.filter((p) => p.problemId !== problem.problemId)
+      updatedProblems = selectedProblems.filter(
+        (p) => p.problemId !== problem.problemId
+      )
     } else {
       updatedProblems = [...selectedProblems, problem]
     }
@@ -73,6 +81,10 @@ export default function PlaceCard({
     setFiles(updatedFiles)
     onFilesChange?.(updatedFiles)
   }
+  
+  useEffect(() => {
+    setStatus(initialStatus)
+  }, [initialStatus])
 
   return (
     <Card className="mt-2 gap-0">
@@ -103,15 +115,28 @@ export default function PlaceCard({
       {status === 'disorganized' && (
         <CardContent>
           <FieldSet className="gap-1.5 space-y-0">
-            <FieldLegend variant="label" className="mb-2.5">Problemas encontrados *</FieldLegend>
+            <FieldLegend variant="label" className="mb-2.5">
+              Problemas encontrados *
+            </FieldLegend>
             {arrayProblems.map((problem) => (
-              <Field key={problem.problemId} orientation="horizontal" className="space-y-0">
+              <Field
+                key={problem.problemId}
+                orientation="horizontal"
+                className="space-y-0"
+              >
                 <Checkbox
                   id={problem.problemId}
-                  checked={selectedProblems.some((p) => p.problemId === problem.problemId)}
+                  checked={selectedProblems.some(
+                    (p) => p.problemId === problem.problemId
+                  )}
                   onCheckedChange={() => toggleProblem(problem)}
                 />
-                <FieldLabel htmlFor={problem.problemId} className="text-sm font-normal">{problem.name}</FieldLabel>
+                <FieldLabel
+                  htmlFor={problem.problemId}
+                  className="text-sm font-normal"
+                >
+                  {problem.name}
+                </FieldLabel>
               </Field>
             ))}
           </FieldSet>

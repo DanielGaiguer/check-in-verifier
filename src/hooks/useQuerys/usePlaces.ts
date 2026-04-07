@@ -23,9 +23,8 @@ export function usePlaces(options?: UsePlacesOptions) {
       if (!res.ok) throw new Error('Erro ao buscar lugares')
       const data = (await res.json()) as ApiResponse<Place>
 
-      // Ordena pelo sortOrder antes de retornar
       const orderedPlaces = data.data
-        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .sort((a, b) => a.order - b.order)
         .map((place) => ({
           ...place,
           createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', { locale: ptBR }),

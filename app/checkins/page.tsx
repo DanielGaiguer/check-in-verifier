@@ -35,6 +35,7 @@ export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
   const { places, isLoading: isLoadingPlace, error: errorPlace } = usePlaces()
 
   const { data: checkin } = useDetailsCheckin(mode === 'edit' && id ? id : '')
+  console.log(checkin)
 
   const [selectedPersonId, setSelectedPersonId] = useState('')
   const [generalObservation, setGeneralObservation] = useState('')
@@ -52,6 +53,7 @@ export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
   >({})
 
   const [itemFiles, setItemFiles] = useState<Record<string, Photo[]>>({})
+
   useEffect(() => {
     if (!checkin || mode !== 'edit') return
 
@@ -96,13 +98,13 @@ export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
       return
     }
 
-    const items: Item[] = places.map((place) => ({
+    const items: Item[] = placesToRender.map((place) => ({
       itemId: place.id,
       place: {
         id: place.id,
         name: place.name,
+        order: place.order,
         labName: place.labName,
-        order: place.sortOrder,
         labId: place.labId,
       },
       status: placeStatus[place.id]!,
@@ -151,6 +153,9 @@ export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
     }
   }
 
+  const placesToRender =
+    mode === 'edit' ? checkin?.items.map((item) => item.place) || [] : places
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -176,7 +181,7 @@ export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
             title={place.name}
             subTitle={place.labName}
             arrayProblems={
-              place.problems?.map((p) => ({
+              ('problems' in place ? place.problems : [])?.map((p) => ({
                 problemId: p.id,
                 name: p.name,
               })) || []

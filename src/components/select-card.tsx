@@ -15,7 +15,7 @@ interface selectCardProps {
   textHeader: string
   placeHolder: string
   onChange: Dispatch<SetStateAction<string>>
-  value?: string // agora aceita value
+  value?: string 
 }
 
 export default function SelectCard({
