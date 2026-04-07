@@ -94,6 +94,7 @@ export default function PlaceCard({
     setObservation(initialObservation || '')
   }, [initialObservation])
 
+  console.log(observation)
   return (
     <Card className="mt-2 gap-0">
       <CardHeader className="flex flex-row justify-between">

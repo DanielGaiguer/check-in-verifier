@@ -17,6 +17,7 @@ export default function FieldObservation({ ...props }: FieldObservationProps) {
       </FieldDescription>
       <FieldDescription>
         <Textarea
+          value={props.value}
           placeholder={props.placeholder}
           className="h-23 gap-0 font-stretch-150%"
           onChange={(e) => props.onChange?.(e.target.value)}

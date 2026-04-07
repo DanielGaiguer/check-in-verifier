@@ -27,12 +27,17 @@ export default function EditCheckinPage() {
     Record<string, 'organized' | 'disorganized'>
   >({})
 
-  const [itemProblems, setItemProblems] = useState<Record<string, Problem[]>>({})
-  const [itemObservations, setItemObservations] = useState<Record<string, string>>({})
+  const [itemProblems, setItemProblems] = useState<Record<string, Problem[]>>(
+    {}
+  )
+  const [itemObservations, setItemObservations] = useState<
+    Record<string, string>
+  >({})
   const [itemFiles, setItemFiles] = useState<Record<string, Photo[]>>({})
 
   useEffect(() => {
     if (!checkin) return
+    console.log('CHECKIN:', checkin)
 
     setSelectedPersonId(checkin.people.id)
     setGeneralObservation(checkin.observation || '')
@@ -119,7 +124,9 @@ export default function EditCheckinPage() {
           Editar Check-in
         </h1>
 
-        <h4 className="text-sm text-gray-500">Preencha o status de cada lugar</h4>
+        <h4 className="text-sm text-gray-500">
+          Preencha o status de cada lugar
+        </h4>
 
         <div className="mt-3 mb-3">
           <SelectCard
@@ -132,14 +139,15 @@ export default function EditCheckinPage() {
         {checkin.items.map((item: Item) => {
           const place = item.place
           const problemsArray = itemProblems[place.id] || []
-
+          //console.log('obs:', itemObservations[place.id])
           return (
             <PlaceCard
               key={place.id}
               title={place.name}
               subTitle={place.labName}
+              observation={itemObservations[place.id]}
               arrayProblems={problemsArray.map((p: Problem) => ({
-                problemId: p.problemId ,
+                problemId: p.problemId,
                 name: p.name,
               }))}
               status={placeStatus[place.id]}
