@@ -85,51 +85,53 @@ export async function GET(req: Request) {
           checkinId: row.checkinId,
           date: row.date,
           createdAt: row.createdAt,
+          observation: row.observation,
           people: {
             id: row.peopleId,
             name: row.peopleName,
           },
-          observation: row.observation,
           placeCount: 0,
           items: [],
-          edits: [], 
+          edits: [],
         })
       }
 
       const checkin = checkinsMap.get(row.checkinId)
 
-      let item = checkin.items.find((i: any) => i.itemId === row.itemId)
-      if (!item && row.itemId) {
-        item = {
-          itemId: row.itemId,
-          place: {
-            id: row.placeId,
-            name: row.placeName,
-            labId: row.labId,
-            labName: row.labName,
-          },
-          status: row.itemStatus,
-          observation: row.itemObservation,
-          problems: [],
-          photos: [],
-        }
-        checkin.items.push(item)
-        checkin.placeCount += 1
-      }
+      // === ITEM ===
+      if (row.itemId) {
+        let item = checkin.items.find((i: any) => i.itemId === row.itemId)
 
-      if (item && row.problemId) {
-        let problem = item.problems.find(
-          (p: any) => p.problemId === row.problemId
-        )
-        if (!problem) {
-          problem = {
-            problemId: row.problemId,
-            name: row.problemName,
+        if (!item) {
+          item = {
+            itemId: row.itemId,
+            place: {
+              id: row.placeId,
+              name: row.placeName,
+              labId: row.labId,
+              labName: row.labName,
+            },
+            status: row.itemStatus,
+            observation: row.itemObservation,
+            problems: [],
+            photos: [],
           }
-          item.problems.push(problem)
+          checkin.items.push(item)
+          checkin.placeCount += 1
         }
 
-        if (item && row.photoId) {
+        // === PROBLEMAS ===
+        if (row.problemId) {
+          if (!item.problems.find((p: any) => p.problemId === row.problemId)) {
+            item.problems.push({
+              problemId: row.problemId,
+              name: row.problemName,
+            })
+          }
+        }
+
+        // === FOTOS ===
+        if (row.photoId) {
           if (!item.photos.find((p: any) => p.photoId === row.photoId)) {
             item.photos.push({
               photoId: row.photoId,
@@ -139,11 +141,9 @@ export async function GET(req: Request) {
         }
       }
 
+      // === EDITS ===
       if (row.editId) {
-        const editExists = checkin.edits.find(
-          (e: any) => e.editId === row.editId
-        )
-        if (!editExists) {
+        if (!checkin.edits.find((e: any) => e.editId === row.editId)) {
           checkin.edits.push({
             editId: row.editId,
             editedBy: row.editedBy,

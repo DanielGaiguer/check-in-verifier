@@ -59,6 +59,7 @@ export default function CheckinsPage({ mode = 'create' }: CheckinsPageProps) {
 
     setSelectedPersonId(checkin.people.id)
     setGeneralObservation(checkin.observation || '')
+    console.log(checkin.observation)
 
     const status: Record<string, 'organized' | 'disorganized'> = {}
     const problems: Record<string, Problem[]> = {}

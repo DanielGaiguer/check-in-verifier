@@ -55,112 +55,89 @@ export async function GET(req: Request) {
       .leftJoin(checkinItems, eq(checkins.id, checkinItems.checkinId))
       .leftJoin(places, eq(checkinItems.placeId, places.id))
       .leftJoin(laboratories, eq(laboratories.id, places.labId))
-      .leftJoin(
-        checkinItemsProblems,
-        eq(checkinItems.id, checkinItemsProblems.checkinItemId)
-      )
+      .leftJoin(checkinItemsProblems, eq(checkinItems.id, checkinItemsProblems.checkinItemId))
       .leftJoin(problems, eq(checkinItemsProblems.problemId, problems.id))
-      .leftJoin(
-        checkinItemPhotos,
-        eq(checkinItems.id, checkinItemPhotos.checkinItemId)
-      )
+      .leftJoin(checkinItemPhotos, eq(checkinItems.id, checkinItemPhotos.checkinItemId))
       .leftJoin(checkinEdits, eq(checkins.id, checkinEdits.checkinId))
       .where(eq(checkins.id, id))
 
-    const checkinsMap = new Map<string, any>()
-
-    for (const row of rawData) {
-      if (!checkinsMap.has(row.checkinId)) {
-        checkinsMap.set(row.checkinId, {
-          checkinId: row.checkinId,
-          date: row.date,
-          createdAt: row.createdAt,
-          people: {
-            id: row.peopleId,
-            name: row.peopleName,
-            labId: row.labId,
-            labName: row.labName,
-          },
-          observation: row.observation,
-          placeCount: 0,
-          items: [],
-          edits: [],
-        })
-      }
-
-      const checkin = checkinsMap.get(row.checkinId)
-
-      let item = checkin.items.find((i: any) => i.itemId === row.itemId)
-
-      if (!item && row.itemId) {
-        item = {
-          itemId: row.itemId,
-          place: {
-            id: row.placeId,
-            name: row.placeName,
-            order: row.placeOrder,
-            labId: row.labId,
-            labName: row.labName,
-          },
-          status: row.itemStatus,
-          observation: row.itemObservation,
-          problems: [],
-          photos: [],
-        }
-        checkin.items.push(item)
-        checkin.placeCount += 1
-      }
-
-      if (item && row.problemId) {
-        let problem = item.problems.find(
-          (p: any) => p.problemId === row.problemId
-        )
-        if (!problem) {
-          problem = {
-            problemId: row.problemId,
-            name: row.problemName,
-          }
-          item.problems.push(problem)
-        }
-
-        if (item && row.photoId) {
-          if (!item.photos.find((p: any) => p.photoId === row.photoId)) {
-            item.photos.push({
-              photoId: row.photoId,
-              url: row.photoUrl,
-            })
-          }
-        }
-      }
-
-      if (row.editId) {
-        const editExists = checkin.edits.find(
-          (e: any) => e.editId === row.editId
-        )
-        if (!editExists) {
-          checkin.edits.push({
-            editId: row.editId,
-            editedBy: row.editedBy,
-            editedReason: row.editedReason,
-            editedCreatedAt: row.editedCreatedAt,
-          })
-        }
-      }
-    }
-
-    const data = Array.from(checkinsMap.values())[0]
-
-    if (!data) {
+    if (!rawData.length) {
       return NextResponse.json(
         { success: false, error: 'Checkin não encontrado' },
         { status: 404 }
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      data,
-    })
+    const checkinMap = {
+      checkinId: rawData[0].checkinId,
+      date: rawData[0].date,
+      createdAt: rawData[0].createdAt,
+      observation: rawData[0].observation,
+      people: {
+        id: rawData[0].peopleId,
+        name: rawData[0].peopleName,
+      },
+      placeCount: 0,
+      items: [] as any[],
+      edits: [] as any[],
+    }
+
+    const itemsMap = new Map<string, any>()
+
+    for (const row of rawData) {
+      // === ITEMS ===
+      if (row.itemId) {
+        if (!itemsMap.has(row.itemId)) {
+          const item = {
+            itemId: row.itemId,
+            place: {
+              id: row.placeId,
+              name: row.placeName,
+              order: row.placeOrder,
+              labId: row.labId,
+              labName: row.labName,
+            },
+            status: row.itemStatus,
+            observation: row.itemObservation,
+            problems: [] as any[],
+            photos: [] as any[],
+          }
+          itemsMap.set(row.itemId, item)
+          checkinMap.items.push(item)
+          checkinMap.placeCount += 1
+        }
+
+        const item = itemsMap.get(row.itemId)
+
+        // === PROBLEMAS ===
+        if (row.problemId && !item.problems.find((p: any) => p.problemId === row.problemId)) {
+          item.problems.push({
+            problemId: row.problemId,
+            name: row.problemName,
+          })
+        }
+
+        // === FOTOS ===
+        if (row.photoId && !item.photos.find((p: any) => p.photoId === row.photoId)) {
+          item.photos.push({
+            photoId: row.photoId,
+            url: row.photoUrl,
+          })
+        }
+      }
+
+      // === EDITS ===
+      if (row.editId && !checkinMap.edits.find((e: any) => e.editId === row.editId)) {
+        checkinMap.edits.push({
+          editId: row.editId,
+          editedBy: row.editedBy,
+          editedReason: row.editedReason,
+          editedCreatedAt: row.editedCreatedAt,
+        })
+      }
+    }
+
+    return NextResponse.json({ success: true, data: checkinMap })
   } catch (e) {
     console.error(e)
     return NextResponse.json(
