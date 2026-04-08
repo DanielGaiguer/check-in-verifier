@@ -1,7 +1,6 @@
 'use client'
-
 import { InitialDataCheckin } from '@/hooks/useQuerys/useLastCheckins'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 
 type Props = {
@@ -31,7 +30,7 @@ export function LastCheckins({ checkins, hrefBase }: Props) {
               <div className="flex flex-col">
                 <span className="font-medium">{checkin.peopleName}</span>
                 <span className="text-muted-foreground text-sm">
-                  {format(checkin.createdAt, "dd/MM/yyyy 'às' HH:mm")}
+                  {format(parseISO(checkin.checkinsDate), "dd/MM/yyyy 'às' HH:mm")}
                 </span>
               </div>
             </Link>

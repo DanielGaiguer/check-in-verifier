@@ -24,10 +24,10 @@ export default function Home() {
 
   const today = new Date()
   const dateFormatted = new Intl.DateTimeFormat('pt-BR', {
-    weekday: 'long', // dia da semana
-    day: '2-digit', // dia com 2 dígitos
-    month: 'long', // mês por extenso
-    year: 'numeric', // ano completo
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
   }).format(today)
 
   if (isLoading || isLoadingPlaces || isLoadingPeople)
@@ -38,25 +38,25 @@ export default function Home() {
   // Função auxiliar: retorna o número da semana de uma data
   function getWeekNumber(date: Date) {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
-    const pastDaysOfYear =
-      (date.getTime() - firstDayOfYear.getTime()) / 86400000
+    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
   }
 
   const currentWeek = getWeekNumber(today)
-  
+
+  // --- Check-ins da semana ---
   const weeklyCheckins = checkinData.filter((checkin) => {
-    const checkinDate = new Date(checkin.checkinsDate) // ou createdAt, dependendo da sua propriedade
+    const checkinDate = parseISO(checkin.checkinsDate)
     return getWeekNumber(checkinDate) === currentWeek
   })
 
+  // --- Check-ins de hoje ---
   const todayCheckins = checkinData.filter((checkin) =>
-    isSameDay(parseISO(checkin.checkinsDate), new Date())
+    isSameDay(parseISO(checkin.checkinsDate), today)
   )
 
   return (
     <>
-      {/* <Header /> */}
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
         <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
           <h1 className="font-sans text-2xl font-semibold tracking-tight">
@@ -64,23 +64,25 @@ export default function Home() {
           </h1>
           <p className="text-sm text-gray-500">{dateFormatted}</p>
 
-          {/* Card dentro do mesmo container */}
           <div className="mt-5">
-            <AlertCard
-              title="Check-in diário não realizado!"
-              description={
-                <>
-                  Nenhum check-in foi registrado para hoje.
-                  <span className="block md:inline">
-                    {' '}
-                    Realize o check-in dos laboratórios.
-                  </span>
-                </>
-              }
-              textButton="Fazer Check-in"
-              href="/checkins"
-            />
+            {todayCheckins.length === 0 && (
+              <AlertCard
+                title="Check-in diário não realizado!"
+                description={
+                  <>
+                    Nenhum check-in foi registrado para hoje.
+                    <span className="block md:inline">
+                      {' '}
+                      Realize o check-in dos laboratórios.
+                    </span>
+                  </>
+                }
+                textButton="Fazer Check-in"
+                href="/checkins"
+              />
+            )}
           </div>
+
           <div className="mt-5 grid grid-cols-2 gap-4 p-1 sm:grid-cols-4">
             <InfoCard
               title={todayCheckins.length}
