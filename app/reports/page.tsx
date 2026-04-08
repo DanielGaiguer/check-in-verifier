@@ -108,9 +108,20 @@ export default function ReportsPage() {
       disorganizedCount++
     }
   })
-  // TOTALS
   const totalCheckins = filteredCheckins.length
-  const totalItems = filteredCheckins.reduce((acc, c) => acc + c.placeCount, 0)
+
+  const totalItems = filteredCheckins.reduce(
+    (acc, c) => acc + c.items.length,
+    0
+  )
+
+  const organizedItems = filteredCheckins.reduce(
+    (acc, c) =>
+      acc + c.items.filter((item) => item.status === 'organized').length,
+    0
+  )
+
+  const disorganizedItems = totalItems - organizedItems
 
   const pieData = [
     { name: 'Organizados', value: organizedCount },
@@ -120,7 +131,12 @@ export default function ReportsPage() {
   const percentOrganized =
     (organizedCount / (organizedCount + disorganizedCount)) * 100
 
-  // TOP PEOPLE
+  const percentOrganizedCheckins =
+    totalCheckins > 0 ? (organizedCount / totalCheckins) * 100 : 0
+
+  const percentOrganizedItems =
+    totalItems > 0 ? (organizedItems / totalItems) * 100 : 0
+
   const peopleCountMap: Record<string, number> = {}
   filteredCheckins.forEach((c) => {
     const name = c.people.name
@@ -187,7 +203,7 @@ export default function ReportsPage() {
           </Select>
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-4 p-1 sm:grid-cols-3 mb-4">
+        <div className="mt-3 mb-4 grid grid-cols-2 gap-4 p-1 sm:grid-cols-3">
           <Card className="flex min-h-30 w-full flex-col shadow-xs">
             <CardContent className="flex h-full flex-col items-center justify-center text-center">
               <CardTitle className="text-3xl text-blue-400">
@@ -199,7 +215,7 @@ export default function ReportsPage() {
           <Card className="flex min-h-30 w-full flex-col shadow-xs">
             <CardContent className="flex h-full flex-col items-center justify-center text-center">
               <CardTitle className="text-3xl text-green-400">
-                {percentOrganized}%
+                {percentOrganizedCheckins.toFixed(1)}%
               </CardTitle>
               <CardDescription>Organizados</CardDescription>
             </CardContent>
@@ -207,7 +223,7 @@ export default function ReportsPage() {
           <Card className="flex min-h-30 w-full flex-col shadow-xs">
             <CardContent className="flex h-full flex-col items-center justify-center text-center">
               <CardTitle className="text-3xl">
-                {percentOrganized}
+                {percentOrganizedItems.toFixed(1)}%
               </CardTitle>
               <CardDescription>Locais verificados</CardDescription>
             </CardContent>
