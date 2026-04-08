@@ -28,7 +28,6 @@ export default function LaboratoriesPage() {
   const { laboratories, isLoading, error } = useLaboratories()
   const deleteLabMutation = useDeleteLab()
 
-
   const [name, setName] = useState('')
   const [id, setId] = useState('')
   const [internalOpen, setInternalOpen] = useState(false)

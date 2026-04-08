@@ -40,6 +40,8 @@ export default function DialogLaboratories({
         id,
         name,
       })
+      setInternalOpen?.(false)
+      setName('')
       toast.success('Laboratorio atualizado com sucesso.')
       return
     }
@@ -47,6 +49,8 @@ export default function DialogLaboratories({
     createLabMutation.mutate({
       name,
     })
+    setInternalOpen?.(false)
+    setName('')
     toast.success('Laboratorio criado com sucesso.')
     return
   }
