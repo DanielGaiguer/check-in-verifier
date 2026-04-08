@@ -37,7 +37,6 @@ export default function EditCheckinPage() {
 
   useEffect(() => {
     if (!checkin) return
-    console.log('CHECKIN:', checkin)
 
     setSelectedPersonId(checkin.people.id)
     setGeneralObservation(checkin.observation || '')
@@ -60,6 +59,10 @@ export default function EditCheckinPage() {
     setItemObservations(observations)
     setItemFiles(photos)
   }, [checkin])
+
+  // useEffect(() => {
+  //   console.log(itemFiles)
+  // }, [itemFiles])
 
   if (isLoading) return <p>Carregando...</p>
   if (error || !checkin) return <p>Erro ao carregar o check-in.</p>
@@ -87,6 +90,7 @@ export default function EditCheckinPage() {
       problems: itemProblems[item.place.id] || [],
       photos: itemFiles[item.place.id] || [],
     }))
+
 
     const payload = {
       date: new Date().toISOString(),
@@ -139,7 +143,8 @@ export default function EditCheckinPage() {
         {checkin.items.map((item: Item) => {
           const place = item.place
           const problemsArray = itemProblems[place.id] || []
-          //console.log('obs:', itemObservations[place.id])
+          const photosArray = itemFiles[place.id] || []
+          //console.log(photosArray)
           return (
             <PlaceCard
               key={place.id}
@@ -164,6 +169,7 @@ export default function EditCheckinPage() {
               onFilesChange={(files) =>
                 setItemFiles((prev) => ({ ...prev, [place.id]: files }))
               }
+              initialPhotos={photosArray}
             />
           )
         })}

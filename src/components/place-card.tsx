@@ -15,6 +15,7 @@ import { Field, FieldLabel, FieldLegend, FieldSet } from './ui/field'
 import { FileUploadCircularProgress, UploadedFile } from './drop-files'
 import FieldObservation from './field-observation'
 import { Problem, Photo } from '@/types/typesPayload'
+import { init } from 'next/dist/compiled/webpack/webpack'
 
 interface PlaceCardProps {
   title: string
@@ -27,6 +28,7 @@ interface PlaceCardProps {
   onProblemsChange?: (problems: Problem[]) => void
   onObservationChange?: (obs: string) => void
   onFilesChange?: (files: Photo[]) => void
+  initialPhotos?: Photo[]
 }
 
 export default function PlaceCard({
@@ -40,6 +42,7 @@ export default function PlaceCard({
   onProblemsChange,
   onObservationChange,
   onFilesChange,
+  initialPhotos,
 }: PlaceCardProps) {
   const [status, setStatus] = useState<
     'organized' | 'disorganized' | undefined
@@ -50,7 +53,7 @@ export default function PlaceCard({
   const [observation, setObservation] = useState<string>(
     initialObservation || ''
   )
-  const [files, setFiles] = useState<Photo[]>([])
+  const [files, setFiles] = useState<Photo[]>(initialPhotos || [])
 
   function toggleProblem(problem: Problem) {
     let updatedProblems: Problem[]
@@ -64,6 +67,12 @@ export default function PlaceCard({
     setSelectedProblems(updatedProblems)
     onProblemsChange?.(updatedProblems)
   }
+
+  useEffect(() => {
+    if (initialPhotos) {
+      console.log('fotos: ', initialPhotos)
+    }
+  }, [initialPhotos])
 
   function handleStatusChange(newStatus: 'organized' | 'disorganized') {
     setStatus(newStatus)
@@ -81,7 +90,7 @@ export default function PlaceCard({
     setFiles(updatedFiles)
     onFilesChange?.(updatedFiles)
   }
-  
+
   useEffect(() => {
     setStatus(initialStatus)
   }, [initialStatus])
@@ -94,7 +103,6 @@ export default function PlaceCard({
     setObservation(initialObservation || '')
   }, [initialObservation])
 
-  console.log(observation)
   return (
     <Card className="mt-2 gap-0">
       <CardHeader className="flex flex-row justify-between">
@@ -151,7 +159,10 @@ export default function PlaceCard({
           </FieldSet>
 
           <div className="mt-4">
-            <FileUploadCircularProgress onFileUploaded={handleFileUpload} />
+            <FileUploadCircularProgress
+              onFileUploaded={handleFileUpload}
+              initialPhotos={initialPhotos}
+            />
           </div>
 
           <div className="mt-5">

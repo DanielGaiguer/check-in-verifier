@@ -25,13 +25,29 @@ export type UploadedFile = {
 
 type FileUploadCircularProgressProps = {
   onFileUploaded?: (file: UploadedFile) => void
+  initialPhotos?: { photoId: string; url: string }[]
 }
 
 export function FileUploadCircularProgress({
   onFileUploaded,
+  initialPhotos,
 }: FileUploadCircularProgressProps) {
   const [uploadedFiles, setUploadedFiles] = React.useState<UploadedFile[]>([])
   const [files, setFiles] = React.useState<File[]>([])
+
+  React.useEffect(() => {
+    if (!initialPhotos) return
+
+    const converted: UploadedFile[] = initialPhotos.map((photo) => ({
+      file: new File([], photo.photoId),
+      url: photo.url,
+      tempId: photo.photoId,
+    }))
+
+    setUploadedFiles(converted)
+
+    setFiles(converted.map((f) => f.file))
+  }, [initialPhotos])
 
   const onUpload = React.useCallback(
     async (
@@ -72,18 +88,15 @@ export function FileUploadCircularProgress({
           // Sucesso no upload
           onSuccess(file)
 
-
           const newUploadedFile: UploadedFile = {
             file,
             url,
             tempId: crypto.randomUUID(),
           }
 
-          // Atualiza estados
           setUploadedFiles((prev) => [...prev, newUploadedFile])
           setFiles((prev) => [...prev, file])
 
-          // Callback externo
           onFileUploaded?.(newUploadedFile)
         } catch (err) {
           onError(file, err as Error)
@@ -113,7 +126,7 @@ export function FileUploadCircularProgress({
       onValueChange={setFiles}
       maxFiles={5}
       maxSize={5 * 1024 * 1024} // 5MB
-      className="mt-2 max-w-[50%] rounded-xl bg-gray-100 md:max-w-[30%]" //w-full max-w-md
+      className="mt-2 max-w-[50%] rounded-xl bg-gray-100 md:max-w-[40%]" //w-full max-w-md
       onUpload={onUpload}
       onFileReject={onFileReject}
       multiple
