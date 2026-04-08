@@ -33,8 +33,8 @@ export interface People {
 export interface Edits {
   id: string
   editedBy: string
-  reason: string
-  createdAt: string
+  editedReason: string
+  editedCreatedAt: string
 }
 
 export interface Checkin {

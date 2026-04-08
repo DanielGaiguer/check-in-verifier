@@ -12,8 +12,8 @@ import {
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
 import { useDetailsCheckin } from '@/hooks/useQuerys/useDetailsCheckin'
+import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { format } from 'date-fns'
-
 import {
   CircleCheckIcon,
   CircleXIcon,
@@ -38,6 +38,11 @@ export default function DetailsCheckin() {
     params?.id && !Array.isArray(params.id) ? params.id : params?.id?.[0]
 
   const { data: checkin, isLoading, error } = useDetailsCheckin(id || '')
+  const {
+    people: peopleList,
+    isLoading: isLoadingPeople,
+    error: errorPeople,
+  } = usePeople()
 
   // UseEffect para preencher os dados do check-in no formulário e na modal
   useEffect(() => {
@@ -48,8 +53,8 @@ export default function DetailsCheckin() {
     setReason('') // Se quiser inicializar com a última alteração, poderia pegar do checkin.edits
   }, [checkin])
 
-  if (isLoading) return <p>Carregando checkins...</p>
-  if (error) return <p>Erro ao carregar checkins</p>
+  if (isLoading || isLoadingPeople) return <p>Carregando checkins...</p>
+  if (error || errorPeople) return <p>Erro ao carregar checkins</p>
 
   async function handleEditCheckin() {
     try {
@@ -224,21 +229,37 @@ export default function DetailsCheckin() {
                 <HistoryIcon />
                 Histórico de alterações
               </CardTitle>
-              {checkin.edits.map((edit, index) => (
-                <blockquote
-                  key={edit.id ?? index}
-                  className="ml-5 border-l-2 border-yellow-400 pl-6"
-                >
-                  <p className="text-sm font-semibold">{edit.editedBy}</p>
-                  <p className="text-sm font-semibold text-gray-400">
-                    {edit.createdAt &&
-                    !isNaN(new Date(edit.createdAt).getTime())
-                      ? format(new Date(edit.createdAt), 'dd/MM/yyyy HH:mm')
-                      : 'Sem data'}
-                  </p>
-                  <p className="text-sm font-semibold">{edit.reason}</p>
-                </blockquote>
-              ))}
+              {checkin.edits.map((edit, index) => {
+                const personName =
+                  peopleList?.find((p) => p.id === edit.editedBy)?.name ??
+                  edit.editedBy
+
+                return (
+                  <blockquote
+                    key={edit.id ?? index}
+                    className="ml-5 border-l-2 border-yellow-400 pl-6"
+                  >
+                    <p className="text-sm font-semibold">{personName}</p>
+
+                    <p className="text-sm font-semibold text-gray-400">
+                      {edit.editedCreatedAt
+                        ? format(
+                            new Date(edit.editedCreatedAt),
+                            'dd/MM/yyyy HH:mm'
+                          )
+                        : 'Sem data'}
+                    </p>
+
+                    <p className="text-sm font-semibold text-gray-400">
+                      Motivo:
+                      <span className="text-sm font-semibold text-gray-800">
+                        {' '}
+                        {edit.editedReason}
+                      </span>
+                    </p>
+                  </blockquote>
+                )
+              })}
             </Card>
           ) : null}
         </div>
