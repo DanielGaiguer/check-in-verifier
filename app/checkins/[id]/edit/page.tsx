@@ -144,7 +144,6 @@ export default function EditCheckinPage() {
           const place = item.place
           const problemsArray = itemProblems[place.id] || []
           const photosArray = itemFiles[place.id] || []
-          //console.log(photosArray)
           return (
             <PlaceCard
               key={place.id}

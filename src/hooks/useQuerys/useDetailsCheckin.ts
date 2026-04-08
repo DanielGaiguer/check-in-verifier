@@ -9,7 +9,6 @@ export function useDetailsCheckin(id: string) {
 			const res = await fetch(`/api/history-checkins/${id}`);
 			if (!res.ok) throw new Error('Erro ao buscar checkins');
 			const json = await res.json();
-			console.log("JSON:", json.data)
 			return json.data as Checkin;
 		},
 		enabled: !!id
