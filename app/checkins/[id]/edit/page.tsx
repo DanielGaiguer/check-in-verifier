@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { Problem, Photo, Item } from '@/types/typesPayload'
 import { useParams, useRouter } from 'next/navigation'
 import { useDetailsCheckin } from '@/hooks/useQuerys/useDetailsCheckin'
+import { useProblems } from '@/hooks/useQuerys/useProblems'
 
 export default function EditCheckinPage() {
   const router = useRouter()
@@ -19,6 +20,11 @@ export default function EditCheckinPage() {
     params?.id && !Array.isArray(params.id) ? params.id : params?.id?.[0]
 
   const { data: checkin, isLoading, error } = useDetailsCheckin(id || '')
+  const {
+    problems,
+    isLoading: isLoadingProblems,
+    error: errorProblems,
+  } = useProblems()
 
   const [selectedPersonId, setSelectedPersonId] = useState('')
   const [generalObservation, setGeneralObservation] = useState('')
@@ -60,7 +66,6 @@ export default function EditCheckinPage() {
     setItemFiles(photos)
   }, [checkin])
 
-
   if (isLoading) return <p>Carregando...</p>
   if (error || !checkin) return <p>Erro ao carregar o check-in.</p>
 
@@ -87,7 +92,6 @@ export default function EditCheckinPage() {
       problems: itemProblems[item.place.id] || [],
       photos: itemFiles[item.place.id] || [],
     }))
-
 
     const payload = {
       date: new Date().toISOString(),
@@ -139,20 +143,21 @@ export default function EditCheckinPage() {
 
         {checkin.items.map((item: Item) => {
           const place = item.place
-          const problemsArray = itemProblems[place.id] || []
-          const photosArray = itemFiles[place.id] || []
+          const selected = itemProblems[place.id] || []
+          const placeProblemsForCard = item.problems.map((p) => ({
+            problemId: p.problemId,
+            name: p.name,
+          }))
+
           return (
             <PlaceCard
               key={place.id}
               title={place.name}
               subTitle={place.labName}
               observation={itemObservations[place.id]}
-              arrayProblems={problemsArray.map((p: Problem) => ({
-                problemId: p.problemId,
-                name: p.name,
-              }))}
+              arrayProblems={placeProblemsForCard}
               status={placeStatus[place.id]}
-              selectedProblems={itemProblems[place.id]}
+              selectedProblems={selected}
               onStatusChange={(status) =>
                 setPlaceStatus((prev) => ({ ...prev, [place.id]: status }))
               }
@@ -165,7 +170,7 @@ export default function EditCheckinPage() {
               onFilesChange={(files) =>
                 setItemFiles((prev) => ({ ...prev, [place.id]: files }))
               }
-              initialPhotos={photosArray}
+              initialPhotos={itemFiles[place.id] || []}
             />
           )
         })}

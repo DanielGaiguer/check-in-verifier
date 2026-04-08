@@ -15,7 +15,6 @@ import { Field, FieldLabel, FieldLegend, FieldSet } from './ui/field'
 import { FileUploadCircularProgress, UploadedFile } from './drop-files'
 import FieldObservation from './field-observation'
 import { Problem, Photo } from '@/types/typesPayload'
-import { init } from 'next/dist/compiled/webpack/webpack'
 
 interface PlaceCardProps {
   title: string
