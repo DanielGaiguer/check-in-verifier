@@ -9,12 +9,19 @@ type Props = {
 }
 
 export function LastCheckins({ checkins, hrefBase }: Props) {
+  // Ordena os checkins do mais recente para o mais antigo
+  const sortedCheckins = [...checkins].sort((a, b) => {
+    const dateA = parseISO(a.checkinsDate).getTime()
+    const dateB = parseISO(b.checkinsDate).getTime()
+    return dateB - dateA
+  })
+
   return (
     <div className="bg-muted/40 mt-5 rounded-xl border p-6">
       <h2 className="mb-6 text-lg font-semibold">Últimos Check-ins</h2>
 
       <div className="flex flex-col gap-6">
-        {checkins.map((checkin) => {
+        {sortedCheckins.map((checkin) => {
           const initial = checkin.peopleName?.charAt(0)?.toUpperCase() || '?'
 
           return (
