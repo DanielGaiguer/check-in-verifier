@@ -12,26 +12,47 @@ import {
 import { v4 as uuid } from 'uuid'
 
 async function seed() {
-  // --- LABORATÓRIOS ---
+  // --- LABORATÓRIOS REALISTAS ---
   const labs = [
-    { id: uuid(), name: 'Laboratório A' },
-    { id: uuid(), name: 'Laboratório B' },
-    { id: uuid(), name: 'Laboratório C' },
+    { id: uuid(), name: 'Laboratório de Informática' },
+    { id: uuid(), name: 'Laboratório de Química' },
+    { id: uuid(), name: 'Laboratório de Física' },
   ]
 
   for (const lab of labs) {
     await db.insert(laboratories).values(lab)
   }
 
-  // --- LUGARES ---
+  // --- LUGARES (Salas / Bancadas) ---
   const placesData = []
+  const labPlacesMap: Record<string, string[]> = {
+    'Laboratório de Informática': [
+      'Bancada 1',
+      'Bancada 2',
+      'Bancada 3',
+      'Sala de Servidores',
+    ],
+    'Laboratório de Química': [
+      'Bancada A',
+      'Bancada B',
+      'Bancada C',
+      'Sala de Reagentes',
+    ],
+    'Laboratório de Física': [
+      'Mesa X',
+      'Mesa Y',
+      'Mesa Z',
+      'Sala de Experimentos',
+    ],
+  }
+
   let sort = 1
   for (const lab of labs) {
-    for (let i = 1; i <= 3; i++) {
+    for (const placeName of labPlacesMap[lab.name]) {
       placesData.push({
         id: uuid(),
         labId: lab.id,
-        name: `Lugar ${i} do ${lab.name}`,
+        name: `${placeName} do ${lab.name}`,
         sortOrder: sort++,
       })
     }
@@ -54,13 +75,20 @@ async function seed() {
     await db.insert(people).values(person)
   }
 
-  // --- PROBLEMAS ---
+  // --- PROBLEMAS LIGADOS A LABORATÓRIOS ---
   const problemsData = [
+    // Informática
     { id: uuid(), name: 'Monitor quebrado' },
-    { id: uuid(), name: 'Teclado sem tecla' },
-    { id: uuid(), name: 'Cadeira quebrada' },
-    { id: uuid(), name: 'Mesa instável' },
-    { id: uuid(), name: 'Computador desligando' },
+    { id: uuid(), name: 'Teclado com tecla faltando' },
+    { id: uuid(), name: 'Mouse não funcionando' },
+    // Química
+    { id: uuid(), name: 'Reagente vencido' },
+    { id: uuid(), name: 'Bancada suja' },
+    { id: uuid(), name: 'Vidraria quebrada' },
+    // Física
+    { id: uuid(), name: 'Equipamento descalibrado' },
+    { id: uuid(), name: 'Cabo solto' },
+    { id: uuid(), name: 'Sensor com defeito' },
   ]
 
   for (const prob of problemsData) {
@@ -70,11 +98,10 @@ async function seed() {
   // --- CHECKINS ---
   const statusOptions = ['organized', 'disorganized', 'not_checked'] as const
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 15; i++) {
     const checkinId = uuid()
     const person = peopleData[Math.floor(Math.random() * peopleData.length)]
 
-    // Converte Date para string YYYY-MM-DD
     const randomDate = new Date(
       Date.now() - Math.floor(Math.random() * 10) * 24 * 60 * 60 * 1000
     )
@@ -89,8 +116,8 @@ async function seed() {
 
     // --- ITENS DE CHECKIN ---
     const placesForCheckin = placesData
-      .sort(() => 0.5 - Math.random()) // randomiza
-      .slice(0, Math.floor(Math.random() * 3) + 1) // 1 a 3 lugares por checkin
+      .sort(() => 0.5 - Math.random())
+      .slice(0, Math.floor(Math.random() * 4) + 1) // 1 a 4 lugares por checkin
 
     for (const place of placesForCheckin) {
       const checkinItemId = uuid()
@@ -102,14 +129,37 @@ async function seed() {
         checkinId,
         placeId: place.id,
         status,
-        observation: `Status ${status} no ${place.name}`,
+        observation: `Status ${status} em ${place.name}`,
       })
 
       // --- PROBLEMAS DO ITEM ---
+      const labName = labs.find((lab) => lab.id === place.labId)?.name
+      const relatedProblems = problemsData.filter((p) =>
+        labName?.includes('Informática')
+          ? [
+              'Monitor quebrado',
+              'Teclado com tecla faltando',
+              'Mouse não funcionando',
+            ].includes(p.name)
+          : labName?.includes('Química')
+            ? [
+                'Reagente vencido',
+                'Bancada suja',
+                'Vidraria quebrada',
+              ].includes(p.name)
+            : labName?.includes('Física')
+              ? [
+                  'Equipamento descalibrado',
+                  'Cabo solto',
+                  'Sensor com defeito',
+                ].includes(p.name)
+              : []
+      )
+
       const hasProblem = Math.random() < 0.5
-      if (hasProblem) {
+      if (hasProblem && relatedProblems.length > 0) {
         const problem =
-          problemsData[Math.floor(Math.random() * problemsData.length)]
+          relatedProblems[Math.floor(Math.random() * relatedProblems.length)]
         const checkinItemProblemId = uuid()
 
         await db.insert(checkinItemsProblems).values({
