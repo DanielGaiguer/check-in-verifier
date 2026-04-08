@@ -68,11 +68,6 @@ export default function PlaceCard({
     onProblemsChange?.(updatedProblems)
   }
 
-  useEffect(() => {
-    if (initialPhotos) {
-      console.log('fotos: ', initialPhotos)
-    }
-  }, [initialPhotos])
 
   function handleStatusChange(newStatus: 'organized' | 'disorganized') {
     setStatus(newStatus)

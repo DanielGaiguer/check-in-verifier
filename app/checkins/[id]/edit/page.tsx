@@ -60,9 +60,6 @@ export default function EditCheckinPage() {
     setItemFiles(photos)
   }, [checkin])
 
-  // useEffect(() => {
-  //   console.log(itemFiles)
-  // }, [itemFiles])
 
   if (isLoading) return <p>Carregando...</p>
   if (error || !checkin) return <p>Erro ao carregar o check-in.</p>
