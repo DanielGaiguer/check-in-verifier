@@ -25,9 +25,40 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  title: 'Gerenciador de Check-ins',
+  description:
+    'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
   manifest: '/manifest.json',
+  openGraph: {
+    title: 'Gerenciador de Check-ins',
+    description:
+      'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
+    url: 'https://check-in-verifier.vercel.app',
+    siteName: 'LabCheck',
+    images: [
+      {
+        url: 'https://check-in-verifier.vercel.app/icons/icon-512.png',
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'pt_BR',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gerenciador de Check-ins',
+    description:
+      'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
+    images: [
+      {
+        url: 'https://check-in-verifier.vercel.app/icons/icon-512.png',
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
 }
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,6 +69,29 @@ export default function RootLayout({
       lang="pt-BR"
       className={` ${interTight.variable} bg-background text-foreground`}
     >
+      <head>
+        {/* Open Graph & Twitter meta tags (caso precise reforçar) */}
+        <meta property="og:title" content={String(metadata.title)} />
+        <meta property="og:description" content={metadata.description!} />
+        <meta
+          property="og:image"
+          content="https://check-in-verifier.vercel.app/icons/icon-512.png"
+        />
+        <meta
+          property="og:url"
+          content="https://check-in-verifier.vercel.app"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="pt_BR" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={String(metadata.title)} />
+        <meta name="twitter:description" content={metadata.description!} />
+        <meta
+          name="twitter:image"
+          content="https://check-in-verifier.vercel.app/icons/icon-512.png"
+        />
+      </head>
       <body className="bg-background text-foreground min-h-screen antialiased">
         <ClientProvider>
           <div className="flex flex-col items-center bg-black">
