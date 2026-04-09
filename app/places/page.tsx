@@ -43,7 +43,7 @@ interface Place {
   name: string
   labId?: string
   labName?: string
-  sortOrder: number
+  order: number
   problems?: {id: string, name: string}[]
 }
 
@@ -163,7 +163,7 @@ export default function PlacesPage() {
     setSelectedProblems(problemIds)
     setOriginalProblems(problemIds)
 
-    setPlaceSortOrder(place.sortOrder)
+    setPlaceSortOrder(place.order)
     setOpenDialog(true)
   }
 

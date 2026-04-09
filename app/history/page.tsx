@@ -1,5 +1,6 @@
 'use client'
 import CardCheckin from '@/components/card-checkins'
+import { SkeletonHistoryPage } from '@/components/history-skeleton'
 import { Card } from '@/components/ui/card'
 import {
   Select,
@@ -19,7 +20,7 @@ export default function HistoryPage() {
 
   const { data: checkins, isLoading, error } = useCheckins(dateSelect)
 
-  if (isLoading) return <p>Carregando checkins...</p>
+  if (isLoading) return <SkeletonHistoryPage />
   if (error) return <p>Erro ao carregar checkins</p>
 
   return (
