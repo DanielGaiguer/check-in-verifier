@@ -19,7 +19,7 @@ export interface Place {
 export interface Item {
   itemId: string
   place: Place
-  status: 'organized' | 'disorganized'
+  status: 'organized' | 'disorganized' | 'not_checked'
   observation: string
   problems: Problem[]
   photos: Photo[]
