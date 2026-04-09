@@ -12,6 +12,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useDetailsCheckin } from '@/hooks/useQuerys/useDetailsCheckin'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import { CheckinsSkeleton } from '@/components/checkins-skeleton'
+import ErrorPage from '@/components/error-page'
 
 export default function EditCheckinPage() {
   const router = useRouter()
@@ -21,11 +22,6 @@ export default function EditCheckinPage() {
     params?.id && !Array.isArray(params.id) ? params.id : params?.id?.[0]
 
   const { data: checkin, isLoading, error } = useDetailsCheckin(id || '')
-  const {
-    problems,
-    isLoading: isLoadingProblems,
-    error: errorProblems,
-  } = useProblems()
 
   const [selectedPersonId, setSelectedPersonId] = useState('')
   const [generalObservation, setGeneralObservation] = useState('')
@@ -68,7 +64,7 @@ export default function EditCheckinPage() {
   }, [checkin])
 
   if (isLoading) return <CheckinsSkeleton />
-  if (error || !checkin) return <p>Erro ao carregar o check-in.</p>
+  if (error || !checkin)  return <ErrorPage />
 
   async function handleSubmit() {
     if (!selectedPersonId) {

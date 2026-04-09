@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import { Problem, Photo, Item } from '@/types/typesPayload'
 import { useRouter } from 'next/navigation'
 import { CheckinsSkeleton } from '@/components/checkins-skeleton'
+import ErrorPage from '@/components/error-page'
 
 export interface CheckinPayload {
   date: string
@@ -41,7 +42,7 @@ export default function CheckinsPage() {
   const [itemFiles, setItemFiles] = useState<Record<string, Photo[]>>({})
 
   if (isLoadingPlace) return <CheckinsSkeleton />
-  if (errorPlace) return <p>Erro ao carregar os lugares.</p>
+  if (errorPlace)   return <ErrorPage />
 
   function handleSubmit() {
     if (!selectedPersonId) {

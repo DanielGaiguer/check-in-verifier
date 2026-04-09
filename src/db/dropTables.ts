@@ -35,5 +35,5 @@ export async function dropTables() {
 }
 
 dropTables().catch((err) => {
-  console.error("❌ Erro ao limpar banco:", err)
+  console.error("Erro ao limpar banco:", err)
 })

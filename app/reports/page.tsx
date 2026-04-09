@@ -35,6 +35,7 @@ import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import { Skeleton } from '@/components/ui/skeleton'
 import ReportsSkeleton from '@/components/report-skeleton'
+import ErrorPage from '@/components/error-page'
 
 const PERIOD_OPTIONS = [
   { label: 'Últimos 7 dias', value: '7d' },
@@ -92,7 +93,7 @@ export default function ReportsPage() {
   if (isLoading || isLoadingPlaces || isLoadingPeople || isLoadingProblems)
     return <ReportsSkeleton />
   if (error || errorPlaces || errorPeople || errorProblems)
-    return <p>Erro ao carregar os dados.</p>
+      return <ErrorPage />
 
   // Filtra check-ins de acordo com o período
   const filteredCheckins = checkins.filter(

@@ -1,6 +1,7 @@
 'use client'
 
 import { CheckinsSkeleton } from '@/components/checkins-skeleton'
+import ErrorPage from '@/components/error-page'
 import SelectCard from '@/components/select-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -55,7 +56,7 @@ export default function DetailsCheckin() {
   }, [checkin])
 
   if (isLoading || isLoadingPeople) return <CheckinsSkeleton />
-  if (error || errorPeople) return <p>Erro ao carregar checkins</p>
+  if (error || errorPeople) return  <ErrorPage />
 
   async function handleEditCheckin() {
     try {

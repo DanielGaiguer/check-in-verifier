@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from './ui/select'
 import { Dispatch, SetStateAction } from 'react'
+import ErrorPage from './error-page'
+import SelectCardSkeleton from './skeleton-select-card'
 
 interface selectCardProps {
   textHeader: string
@@ -26,8 +28,8 @@ export default function SelectCard({
 }: selectCardProps) {
   const { people, isLoading, error } = usePeople({ active: true })
 
-  if (isLoading) return <p>Carregando...</p>
-  if (error) return <p>Erro ao carregar as pessoas.</p>
+  if (isLoading) return <SelectCardSkeleton />
+  if (error) return <ErrorPage />
 
   return (
     <Card className="mt-5">

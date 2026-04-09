@@ -1,5 +1,6 @@
 'use client'
 import CardCheckin from '@/components/card-checkins'
+import ErrorPage from '@/components/error-page'
 import { SkeletonHistoryPage } from '@/components/history-skeleton'
 import { Card } from '@/components/ui/card'
 import {
@@ -21,7 +22,7 @@ export default function HistoryPage() {
   const { data: checkins, isLoading, error } = useCheckins(dateSelect)
 
   if (isLoading) return <SkeletonHistoryPage />
-  if (error) return <p>Erro ao carregar checkins</p>
+  if (error) return  <ErrorPage />
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">

@@ -2,6 +2,7 @@
 
 import DialogDelete from '@/components/dialog-delete'
 import DialogLaboratories from '@/components/dialog-laboratories'
+import ErrorPage from '@/components/error-page'
 import { SkeletonLaboratoriesPage } from '@/components/laboratories-skeleton'
 import { Button } from '@/components/ui/button'
 import {
@@ -35,7 +36,7 @@ export default function LaboratoriesPage() {
   const [openDelete, setOpenDelete] = useState(false)
 
   if (isLoading) return <SkeletonLaboratoriesPage />
-  if (error) return <p>Erro ao buscar laboratórios</p>
+  if (error) return <ErrorPage />
 
   function handleDelete() {
     deleteLabMutation.mutate({

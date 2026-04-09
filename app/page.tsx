@@ -7,6 +7,7 @@ import { useLastCheckins } from '@/hooks/useQuerys/useLastCheckins'
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { isSameDay, parseISO } from 'date-fns'
+import ErrorPage from '@/components/error-page'
 
 export default function Home() {
   const { checkinData, isLoading, error } = useLastCheckins()
@@ -33,7 +34,7 @@ export default function Home() {
 
   if (isLoading || isLoadingPlaces || isLoadingPeople) return <SkeletonCard />
   if (error || errorPlaces || errorPeople)
-    return <p>Erro ao carregar os dados.</p>
+    return <ErrorPage />
 
   // Função auxiliar: retorna o número da semana de uma data
   function getWeekNumber(date: Date) {

@@ -2,13 +2,14 @@
 
 import DialogDelete from '@/components/dialog-delete'
 import DialogProblems from '@/components/dialog-problems'
+import ErrorPage from '@/components/error-page'
+import { SkeletonProblemsPage } from '@/components/problems-skeleton'
 import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card'
 import { useDeleteProblem } from '@/hooks/useMutation/useDeleteProblem'
 
@@ -34,8 +35,8 @@ export default function ProblemsPage() {
   const [internalOpen, setInternalOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
 
-  if (isLoading) return <p>Carregando...</p>
-  if (error) return <p>Erro ao carregar os problemas.</p>
+  if (isLoading) return <SkeletonProblemsPage />
+  if (error) return <ErrorPage />
 
     function handleDelete() {
       deleteProblemMutation.mutate({

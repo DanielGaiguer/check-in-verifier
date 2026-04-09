@@ -1,6 +1,7 @@
 'use client'
 import DialogDelete from '@/components/dialog-delete'
 import DialogPeople from '@/components/dialog-people'
+import ErrorPage from '@/components/error-page'
 import { SkeletonPeoplePage } from '@/components/people-skeleton'
 import { Button } from '@/components/ui/button'
 import {
@@ -31,7 +32,7 @@ export default function PeoplePage() {
   const [id, setId] = useState('')
 
   if (isLoading) return <SkeletonPeoplePage />
-  if (error) return <p>Erro ao carregar os problemas.</p>
+  if (error)   return <ErrorPage />
 
   function handleDelete() {
     deletePeopleMutation.mutate({

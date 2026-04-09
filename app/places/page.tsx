@@ -38,6 +38,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { useDeletePlace } from '@/hooks/useMutation/useDeletePlace'
 import { toast } from 'react-toastify'
 import { SkeletonPlacesPage } from '@/components/place-skeleton'
+import ErrorPage from '@/components/error-page'
 
 interface Place {
   id: string
@@ -127,7 +128,7 @@ export default function PlacesPage() {
   )
 
   if (isLoading || isLoadingProblems) return <SkeletonPlacesPage />
-  if (error || errorProblems) return <p>Erro ao carregar.</p>
+  if (error || errorProblems) return <ErrorPage />
 
   const uniqueLabs = Array.from(
     new Map(
