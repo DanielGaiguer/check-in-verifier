@@ -2,6 +2,7 @@
 
 import DialogDelete from '@/components/dialog-delete'
 import DialogLaboratories from '@/components/dialog-laboratories'
+import { SkeletonLaboratoriesPage } from '@/components/laboratories-skeleton'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -33,7 +34,7 @@ export default function LaboratoriesPage() {
   const [internalOpen, setInternalOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
 
-  if (isLoading) return <p>Carregando...</p>
+  if (isLoading) return <SkeletonLaboratoriesPage />
   if (error) return <p>Erro ao buscar laboratórios</p>
 
   function handleDelete() {
