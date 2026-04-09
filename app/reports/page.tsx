@@ -33,6 +33,8 @@ import { useCheckins } from '@/hooks/useQuerys/useCheckins'
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
+import { Skeleton } from '@/components/ui/skeleton'
+import ReportsSkeleton from '@/components/report-skeleton'
 
 const PERIOD_OPTIONS = [
   { label: 'Últimos 7 dias', value: '7d' },
@@ -88,7 +90,7 @@ export default function ReportsPage() {
   const startDateObj = getStartDate(period)
 
   if (isLoading || isLoadingPlaces || isLoadingPeople || isLoadingProblems)
-    return <p>Carregando...</p>
+    return <ReportsSkeleton />
   if (error || errorPlaces || errorPeople || errorProblems)
     return <p>Erro ao carregar os dados.</p>
 

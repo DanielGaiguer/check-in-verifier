@@ -2,6 +2,7 @@
 import { AlertCard } from '@/components/alert-card'
 import { InfoCard } from '@/components/info-card'
 import { LastCheckins } from '@/components/last-checkins'
+import { SkeletonCard } from '@/components/home-skeleton'
 import { useLastCheckins } from '@/hooks/useQuerys/useLastCheckins'
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
@@ -30,15 +31,15 @@ export default function Home() {
     year: 'numeric',
   }).format(today)
 
-  if (isLoading || isLoadingPlaces || isLoadingPeople)
-    return <p>Carregando...</p>
+  if (isLoading || isLoadingPlaces || isLoadingPeople) return <SkeletonCard />
   if (error || errorPlaces || errorPeople)
     return <p>Erro ao carregar os dados.</p>
 
   // Função auxiliar: retorna o número da semana de uma data
   function getWeekNumber(date: Date) {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
-    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000
+    const pastDaysOfYear =
+      (date.getTime() - firstDayOfYear.getTime()) / 86400000
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
   }
 

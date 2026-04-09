@@ -11,6 +11,7 @@ import { Problem, Photo, Item } from '@/types/typesPayload'
 import { useParams, useRouter } from 'next/navigation'
 import { useDetailsCheckin } from '@/hooks/useQuerys/useDetailsCheckin'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
+import { CheckinsSkeleton } from '@/components/checkins-skeleton'
 
 export default function EditCheckinPage() {
   const router = useRouter()
@@ -66,7 +67,7 @@ export default function EditCheckinPage() {
     setItemFiles(photos)
   }, [checkin])
 
-  if (isLoading) return <p>Carregando...</p>
+  if (isLoading) return <CheckinsSkeleton />
   if (error || !checkin) return <p>Erro ao carregar o check-in.</p>
 
   async function handleSubmit() {

@@ -1,5 +1,6 @@
 'use client'
 
+import { CheckinsSkeleton } from '@/components/checkins-skeleton'
 import SelectCard from '@/components/select-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -53,7 +54,7 @@ export default function DetailsCheckin() {
     setReason('') // Se quiser inicializar com a última alteração, poderia pegar do checkin.edits
   }, [checkin])
 
-  if (isLoading || isLoadingPeople) return <p>Carregando checkins...</p>
+  if (isLoading || isLoadingPeople) return <CheckinsSkeleton />
   if (error || errorPeople) return <p>Erro ao carregar checkins</p>
 
   async function handleEditCheckin() {
