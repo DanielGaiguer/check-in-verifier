@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
     for (const place of updatedPlaces) {
       await db.update(places)
-        .set({ sortOrder: place.sortOrder })
+        .set({ sortOrder: place.order })
         .where(eq(places.id, place.id))
     }
 

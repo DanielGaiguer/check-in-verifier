@@ -4,16 +4,7 @@ import { eq, max } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
 export async function GET(req: Request) {
-  // const body = await req.json()
-  // if (!body.checkinItemProblemId) {
-  //   return NextResponse.json(
-  //     {
-  //       success: false,
-  //       error: 'Dados incompletos',
-  //     },
-  //     { status: 400 }
-  //   )
-  // }
+
   let result
   try {
     result = await db
@@ -74,7 +65,7 @@ export async function POST(req: Request) {
 
   try {
     await db.insert(checkinItemPhotos).values({
-      checkinItemProblemId: body.checkinItemProblemId,
+      checkinItemId: body.checkinItemProblemId,
       photoUrl: body.photoUrl,
       //sortOrder: body.sortOrder,
     })
