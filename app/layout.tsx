@@ -23,16 +23,13 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 })
-
+// app/layout.tsx
 export const metadata: Metadata = {
   title: 'Gerenciador de Check-ins',
-  description:
-    'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
-  manifest: '/manifest.json',
+  description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
   openGraph: {
     title: 'Gerenciador de Check-ins',
-    description:
-      'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
+    description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
     url: 'https://check-in-verifier.vercel.app',
     siteName: 'LabCheck',
     images: [
@@ -48,17 +45,13 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Gerenciador de Check-ins',
-    description:
-      'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
+    description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
     images: [
-      {
-        url: 'https://check-in-verifier.vercel.app/icons/icon-512.png',
-        width: 1200,
-        height: 630,
-      },
+      'https://check-in-verifier.vercel.app/icons/icon-512.png',
     ],
   },
 }
+
 export default function RootLayout({
   children,
 }: Readonly<{
