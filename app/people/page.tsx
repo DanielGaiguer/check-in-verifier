@@ -127,7 +127,7 @@ export default function PeoplePage() {
             <Card className="flex items-center justify-center">
               <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
               <h4 className="mb-5 font-light text-gray-500">
-                Ainda não foi cadastrado nenhum problema.
+                Ainda não foi cadastrado nenhuma pessoa.
               </h4>
             </Card>
           )}
