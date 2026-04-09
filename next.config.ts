@@ -1,3 +1,10 @@
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  register: true,
+  disable: process.env.NODE_ENV === 'development',
+  skipWaiting: true,
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -10,13 +17,7 @@ const nextConfig = {
       },
     ],
   },
+  turbopack: {}, // <--- isso “silencia” o erro
 }
-
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  register: true,
-  disable: process.env.NODE_ENV === 'development',
-  skipWaiting: true,
-})
 
 module.exports = withPWA(nextConfig)
