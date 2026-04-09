@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: 'LabCheck',
     images: [
       {
-        url: 'https://check-in-verifier.vercel.app/icons/icon-512.png',
+        url: 'https://check-in-verifier.vercel.app/icons/icon-192.png',
         width: 1200,
         height: 630,
       },
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     title: 'Gerenciador de Check-ins',
     description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
     images: [
-      'https://check-in-verifier.vercel.app/icons/icon-512.png',
+      'https://check-in-verifier.vercel.app/icons/icon-192.png',
     ],
   },
 }
