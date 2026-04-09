@@ -37,6 +37,7 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import { useDeletePlace } from '@/hooks/useMutation/useDeletePlace'
 import { toast } from 'react-toastify'
+import { SkeletonPlacesPage } from '@/components/place-skeleton'
 
 interface Place {
   id: string
@@ -105,7 +106,7 @@ function SortablePlace({
 
 export default function PlacesPage() {
   const { places, isLoading, error } = usePlaces()
-  const { problems, isLoading: isLoadingProblems } = useProblems()
+  const { problems, isLoading: isLoadingProblems, error: errorProblems } = useProblems()
   const updateOrder = useUpdatePlacesOrder()
   const deletePlace = useDeletePlace()
 
@@ -125,8 +126,8 @@ export default function PlacesPage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
-  if (isLoading) return <p>Carregando...</p>
-  if (error) return <p>Erro ao carregar os lugares.</p>
+  if (isLoading || isLoadingProblems) return <SkeletonPlacesPage />
+  if (error || errorProblems) return <p>Erro ao carregar.</p>
 
   const uniqueLabs = Array.from(
     new Map(
