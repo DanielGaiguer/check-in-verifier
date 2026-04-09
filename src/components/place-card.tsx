@@ -101,12 +101,12 @@ export default function PlaceCard({
     <Card className="mt-2 gap-0">
       <CardHeader className="flex flex-row justify-between">
         <div>
-          <CardTitle>{title}</CardTitle>
+          <CardTitle >{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
         <div className="flex gap-2">
           <Button
-            className={`dm:w-45 mr-4 w-35 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
+            className={`md:w-45 md:mr-4 w-34 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
             onClick={() => handleStatusChange('organized')}
           >
             <CircleCheckIcon />
@@ -114,7 +114,7 @@ export default function PlaceCard({
           </Button>
 
           <Button
-            className={`dm:w-45 mr-4 w-38 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
+            className={`md:w-45 md:mr-4 w-34 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
             onClick={() => handleStatusChange('disorganized')}
           >
             <CircleXIcon />
