@@ -13,10 +13,20 @@ import {
 
 import { Button } from './ui/button'
 import { SidebarMenu } from './sidebar-menu'
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 export default function SidebarSheet() {
+  const pathname = usePathname()
+  const [open, setOpen] = useState(false)
+
+  // Fecha o sheet quando a rota muda
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       {/* Botão que abre */}
       <SheetTrigger>
         <Button
