@@ -36,6 +36,8 @@ import { useProblems } from '@/hooks/useQuerys/useProblems'
 import { Skeleton } from '@/components/ui/skeleton'
 import ReportsSkeleton from '@/components/report-skeleton'
 import ErrorPage from '@/components/error-page'
+import { AlertCard } from '@/components/alert-card'
+import { ClipboardCheckIcon } from 'lucide-react'
 
 const PERIOD_OPTIONS = [
   { label: 'Últimos 7 dias', value: '7d' },
@@ -92,8 +94,7 @@ export default function ReportsPage() {
 
   if (isLoading || isLoadingPlaces || isLoadingPeople || isLoadingProblems)
     return <ReportsSkeleton />
-  if (error || errorPlaces || errorPeople || errorProblems)
-      return <ErrorPage />
+  if (error || errorPlaces || errorPeople || errorProblems) return <ErrorPage />
 
   // Filtra check-ins de acordo com o período
   const filteredCheckins = checkins.filter(
@@ -187,7 +188,6 @@ export default function ReportsPage() {
               Análise dos check-ins realizados
             </h4>
           </div>
-
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-48">
               <SelectValue />
@@ -205,115 +205,124 @@ export default function ReportsPage() {
             </SelectContent>
           </Select>
         </div>
+        {checkins.length === 0 ? (
+          <Card className="flex items-center justify-center">
+            <ClipboardCheckIcon className="mt-5 text-gray-300" size={55} />
+            <h4 className="mb-5 font-light text-gray-500">
+              Nenhum check-in encontrado neste período.
+            </h4>
+          </Card>
+        ) : (
+          <>
+            <div className="mt-3 mb-4 grid grid-cols-2 gap-4 p-1 sm:grid-cols-3">
+              <Card className="flex min-h-30 w-full flex-col shadow-xs">
+                <CardContent className="flex h-full flex-col items-center justify-center text-center">
+                  <CardTitle className="text-3xl text-blue-400">
+                    {totalCheckins}
+                  </CardTitle>
+                  <CardDescription>Total de Check-ins</CardDescription>
+                </CardContent>
+              </Card>
+              <Card className="flex min-h-30 w-full flex-col shadow-xs">
+                <CardContent className="flex h-full flex-col items-center justify-center text-center">
+                  <CardTitle className="text-3xl text-green-400">
+                    {percentOrganizedCheckins.toFixed(1)}%
+                  </CardTitle>
+                  <CardDescription>Organizados</CardDescription>
+                </CardContent>
+              </Card>
+              <Card className="flex min-h-30 w-full flex-col shadow-xs">
+                <CardContent className="flex h-full flex-col items-center justify-center text-center">
+                  <CardTitle className="text-3xl">
+                    {percentOrganizedItems.toFixed(1)}%
+                  </CardTitle>
+                  <CardDescription>Locais verificados</CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              {/* PIE CHART */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Status dos Lugares</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        dataKey="value"
+                        nameKey="name"
+                        outerRadius={80}
+                        label={({ name, value }) => `${value} ${name}`}
+                      >
+                        {pieData.map((_, i) => (
+                          <Cell key={i} fill={COLORS[i]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
 
-        <div className="mt-3 mb-4 grid grid-cols-2 gap-4 p-1 sm:grid-cols-3">
-          <Card className="flex min-h-30 w-full flex-col shadow-xs">
-            <CardContent className="flex h-full flex-col items-center justify-center text-center">
-              <CardTitle className="text-3xl text-blue-400">
-                {totalCheckins}
-              </CardTitle>
-              <CardDescription>Total de Check-ins</CardDescription>
-            </CardContent>
-          </Card>
-          <Card className="flex min-h-30 w-full flex-col shadow-xs">
-            <CardContent className="flex h-full flex-col items-center justify-center text-center">
-              <CardTitle className="text-3xl text-green-400">
-                {percentOrganizedCheckins.toFixed(1)}%
-              </CardTitle>
-              <CardDescription>Organizados</CardDescription>
-            </CardContent>
-          </Card>
-          <Card className="flex min-h-30 w-full flex-col shadow-xs">
-            <CardContent className="flex h-full flex-col items-center justify-center text-center">
-              <CardTitle className="text-3xl">
-                {percentOrganizedItems.toFixed(1)}%
-              </CardTitle>
-              <CardDescription>Locais verificados</CardDescription>
-            </CardContent>
-          </Card>
-        </div>
+              {/* TOP PEOPLE */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quem mais fez Check-ins</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={topPeople} layout="vertical">
+                      <XAxis type="number" />
+                      <YAxis type="category" dataKey="name" width={120} />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="hsl(199, 89%, 48%)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* PIE CHART */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Status dos Lugares</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    outerRadius={80}
-                    label={({ name, value }) => `${value} ${name}`}
+              {/* TOP PROBLEMS */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Problemas mais Frequentes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={topProblems} layout="vertical">
+                      <XAxis type="number" />
+                      <YAxis type="category" dataKey="name" width={120} />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="hsl(0, 72%, 51%)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* TOP PLACES */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Lugares com mais Problemas</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer
+                    width="100%"
+                    height={400}
+                    className="text-sm"
                   >
-                    {pieData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* TOP PEOPLE */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Quem mais fez Check-ins</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={topPeople} layout="vertical">
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="name" width={120} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="hsl(199, 89%, 48%)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* TOP PROBLEMS */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Problemas mais Frequentes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={topProblems} layout="vertical">
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="name" width={120} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="hsl(0, 72%, 51%)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* TOP PLACES */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Lugares com mais Problemas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer
-                width="100%"
-                height={400}
-                className="text-sm"
-              >
-                <BarChart data={topPlaces} layout="vertical">
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="name" width={120} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="hsl(38, 92%, 50%)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
+                    <BarChart data={topPlaces} layout="vertical">
+                      <XAxis type="number" />
+                      <YAxis type="category" dataKey="name" width={120} />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="hsl(38, 92%, 50%)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </main>
   )
