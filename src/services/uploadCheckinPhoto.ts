@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '@/db/index'
 import { checkinItemPhotos } from '@/db/schema'
 
-export async function uploadCheckinPhoto(checkinItemProblemId: string, file: File) {
+export async function uploadCheckinPhoto(checkinItemId: string, file: File) {
   // 1️⃣ Nome único
   const fileName = `${uuidv4()}-${file.name}`
 
@@ -23,9 +23,8 @@ export async function uploadCheckinPhoto(checkinItemProblemId: string, file: Fil
     .insert(checkinItemPhotos)
     .values({
       id: uuidv4(),
-      checkinItemProblemId,
+      checkinItemId,
       photoUrl: publicUrl,
-      sortOrder: 1,
     })
     .returning()
 
