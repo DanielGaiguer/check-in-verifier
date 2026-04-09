@@ -1,6 +1,7 @@
 'use client'
 import DialogDelete from '@/components/dialog-delete'
 import DialogPeople from '@/components/dialog-people'
+import { SkeletonPeoplePage } from '@/components/people-skeleton'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -29,7 +30,7 @@ export default function PeoplePage() {
   const [openDelete, setOpenDelete] = useState(false)
   const [id, setId] = useState('')
 
-  if (isLoading) return <p>Carregando...</p>
+  if (isLoading) return <SkeletonPeoplePage />
   if (error) return <p>Erro ao carregar os problemas.</p>
 
   function handleDelete() {
