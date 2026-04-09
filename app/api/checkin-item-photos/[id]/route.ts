@@ -3,15 +3,11 @@ import { checkinItemPhotos } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
-interface Params {
-  id: string
-}
-
 export async function GET(
   req: Request,
-  context: { params: Params }
+  context: { params: Record<string, string> }
 ) {
-  const { id } = context.params
+  const id = context.params.id
 
   if (!id) {
     return NextResponse.json(
@@ -38,9 +34,9 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  context: { params: Params }
+  context: { params: Record<string, string> }
 ) {
-  const { id } = context.params
+  const id = context.params.id
 
   if (!id) {
     return NextResponse.json(
