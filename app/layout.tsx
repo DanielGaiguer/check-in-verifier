@@ -27,10 +27,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   manifest: '/manifest.json',
   title: 'Gerenciador de Check-ins',
-  description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
+  icons: {
+    icon: '/icons/icon-192.png',
+    shortcut: '/icons/icon-192.png',
+    apple: '/icons/icon-192.png',
+  },
+  description:
+    'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
   openGraph: {
     title: 'Gerenciador de Check-ins',
-    description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
+    description:
+      'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
     url: 'https://check-in-verifier.vercel.app',
     siteName: 'LabCheck',
     images: [
@@ -46,10 +53,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Gerenciador de Check-ins',
-    description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
-    images: [
-      'https://check-in-verifier.vercel.app/icons/icon-192.png',
-    ],
+    description:
+      'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
+    images: ['https://check-in-verifier.vercel.app/icons/icon-192.png'],
   },
 }
 
