@@ -35,7 +35,7 @@ export function InfoCard({
   if (href) {
     return (
       <Link href={href}>
-        <Card className="flex w-full min-h-45 md:min-h-30 flex-col gap-3 shadow-xs md:flex-row">
+        <Card className="flex w-full min-h-45 md:min-h-25 flex-col gap-3 shadow-xs md:flex-row">
           <CardHeader className="flex items-center gap-4">
             <div
               className={`flex h-12 w-12 items-center justify-center rounded-2xl ${iconBgColor}`}

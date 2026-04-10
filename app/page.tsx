@@ -85,7 +85,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-4 p-1 sm:grid-cols-4">
+          <div className="mt-5 grid grid-cols-2 gap-4 p-1 lg:grid-cols-4">
             <InfoCard
               title={todayCheckins.length}
               description="Check-ins de Hoje"
