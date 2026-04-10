@@ -2,21 +2,25 @@
   "name": "LabCheck",
   "short_name": "LabCheck",
   "description": "Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "orientation": "portrait",
+  "display_override": ["window-controls-overlay", "standalone"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
-} 
+}
