@@ -1,7 +1,7 @@
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
-  disable: process.env.NODE_ENV === 'development',
+  //disable: process.env.NODE_ENV === 'development',
   skipWaiting: true,
 })
 
@@ -17,7 +17,7 @@ const nextConfig = {
       },
     ],
   },
-  turbopack: {}, // <--- isso “silencia” o erro
+  turbopack: {}, 
 }
 
 module.exports = withPWA(nextConfig)
