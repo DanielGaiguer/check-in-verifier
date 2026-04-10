@@ -231,7 +231,7 @@ export default function ReportsPage() {
                   <CardDescription>Organizados</CardDescription>
                 </CardContent>
               </Card>
-              <Card className="flex min-h-30 w-full flex-col shadow-xs">
+              <Card className="col-span-2 flex min-h-30 w-full flex-col shadow-xs sm:col-span-1">
                 <CardContent className="flex h-full flex-col items-center justify-center text-center">
                   <CardTitle className="text-3xl">
                     {percentOrganizedItems.toFixed(1)}%
