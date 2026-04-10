@@ -6,10 +6,6 @@ import {
   checkins,
   people,
 } from '@/db/schema'
-import {
-  SearchParamsProps,
-  switchWheteClause,
-} from '@/services/switchWhereClause'
 import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
@@ -86,7 +82,7 @@ export async function POST(req: Request) {
       if (item.photos && item.photos.length > 0) {
         const photosToInsert = item.photos.map((photo: any) => ({
           checkinItemId: newItem.id,
-          photoUrl: photo.url, 
+          photoUrl: photo.url,
         }))
         await db.insert(checkinItemPhotos).values(photosToInsert)
       }
@@ -99,6 +95,22 @@ export async function POST(req: Request) {
         }))
         await db.insert(checkinItemsProblems).values(problemsToInsert)
       }
+    }
+
+    try {
+      await fetch(
+        'https://hook.us2.make.com/g00j0z6e7qgaq4f2ytwxvvl4soif2hvq',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        }
+      )
+    } catch (error) {
+      console.error(error)
+      return NextResponse.json({ success: false, error }, { status: 500 })
     }
 
     return NextResponse.json({
