@@ -31,7 +31,7 @@ export function SidebarMenu({ onItemClick }: Props) {
             className={`mb-2 justify-start gap-4 text-sm ${
               isActive
                 ? 'bg-gray-800 text-blue-400'
-                : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                : 'text-gray-400 hover:bg-gray-700 hover:text-white bg-[#14181F]'
             }`}
             variant="default"
             asChild
