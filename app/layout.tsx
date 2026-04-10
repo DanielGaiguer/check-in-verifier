@@ -25,6 +25,7 @@ const geistMono = Geist_Mono({
 })
 // app/layout.tsx
 export const metadata: Metadata = {
+  manifest: '../public/manifest.json',
   title: 'Gerenciador de Check-ins',
   description: 'Registre e gerencie os Check-ins diários de laboratórios de forma eficiente e tenha acesso ao monitoramento da organização.',
   openGraph: {
