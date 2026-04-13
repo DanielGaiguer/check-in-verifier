@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updatePlacesOrder } from '@/services/placesService'
 import { Place } from '@/types/place'
-
 export function useUpdatePlacesOrder() {
   const queryClient = useQueryClient()
 
@@ -9,24 +8,34 @@ export function useUpdatePlacesOrder() {
     mutationFn: updatePlacesOrder,
 
     onMutate: async (newOrder) => {
-      await queryClient.cancelQueries({ queryKey: ['places'] })
+      const queryKey = ['places', null]
 
-      const previous = queryClient.getQueryData(['places'])
+      await queryClient.cancelQueries({ queryKey })
 
-      queryClient.setQueryData(['places'], (old: any) => {
-        if (!old) return newOrder
+      const previous = queryClient.getQueryData(queryKey)
 
-        // mantém os dados antigos e só atualiza a ordem
-        return newOrder.map((newItem: any) => {
-          const oldItem = old.find((o: any) => o.id === newItem.id)
-          return {
-            ...oldItem,
-            ...newItem,
-          }
-        })
+      queryClient.setQueryData(queryKey, (old: any) => {
+        if (!old) return old
+
+        return {
+          ...old,
+          places: newOrder,
+        }
       })
 
-      return { previous }
+      return { previous, queryKey }
+    },
+
+    onError: (_, __, context) => {
+      if (context?.previous && context?.queryKey) {
+        queryClient.setQueryData(context.queryKey, context.previous)
+      }
+    },
+
+    onSettled: (_, __, ___, context) => {
+      queryClient.invalidateQueries({
+        queryKey: context?.queryKey ?? ['places'],
+      })
     },
   })
 }
