@@ -37,7 +37,7 @@ export function LastCheckins({ checkins, hrefBase }: Props) {
               <div className="flex flex-col">
                 <span className="font-medium">{checkin.peopleName}</span>
                 <span className="text-muted-foreground text-sm">
-                  {format(parseISO(checkin.checkinsDate), "dd/MM/yyyy 'às' HH:mm")}
+                  {format(parseISO(checkin.createdAt), "dd/MM/yyyy 'às' HH:mm")}
                 </span>
               </div>
             </Link>
