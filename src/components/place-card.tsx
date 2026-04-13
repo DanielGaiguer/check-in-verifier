@@ -129,10 +129,10 @@ export default function PlaceCard({
               Problemas encontrados *
             </FieldLegend>
             {arrayProblems.map((problem) => (
-              <Field
+            <Field
                 key={problem.problemId}
                 orientation="horizontal"
-                className="flex items-center gap-2 rounded-md px-1 py-2 active:bg-gray-100"
+                className="flex items-center gap-0.5 rounded-md px-0.5 py-0.5 active:bg-gray-100"
               >
                 <Checkbox
                   //Todo realizar teste
@@ -159,8 +159,24 @@ export default function PlaceCard({
                   }}
                 />
                 <FieldLabel
-                  htmlFor={`${subTitle}-${problem.problemId}`}
-                  className="text-md font-normal"
+                  className="text-md font-normal ml-1"
+                  onClick={() => {
+                    setSelectedProblems((prev) => {
+                      let updated: Problem[]
+                      const isSelected = prev.some(
+                        (p) => p.problemId === problem.problemId
+                      )
+                      if (isSelected) {
+                        updated = prev.filter(
+                          (p) => p.problemId !== problem.problemId
+                        )
+                      } else {
+                        updated = [...prev, problem]
+                      }
+                      onProblemsChange?.(updated)
+                      return updated
+                    })
+                  }}
                 >
                   {problem.name}
                 </FieldLabel>
