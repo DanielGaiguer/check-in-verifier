@@ -135,9 +135,9 @@ export default function PlaceCard({
                 className="flex items-center gap-2 rounded-md px-1 py-2 active:bg-gray-100"
               >
                 <Checkbox
-                //Todo realizar teste
+                  //Todo realizar teste
                   className="sm:h-5 sm:w-5 lg:h-5 lg:w-5"
-                  id={String(problem.problemId)}
+                  id={`${subTitle}-${problem.problemId}`}
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
                   )}
@@ -159,7 +159,7 @@ export default function PlaceCard({
                   }}
                 />
                 <FieldLabel
-                  htmlFor={problem.problemId}
+                  htmlFor={`${subTitle}-${problem.problemId}`}
                   className="text-md font-normal"
                 >
                   {problem.name}
