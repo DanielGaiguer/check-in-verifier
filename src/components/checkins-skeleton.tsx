@@ -1,13 +1,13 @@
 'use client'
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function CheckinsSkeleton() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col rounded-t-xl bg-gray-50 md:mt-2">
-      <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
-
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col overflow-x-hidden rounded-t-xl bg-gray-50 md:mt-2">
+      {' '}
+      <div className="rounded-t-xl bg-gray-50 px-4 py-5 sm:px-5">
         {/* Header */}
         <div className="space-y-2">
           <Skeleton className="h-7 w-44" />
@@ -34,7 +34,6 @@ export function CheckinsSkeleton() {
               </CardHeader>
 
               <CardContent className="space-y-4">
-
                 {/* Botões status */}
                 <div className="flex gap-3">
                   <Skeleton className="h-9 w-28" />
@@ -73,7 +72,6 @@ export function CheckinsSkeleton() {
         <div className="mt-5 flex justify-end">
           <Skeleton className="h-11 w-44" />
         </div>
-
       </div>
     </main>
   )
