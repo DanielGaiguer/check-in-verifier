@@ -17,7 +17,7 @@ export function usePlaces(options?: UsePlacesOptions) {
   const queryString = options?.active !== undefined ? `?active=${options.active}` : ''
 
   const queryResult = useQuery({
-    queryKey: ['places', options],
+    queryKey: ['places', options?.active ?? null],
     queryFn: async () => {
       const res = await fetch(`/api/places${queryString}`)
       if (!res.ok) throw new Error('Erro ao buscar lugares')

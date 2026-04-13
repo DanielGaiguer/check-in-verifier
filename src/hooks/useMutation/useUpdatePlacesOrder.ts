@@ -8,29 +8,25 @@ export function useUpdatePlacesOrder() {
   return useMutation({
     mutationFn: updatePlacesOrder,
 
-    // roda antes de enviar para o servidor
-    onMutate: async (newPlaces: Place[]) => {
+    onMutate: async (newOrder) => {
       await queryClient.cancelQueries({ queryKey: ['places'] })
 
-      const previousPlaces = queryClient.getQueryData<Place[]>(['places'])
+      const previous = queryClient.getQueryData(['places'])
 
-      // Atualiza cache imediatamente
-      queryClient.setQueryData(['places'], newPlaces)
+      queryClient.setQueryData(['places'], (old: any) => {
+        if (!old) return newOrder
 
-      // Retorna contexto para rollback
-      return { previousPlaces }
-    },
+        // mantém os dados antigos e só atualiza a ordem
+        return newOrder.map((newItem: any) => {
+          const oldItem = old.find((o: any) => o.id === newItem.id)
+          return {
+            ...oldItem,
+            ...newItem,
+          }
+        })
+      })
 
-    // rollback se der erro
-    onError: (err, newPlaces, context) => {
-      if (context?.previousPlaces) {
-        queryClient.setQueryData(['places'], context.previousPlaces)
-      }
-    },
-
-    // roda sempre depois da mutation
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['places'] })
+      return { previous }
     },
   })
 }
