@@ -117,9 +117,10 @@ export default function DialogPlace({
     closeDialog()
   }
 
+  console.log('uniqueLabs:', uniqueLabs)
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6">
+      <DialogContent className="max-h-[85vh] w-full max-w-md p-6">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {placeId ? 'Editar Lugar' : 'Novo Lugar'}
@@ -134,7 +135,10 @@ export default function DialogPlace({
             </Label>
             <button
               type="button"
-              onClick={() => setLabDropdownOpen(!labDropdownOpen)}
+              onClick={() => {
+                console.log('clicou')
+                setLabDropdownOpen((prev) => !prev)
+              }}
               className="flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100 px-3 focus:border-blue-400"
             >
               <span className={`${!labId && 'text-gray-400'}`}>
