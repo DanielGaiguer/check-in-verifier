@@ -132,25 +132,30 @@ export default function PlaceCard({
               <Field
                 key={problem.problemId}
                 orientation="horizontal"
-                className="flex items-center gap-2 py-2 px-1 rounded-md active:bg-gray-100"
+                className="flex items-center gap-2 rounded-md px-1 py-2 active:bg-gray-100"
               >
                 <Checkbox
-                  className="sm:h-5 sm:w-5 lg:h-4.5 lg:w-4.5"
-                  id={problem.problemId}
+                //Todo realizar teste
+                  className="sm:h-5 sm:w-5 lg:h-5 lg:w-5"
+                  id={String(problem.problemId)}
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
                   )}
                   onCheckedChange={(checked) => {
-                    if (checked) {
-                      setSelectedProblems((prev) => [...prev, problem])
-                      onProblemsChange?.([...selectedProblems, problem])
-                    } else {
-                      const updated = selectedProblems.filter(
-                        (p) => p.problemId !== problem.problemId
-                      )
-                      setSelectedProblems(updated)
+                    setSelectedProblems((prev) => {
+                      let updated: Problem[]
+
+                      if (checked) {
+                        updated = [...prev, problem]
+                      } else {
+                        updated = prev.filter(
+                          (p) => p.problemId !== problem.problemId
+                        )
+                      }
+
                       onProblemsChange?.(updated)
-                    }
+                      return updated
+                    })
                   }}
                 />
                 <FieldLabel
