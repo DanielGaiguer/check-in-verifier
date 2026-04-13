@@ -119,7 +119,7 @@ export default function DialogPlace({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className="max-h-[85vh] w-full max-w-md p-6">
+      <DialogContent className="max-h-[85vh] w-full max-w-md p-6 z-9999">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {placeId ? 'Editar Lugar' : 'Novo Lugar'}
