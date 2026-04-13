@@ -50,7 +50,6 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    console.log('Payload recebido:', JSON.stringify(body, null, 2))
 
     if (!body.peopleId || !body.items || !Array.isArray(body.items)) {
       return NextResponse.json(
@@ -67,6 +66,11 @@ export async function POST(req: Request) {
         observation: body.observation ?? '',
       })
       .returning()
+
+    const selectPeople = await db
+      .select()
+      .from(people)
+      .where(eq(people.id, newCheckin.peopleId))
 
     for (const item of body.items) {
       const [newItem] = await db
@@ -105,7 +109,11 @@ export async function POST(req: Request) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({
+            id: newCheckin.id,
+            name: selectPeople[0].name,
+            date: newCheckin.date,
+          }),
         }
       )
     } catch (error) {
