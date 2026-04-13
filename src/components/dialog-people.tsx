@@ -32,32 +32,29 @@ export default function DialogPeople({
   internalOpen,
   setInternalOpen,
   id,
-  setId
+  setId,
 }: DialogPeopleProtocol) {
   const createUserMutation = useCreatePeople()
   const updateUserMutation = useUpdatePeople()
 
   function handleSubmit(e: React.FormEvent) {
-  e.preventDefault()
+    e.preventDefault()
 
-  if (id && id.trim()) {
-    updateUserMutation.mutate({ id, name })
-    toast.success('Pessoa atualizada com sucesso.')
-  } else {
-    createUserMutation.mutate({ name })
-    toast.success('Pessoa cadastrada com sucesso.')
+    if (id && id.trim()) {
+      updateUserMutation.mutate({ id, name })
+      toast.success('Pessoa atualizada com sucesso.')
+    } else {
+      createUserMutation.mutate({ name })
+      toast.success('Pessoa cadastrada com sucesso.')
+    }
+
+    setInternalOpen?.(false)
+    setName('')
+    setId?.('') // se quiser limpar
   }
-
-  setInternalOpen?.(false)
-  setName('')
-  setId?.('') // se quiser limpar
-}
   return (
-    <Dialog
-      open={internalOpen}
-      onOpenChange={setInternalOpen}
-    >
-      <DialogContent className="max-h-[85vh] w-full md:max-w-md overflow-y-auto p-6 z-9999 max-w-[80%]">
+    <Dialog open={internalOpen} onOpenChange={setInternalOpen}>
+      <DialogContent className="z-9999 max-h-[85vh] w-[80%] max-w-[80%] overflow-y-auto p-6 md:w-full md:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {name ? 'Editar Pessoa' : 'Nova Pessoa'}

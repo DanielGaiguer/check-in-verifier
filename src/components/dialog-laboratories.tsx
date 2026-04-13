@@ -57,7 +57,7 @@ export default function DialogLaboratories({
 
   return (
     <Dialog open={internalOpen} onOpenChange={setInternalOpen}>
-      <DialogContent className="max-h-[85vh] w-full md:max-w-md overflow-y-auto p-6 z-9999 max-w-[80%]">
+      <DialogContent className="z-9999 max-h-[85vh] w-[80%] max-w-[80%] overflow-y-auto p-6 md:w-full md:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {forEdit ? 'Editar Laboratório' : 'Novo Laboratório'}
