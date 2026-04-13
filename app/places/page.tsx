@@ -140,7 +140,7 @@ export default function PlacesPage() {
     const newIndex = places.findIndex((p) => p.id === over.id)
 
     const reordered = arrayMove(places, oldIndex, newIndex)
-    const updated = reordered.map((p, index) => ({ ...p, sortOrder: index }))
+    const updated = reordered.map((p, index) => ({ ...p, order: index }))
 
     // Atualiza o backend (quando estiver pronto) e cache imediatamente
     updateOrder.mutate(updated)
