@@ -117,7 +117,6 @@ export default function DialogPlace({
     closeDialog()
   }
 
-  console.log('uniqueLabs:', uniqueLabs)
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="max-h-[85vh] w-full max-w-md p-6">
@@ -136,7 +135,6 @@ export default function DialogPlace({
             <button
               type="button"
               onClick={() => {
-                console.log('clicou')
                 setLabDropdownOpen((prev) => !prev)
               }}
               className="flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100 px-3 focus:border-blue-400"
