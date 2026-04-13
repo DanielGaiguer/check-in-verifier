@@ -67,7 +67,6 @@ export default function PlaceCard({
     onProblemsChange?.(updatedProblems)
   }
 
-
   function handleStatusChange(newStatus: 'organized' | 'disorganized') {
     setStatus(newStatus)
     onStatusChange?.(newStatus)
@@ -99,14 +98,14 @@ export default function PlaceCard({
 
   return (
     <Card className="mt-2 gap-0">
-      <CardHeader className="flex flex-row justify-between">
+      <CardHeader className="flex flex-col justify-between sm:flex-row sm:justify-between md:flex-row md:justify-between">
         <div>
-          <CardTitle >{title}</CardTitle>
+          <CardTitle>{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
         <div className="flex gap-2">
           <Button
-            className={`md:w-45 md:mr-4 w-34 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
+            className={`w-34 md:mr-4 md:w-45 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
             onClick={() => handleStatusChange('organized')}
           >
             <CircleCheckIcon />
@@ -114,7 +113,7 @@ export default function PlaceCard({
           </Button>
 
           <Button
-            className={`md:w-45 md:mr-4 w-34 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
+            className={`w-34 md:mr-4 md:w-45 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
             onClick={() => handleStatusChange('disorganized')}
           >
             <CircleXIcon />
@@ -125,7 +124,7 @@ export default function PlaceCard({
 
       {status === 'disorganized' && (
         <CardContent>
-          <FieldSet className="gap-1.5 space-y-0">
+          <FieldSet className="mt-5 gap-1.5 space-y-0">
             <FieldLegend variant="label" className="mb-2.5">
               Problemas encontrados *
             </FieldLegend>
@@ -136,6 +135,7 @@ export default function PlaceCard({
                 className="space-y-0"
               >
                 <Checkbox
+                  className='sm:w-5 sm:h-5 lg:w-4.5 lg:h-4.5'
                   id={problem.problemId}
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
@@ -144,7 +144,7 @@ export default function PlaceCard({
                 />
                 <FieldLabel
                   htmlFor={problem.problemId}
-                  className="text-sm font-normal"
+                  className="text-md font-normal"
                 >
                   {problem.name}
                 </FieldLabel>

@@ -93,7 +93,7 @@ export default function DetailsCheckin() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2 ">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
         <div className="flex flex-row justify-between">
           <div>

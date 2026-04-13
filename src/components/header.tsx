@@ -1,5 +1,5 @@
 const Header = () => {
-  return <div className="md:sticky md:top-0 md:z-40 h-5 md:h-12 md:flex md:items-center md:px-4 md:border-b md:border-gray-300 md:shadow-2xs md:rounded-t-xl md:bg-gray-50"></div>
+  return <div className="lg:sticky lg:top-0 lg:z-40 h-5 lg:h-12 lg:flex lg:items-center lg:px-4 lg:border-b lg:border-gray-300 lg:shadow-2xs lg:rounded-t-xl lg:bg-gray-50"></div>
 }
 
 export default Header
