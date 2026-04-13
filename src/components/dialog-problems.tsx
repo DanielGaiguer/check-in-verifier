@@ -54,7 +54,7 @@ export default function DialogProblems({
   }
   return (
     <Dialog open={internalOpen} onOpenChange={setInternalOpen}>
-      <DialogContent className="max-h-[85vh] w-full max-w-md overflow-y-auto p-6 z-9999">
+      <DialogContent className="max-h-[85vh] w-full md:max-w-md overflow-y-auto p-6 z-9999 max-w-[80%]">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {forEdit ? 'Editar Problema' : 'Novo Problema'}
