@@ -157,7 +157,7 @@ export default function PlaceCard({
                 /> */}
                 <Checkbox
                   //Todo realizar teste
-                  className="sm:h-5 sm:w-5 lg:h-5 lg:w-5"
+                  className="sm:h-5 sm:w-5 lg:h-5 lg:w-5 cursor-pointer"
                   id={`${subTitle}-${problem.problemId}`}
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
@@ -179,7 +179,7 @@ export default function PlaceCard({
                   }}
                 />
                 <FieldLabel
-                  className="text-md ml-1 font-normal"
+                  className="text-md ml-1 font-normal cursor-pointer"
                   onClick={() => {
                     setSelectedProblems((prev) => {
                       let updated: Problem[]
