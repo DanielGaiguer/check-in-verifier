@@ -134,7 +134,7 @@ export default function PlaceCard({
                 orientation="horizontal"
                 className="flex items-center gap-0.5 rounded-md px-0.5 py-0.5 active:bg-gray-100"
               >
-                <input
+                {/* <input
                   type="checkbox"
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
@@ -154,8 +154,8 @@ export default function PlaceCard({
                       return updated
                     })
                   }}
-                />
-                {/* <Checkbox
+                /> */}
+                <Checkbox
                   //Todo realizar teste
                   className="sm:h-5 sm:w-5 lg:h-5 lg:w-5"
                   id={`${subTitle}-${problem.problemId}`}
@@ -177,7 +177,7 @@ export default function PlaceCard({
                       return updated
                     })
                   }}
-                /> */}
+                />
                 <FieldLabel
                   className="text-md ml-1 font-normal"
                   onClick={() => {
