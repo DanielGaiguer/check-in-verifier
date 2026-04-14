@@ -91,12 +91,13 @@ export default function DetailsCheckin() {
     setDialogOpen(false)
     router.push(`/checkins/${id}/edit`)
   }
-
   function handleBackClick() {
-    if (window.history) return window.history.back() 
-    router.push('/')
+    if (window.history.length > 1) {
+      router.back()
+    } else {
+      router.push('/')
+    }
   }
-
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
