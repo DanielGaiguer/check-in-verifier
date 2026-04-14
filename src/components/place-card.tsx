@@ -54,18 +54,18 @@ export default function PlaceCard({
   )
   const [files, setFiles] = useState<Photo[]>(initialPhotos || [])
 
-  // function toggleProblem(problem: Problem) {
-  //   let updatedProblems: Problem[]
-  //   if (selectedProblems.some((p) => p.problemId === problem.problemId)) {
-  //     updatedProblems = selectedProblems.filter(
-  //       (p) => p.problemId !== problem.problemId
-  //     )
-  //   } else {
-  //     updatedProblems = [...selectedProblems, problem]
-  //   }
-  //   setSelectedProblems(updatedProblems)
-  //   onProblemsChange?.(updatedProblems)
-  // }
+  function toggleProblem(problem: Problem) {
+    let updatedProblems: Problem[]
+    if (selectedProblems.some((p) => p.problemId === problem.problemId)) {
+      updatedProblems = selectedProblems.filter(
+        (p) => p.problemId !== problem.problemId
+      )
+    } else {
+      updatedProblems = [...selectedProblems, problem]
+    }
+    setSelectedProblems(updatedProblems)
+    onProblemsChange?.(updatedProblems)
+  }
 
   function handleStatusChange(newStatus: 'organized' | 'disorganized') {
     setStatus(newStatus)
@@ -141,17 +141,15 @@ export default function PlaceCard({
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
                   )}
-                  onCheckedChange={(checked) => {
+                  onCheckedChange={() => {
                     setSelectedProblems((prev) => {
-                      let updated: Problem[]
+                      const exists = prev.some(
+                        (p) => p.problemId === problem.problemId
+                      )
 
-                      if (checked) {
-                        updated = [...prev, problem]
-                      } else {
-                        updated = prev.filter(
-                          (p) => p.problemId !== problem.problemId
-                        )
-                      }
+                      const updated = exists
+                        ? prev.filter((p) => p.problemId !== problem.problemId)
+                        : [...prev, problem]
 
                       onProblemsChange?.(updated)
                       return updated
@@ -160,24 +158,23 @@ export default function PlaceCard({
                 />
                 <FieldLabel
                   className="text-md ml-1 font-normal"
-                  htmlFor={`${subTitle}-${problem.problemId}`}
-                  // onClick={() => {
-                  //   setSelectedProblems((prev) => {
-                  //     let updated: Problem[]
-                  //     const isSelected = prev.some(
-                  //       (p) => p.problemId === problem.problemId
-                  //     )
-                  //     if (isSelected) {
-                  //       updated = prev.filter(
-                  //         (p) => p.problemId !== problem.problemId
-                  //       )
-                  //     } else {
-                  //       updated = [...prev, problem]
-                  //     }
-                  //     onProblemsChange?.(updated)
-                  //     return updated
-                  //   })
-                  // }}
+                  onClick={() => {
+                    setSelectedProblems((prev) => {
+                      let updated: Problem[]
+                      const isSelected = prev.some(
+                        (p) => p.problemId === problem.problemId
+                      )
+                      if (isSelected) {
+                        updated = prev.filter(
+                          (p) => p.problemId !== problem.problemId
+                        )
+                      } else {
+                        updated = [...prev, problem]
+                      }
+                      onProblemsChange?.(updated)
+                      return updated
+                    })
+                  }}
                 >
                   {problem.name}
                 </FieldLabel>
