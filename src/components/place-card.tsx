@@ -142,6 +142,7 @@ export default function PlaceCard({
                     (p) => p.problemId === problem.problemId
                   )}
                   onCheckedChange={() => {
+                    console.log('funcionou')
                     setSelectedProblems((prev) => {
                       const exists = prev.some(
                         (p) => p.problemId === problem.problemId
