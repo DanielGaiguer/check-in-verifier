@@ -54,18 +54,18 @@ export default function PlaceCard({
   )
   const [files, setFiles] = useState<Photo[]>(initialPhotos || [])
 
-  function toggleProblem(problem: Problem) {
-    let updatedProblems: Problem[]
-    if (selectedProblems.some((p) => p.problemId === problem.problemId)) {
-      updatedProblems = selectedProblems.filter(
-        (p) => p.problemId !== problem.problemId
-      )
-    } else {
-      updatedProblems = [...selectedProblems, problem]
-    }
-    setSelectedProblems(updatedProblems)
-    onProblemsChange?.(updatedProblems)
-  }
+  // function toggleProblem(problem: Problem) {
+  //   let updatedProblems: Problem[]
+  //   if (selectedProblems.some((p) => p.problemId === problem.problemId)) {
+  //     updatedProblems = selectedProblems.filter(
+  //       (p) => p.problemId !== problem.problemId
+  //     )
+  //   } else {
+  //     updatedProblems = [...selectedProblems, problem]
+  //   }
+  //   setSelectedProblems(updatedProblems)
+  //   onProblemsChange?.(updatedProblems)
+  // }
 
   function handleStatusChange(newStatus: 'organized' | 'disorganized') {
     setStatus(newStatus)
@@ -129,7 +129,7 @@ export default function PlaceCard({
               Problemas encontrados *
             </FieldLegend>
             {arrayProblems.map((problem) => (
-            <Field
+              <Field
                 key={problem.problemId}
                 orientation="horizontal"
                 className="flex items-center gap-0.5 rounded-md px-0.5 py-0.5 active:bg-gray-100"
@@ -159,24 +159,25 @@ export default function PlaceCard({
                   }}
                 />
                 <FieldLabel
-                  className="text-md font-normal ml-1"
-                  onClick={() => {
-                    setSelectedProblems((prev) => {
-                      let updated: Problem[]
-                      const isSelected = prev.some(
-                        (p) => p.problemId === problem.problemId
-                      )
-                      if (isSelected) {
-                        updated = prev.filter(
-                          (p) => p.problemId !== problem.problemId
-                        )
-                      } else {
-                        updated = [...prev, problem]
-                      }
-                      onProblemsChange?.(updated)
-                      return updated
-                    })
-                  }}
+                  className="text-md ml-1 font-normal"
+                  htmlFor={`${subTitle}-${problem.problemId}`}
+                  // onClick={() => {
+                  //   setSelectedProblems((prev) => {
+                  //     let updated: Problem[]
+                  //     const isSelected = prev.some(
+                  //       (p) => p.problemId === problem.problemId
+                  //     )
+                  //     if (isSelected) {
+                  //       updated = prev.filter(
+                  //         (p) => p.problemId !== problem.problemId
+                  //       )
+                  //     } else {
+                  //       updated = [...prev, problem]
+                  //     }
+                  //     onProblemsChange?.(updated)
+                  //     return updated
+                  //   })
+                  // }}
                 >
                   {problem.name}
                 </FieldLabel>
