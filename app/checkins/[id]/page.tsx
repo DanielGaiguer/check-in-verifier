@@ -92,6 +92,11 @@ export default function DetailsCheckin() {
     router.push(`/checkins/${id}/edit`)
   }
 
+  function handleBackClick() {
+    if (window.history) return window.history.back() 
+    router.push('/')
+  }
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
@@ -100,7 +105,7 @@ export default function DetailsCheckin() {
             <div className="mb-5 flex h-12 items-center">
               <Button
                 className="mr-3 flex cursor-pointer items-center gap-2 border-0 bg-gray-50 hover:bg-gray-50"
-                onClick={() => window.history.back()}
+                onClick={() => handleBackClick()}
               >
                 <ArrowLeftIcon
                   className="h-6 w-6 bg-gray-50 text-black hover:bg-gray-200"
