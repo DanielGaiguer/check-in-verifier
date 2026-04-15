@@ -29,7 +29,7 @@ export default function CheckinsPage() {
   const [selectedPersonId, setSelectedPersonId] = useState<string>('')
   const [generalObservation, setGeneralObservation] = useState<string>('')
 
-  // Estado por item/lugar
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [placeStatus, setPlaceStatus] = useState<
     Record<string, 'organized' | 'disorganized'>
   >({})
@@ -42,9 +42,11 @@ export default function CheckinsPage() {
   const [itemFiles, setItemFiles] = useState<Record<string, Photo[]>>({})
 
   if (isLoadingPlace) return <CheckinsSkeleton />
-  if (errorPlace)   return <ErrorPage />
+  if (errorPlace) return <ErrorPage />
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    if (isSubmitting) return
+
     if (!selectedPersonId) {
       toast.error('Campo Responsável é obrigatório.')
       return
@@ -57,6 +59,8 @@ export default function CheckinsPage() {
       toast.error('Todos os lugares precisam ter um status definido.')
       return
     }
+
+    setIsSubmitting(true)
 
     const items: Item[] = places.map((place) => ({
       itemId: place.id,
@@ -82,27 +86,32 @@ export default function CheckinsPage() {
       items,
     }
 
-    fetch('/api/checkins', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          toast.success('Check-in realizado com sucesso!')
-          setPlaceStatus({})
-          setItemProblems({})
-          setItemObservations({})
-          setItemFiles({})
-          setGeneralObservation('')
-          setSelectedPersonId('')
-          router.push('/')
-        } else {
-          toast.error('Erro ao salvar check-in: ' + data.error)
-        }
+    try {
+      const res = await fetch('/api/checkins', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       })
-      .catch((err) => toast.error('Erro na requisição: ' + err))
+
+      const data = await res.json()
+
+      if (data.success) {
+        toast.success('Check-in realizado com sucesso!')
+        setPlaceStatus({})
+        setItemProblems({})
+        setItemObservations({})
+        setItemFiles({})
+        setGeneralObservation('')
+        setSelectedPersonId('')
+        router.push('/')
+      } else {
+        toast.error('Erro ao salvar check-in: ' + data.error)
+      }
+    } catch (err) {
+      toast.error('Erro na requisição: ' + err)
+    } finally {
+      setIsSubmitting(false) // ✅ agora sim, só roda depois do fetch
+    }
   }
 
   return (
@@ -164,6 +173,7 @@ export default function CheckinsPage() {
 
         <div className="mt-4 flex flex-col items-end">
           <Button
+            disabled={isSubmitting}
             className="bg-blue-400 p-5.5 text-sm hover:bg-blue-300"
             onClick={handleSubmit}
           >
