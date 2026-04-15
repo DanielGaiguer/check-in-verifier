@@ -1,13 +1,13 @@
 'use client'
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function ReportsSkeleton() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col rounded-t-xl bg-gray-50 md:mt-2">
-      <div className="m-5 rounded-t-xl bg-gray-50">
-
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col overflow-x-hidden rounded-t-xl bg-gray-50 md:mt-2">
+      {' '}
+      <div className="rounded-t-xl bg-gray-50 px-4 py-5 sm:px-5">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="space-y-2">
@@ -19,7 +19,7 @@ export default function ReportsSkeleton() {
         </div>
 
         {/* Cards métricas */}
-        <div className="mt-3 mb-4 grid grid-cols-2 gap-4 p-1 sm:grid-cols-3">
+        <div className="mt-3 mb-4 grid-cols-2 gap-4 p-1 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <Card key={i} className="flex min-h-30 w-full flex-col shadow-xs">
               <CardContent className="flex h-full flex-col items-center justify-center gap-2">
@@ -32,14 +32,13 @@ export default function ReportsSkeleton() {
 
         {/* Charts */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-
           {/* Pie Chart */}
           <Card>
             <CardHeader>
               <Skeleton className="h-5 w-48" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-[250px] w-full rounded-md" />
+              <Skeleton className="h-62.5 w-full rounded-md" />
             </CardContent>
           </Card>
 
@@ -49,7 +48,7 @@ export default function ReportsSkeleton() {
               <Skeleton className="h-5 w-52" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-[250px] w-full rounded-md" />
+              <Skeleton className="h-62.5 w-full rounded-md" />
             </CardContent>
           </Card>
 
@@ -59,7 +58,7 @@ export default function ReportsSkeleton() {
               <Skeleton className="h-5 w-56" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-[400px] w-full rounded-md" />
+              <Skeleton className="h-100 w-full rounded-md" />
             </CardContent>
           </Card>
 
@@ -69,10 +68,9 @@ export default function ReportsSkeleton() {
               <Skeleton className="h-5 w-60" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-[400px] w-full rounded-md" />
+              <Skeleton className="h-100 w-full rounded-md" />
             </CardContent>
           </Card>
-
         </div>
       </div>
     </main>

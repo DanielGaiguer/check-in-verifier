@@ -56,7 +56,7 @@ export default function DetailsCheckin() {
   }, [checkin])
 
   if (isLoading || isLoadingPeople) return <CheckinsSkeleton />
-  if (error || errorPeople) return  <ErrorPage />
+  if (error || errorPeople) return <ErrorPage />
 
   async function handleEditCheckin() {
     try {
@@ -91,16 +91,22 @@ export default function DetailsCheckin() {
     setDialogOpen(false)
     router.push(`/checkins/${id}/edit`)
   }
-
+  function handleBackClick() {
+    if (window.history.length > 1) {
+      router.back()
+    } else {
+      router.push('/')
+    }
+  }
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-col md:flex-row md:justify-between">
           <div>
-            <div className="mb-3 flex h-12 items-center">
+            <div className="mb-5 flex h-12 items-center">
               <Button
                 className="mr-3 flex cursor-pointer items-center gap-2 border-0 bg-gray-50 hover:bg-gray-50"
-                onClick={() => window.history.back()}
+                onClick={() => handleBackClick()}
               >
                 <ArrowLeftIcon
                   className="h-6 w-6 bg-gray-50 text-black hover:bg-gray-200"
@@ -205,21 +211,29 @@ export default function DetailsCheckin() {
                         </Badge>
                       </div>
                     ))}
-                    <p className="mt-4 text-sm">Observação:</p>
-                    <p className="text-sm">{item.observation}</p>
-                    <p className="mt-4 text-sm">Fotos Anexadas:</p>
-                    <div className="mt-2 flex flex-row gap-3 overflow-x-auto">
-                      {item.photos?.map((photo) => (
-                        <Image
-                          key={photo.photoId}
-                          src={photo.url}
-                          alt="Foto do problema"
-                          width={130}
-                          height={130}
-                          className="shrink-0 rounded-xl"
-                        />
-                      ))}
-                    </div>
+                    {item.observation.length > 0 && (
+                      <>
+                        <p className="mt-4 text-sm">Observação:</p>
+                        <p className="text-sm">{item.observation}</p>
+                      </>
+                    )}
+                    {item.photos.length > 0 && (
+                      <>
+                        <p className="mt-4 text-sm">Fotos Anexadas:</p>
+                        <div className="mt-2 flex flex-row gap-3 overflow-x-auto">
+                          {item.photos?.map((photo) => (
+                            <Image
+                              key={photo.photoId}
+                              src={photo.url}
+                              alt="Foto do problema"
+                              width={130}
+                              height={130}
+                              className="shrink-0 rounded-xl"
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </CardContent>
                 )}
               </Card>

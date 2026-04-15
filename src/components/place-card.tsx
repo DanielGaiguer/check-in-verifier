@@ -67,7 +67,6 @@ export default function PlaceCard({
     onProblemsChange?.(updatedProblems)
   }
 
-
   function handleStatusChange(newStatus: 'organized' | 'disorganized') {
     setStatus(newStatus)
     onStatusChange?.(newStatus)
@@ -99,14 +98,14 @@ export default function PlaceCard({
 
   return (
     <Card className="mt-2 gap-0">
-      <CardHeader className="flex flex-row justify-between">
+      <CardHeader className="flex flex-col justify-between sm:flex-row sm:justify-between md:flex-row md:justify-between">
         <div>
-          <CardTitle >{title}</CardTitle>
+          <CardTitle>{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
         <div className="flex gap-2">
           <Button
-            className={`md:w-45 md:mr-4 w-34 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
+            className={`w-34 md:mr-4 md:w-45 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
             onClick={() => handleStatusChange('organized')}
           >
             <CircleCheckIcon />
@@ -114,7 +113,7 @@ export default function PlaceCard({
           </Button>
 
           <Button
-            className={`md:w-45 md:mr-4 w-34 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
+            className={`w-34 md:mr-4 md:w-45 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
             onClick={() => handleStatusChange('disorganized')}
           >
             <CircleXIcon />
@@ -125,7 +124,7 @@ export default function PlaceCard({
 
       {status === 'disorganized' && (
         <CardContent>
-          <FieldSet className="gap-1.5 space-y-0">
+          <FieldSet className="mt-5 gap-1.5 space-y-0">
             <FieldLegend variant="label" className="mb-2.5">
               Problemas encontrados *
             </FieldLegend>
@@ -133,18 +132,71 @@ export default function PlaceCard({
               <Field
                 key={problem.problemId}
                 orientation="horizontal"
-                className="space-y-0"
+                className="flex items-center gap-0.5 rounded-md px-0.5 py-0.5 active:bg-gray-100"
               >
-                <Checkbox
-                  id={problem.problemId}
+                {/* <input
+                  type="checkbox"
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
                   )}
-                  onCheckedChange={() => toggleProblem(problem)}
+                  onChange={() => {
+                    console.log('funcionou')
+                    setSelectedProblems((prev) => {
+                      const exists = prev.some(
+                        (p) => p.problemId === problem.problemId
+                      )
+
+                      const updated = exists
+                        ? prev.filter((p) => p.problemId !== problem.problemId)
+                        : [...prev, problem]
+
+                      onProblemsChange?.(updated)
+                      return updated
+                    })
+                  }}
+                /> */}
+                <Checkbox
+                  //Todo realizar teste
+                  className="sm:h-5 sm:w-5 lg:h-5 lg:w-5 cursor-pointer"
+                  id={`${subTitle}-${problem.problemId}`}
+                  checked={selectedProblems.some(
+                    (p) => p.problemId === problem.problemId
+                  )}
+                  onCheckedChange={() => {
+                    console.log('funcionou')
+                    setSelectedProblems((prev) => {
+                      const exists = prev.some(
+                        (p) => p.problemId === problem.problemId
+                      )
+
+                      const updated = exists
+                        ? prev.filter((p) => p.problemId !== problem.problemId)
+                        : [...prev, problem]
+
+                      onProblemsChange?.(updated)
+                      return updated
+                    })
+                  }}
                 />
                 <FieldLabel
-                  htmlFor={problem.problemId}
-                  className="text-sm font-normal"
+                  className="text-md ml-1 font-normal cursor-pointer"
+                  onClick={() => {
+                    setSelectedProblems((prev) => {
+                      let updated: Problem[]
+                      const isSelected = prev.some(
+                        (p) => p.problemId === problem.problemId
+                      )
+                      if (isSelected) {
+                        updated = prev.filter(
+                          (p) => p.problemId !== problem.problemId
+                        )
+                      } else {
+                        updated = [...prev, problem]
+                      }
+                      onProblemsChange?.(updated)
+                      return updated
+                    })
+                  }}
                 >
                   {problem.name}
                 </FieldLabel>

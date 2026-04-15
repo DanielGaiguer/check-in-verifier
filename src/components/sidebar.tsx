@@ -5,7 +5,7 @@ import { SidebarMenu } from './sidebar-menu'
 
 export default function Sidebar() {
   return (
-    <aside className="hidden md:flex sticky top-0 z-1000 h-screen w-65 flex-col overflow-y-auto bg-[#14181F] border-r border-gray-700">
+    <aside className="hidden lg:flex sticky top-0 z-1000 h-screen w-65 flex-col overflow-y-auto bg-[#14181F] border-r border-gray-700">
       
       <div className="mt-4 flex flex-row border-b border-gray-700 px-5 pb-4">
         <FlaskConical

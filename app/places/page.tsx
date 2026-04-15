@@ -39,12 +39,13 @@ import { useDeletePlace } from '@/hooks/useMutation/useDeletePlace'
 import { toast } from 'react-toastify'
 import { SkeletonPlacesPage } from '@/components/place-skeleton'
 import ErrorPage from '@/components/error-page'
+import { useLaboratories } from '@/hooks/useQuerys/useLaboratories'
 
 interface Place {
   id: string
   name: string
-  labId?: string
-  labName?: string
+  labId: string
+  labName: string
   order: number
   problems?: {id: string, name: string}[]
 }
@@ -108,6 +109,7 @@ function SortablePlace({
 export default function PlacesPage() {
   const { places, isLoading, error } = usePlaces()
   const { problems, isLoading: isLoadingProblems, error: errorProblems } = useProblems()
+  const { laboratories, isLoading: isLoadingLaboratories, error: errorLaboratories} = useLaboratories()
   const updateOrder = useUpdatePlacesOrder()
   const deletePlace = useDeletePlace()
 
@@ -127,16 +129,8 @@ export default function PlacesPage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
-  if (isLoading || isLoadingProblems) return <SkeletonPlacesPage />
-  if (error || errorProblems) return <ErrorPage />
-
-  const uniqueLabs = Array.from(
-    new Map(
-      places
-        .filter((p) => p.labId && p.labName)
-        .map((p) => [p.labId, p.labName])
-    ).entries()
-  ).map(([id, name]) => ({ id, name }))
+  if (isLoading || isLoadingProblems || isLoadingLaboratories) return <SkeletonPlacesPage />
+  if (error || errorProblems || errorLaboratories) return <ErrorPage />
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -146,7 +140,7 @@ export default function PlacesPage() {
     const newIndex = places.findIndex((p) => p.id === over.id)
 
     const reordered = arrayMove(places, oldIndex, newIndex)
-    const updated = reordered.map((p, index) => ({ ...p, sortOrder: index }))
+    const updated = reordered.map((p, index) => ({ ...p, order: index }))
 
     // Atualiza o backend (quando estiver pronto) e cache imediatamente
     updateOrder.mutate(updated)
@@ -255,7 +249,7 @@ export default function PlacesPage() {
           labName={labName}
           setLabName={setLabName}
           setLabId={setLabId}
-          uniqueLabs={uniqueLabs}
+          uniqueLabs={laboratories}
           problems={problems}
           isLoadingProblems={isLoadingProblems}
           selectedProblems={selectedProblems}

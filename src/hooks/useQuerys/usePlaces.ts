@@ -13,11 +13,16 @@ interface UsePlacesOptions {
   active?: boolean
 }
 
+const placesQueryKey = (active?: boolean) => [
+  'places',
+  active ?? null,
+]
+
 export function usePlaces(options?: UsePlacesOptions) {
   const queryString = options?.active !== undefined ? `?active=${options.active}` : ''
 
   const queryResult = useQuery({
-    queryKey: ['places', options],
+    queryKey: placesQueryKey(options?.active),
     queryFn: async () => {
       const res = await fetch(`/api/places${queryString}`)
       if (!res.ok) throw new Error('Erro ao buscar lugares')
