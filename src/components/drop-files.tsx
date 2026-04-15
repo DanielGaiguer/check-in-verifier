@@ -126,7 +126,7 @@ export function FileUploadCircularProgress({
       onValueChange={setFiles}
       maxFiles={5}
       maxSize={5 * 1024 * 1024} // 5MB
-      className="mt-2 w-80 rounded-xl bg-gray-100 md:max-w-[50%] lg:w-100" //w-full max-w-md
+      className="mt-2 w-full md:w-80 rounded-xl bg-gray-100 md:max-w-[50%] lg:w-100" //w-full max-w-md
       onUpload={onUpload}
       onFileReject={onFileReject}
       multiple

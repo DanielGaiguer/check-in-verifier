@@ -103,9 +103,9 @@ export default function PlaceCard({
           <CardTitle>{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
-        <div className="flex gap-2">
+        <div className="md:mt-0 mt-1.5 flex flex-row items-center justify-center space-x-3">
           <Button
-            className={`w-34 md:mr-4 md:w-45 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
+            className={`w-36 md:mr-4 md:w-45 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
             onClick={() => handleStatusChange('organized')}
           >
             <CircleCheckIcon />
@@ -113,7 +113,7 @@ export default function PlaceCard({
           </Button>
 
           <Button
-            className={`w-34 md:mr-4 md:w-45 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
+            className={`w-36 md:mr-4 md:w-45 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
             onClick={() => handleStatusChange('disorganized')}
           >
             <CircleXIcon />
@@ -123,7 +123,7 @@ export default function PlaceCard({
       </CardHeader>
 
       {status === 'disorganized' && (
-        <CardContent>
+        <CardContent className="overflow-x-hidden">
           <FieldSet className="mt-5 gap-1.5 space-y-0">
             <FieldLegend variant="label" className="mb-2.5">
               Problemas encontrados *
@@ -132,7 +132,7 @@ export default function PlaceCard({
               <Field
                 key={problem.problemId}
                 orientation="horizontal"
-                className="flex items-center gap-0.5 rounded-md px-0.5 py-0.5 active:bg-gray-100"
+                className="flex min-w-0 items-center gap-0.5 rounded-md px-0.5 py-0.5 active:bg-gray-100"
               >
                 {/* <input
                   type="checkbox"
@@ -157,13 +157,12 @@ export default function PlaceCard({
                 /> */}
                 <Checkbox
                   //Todo realizar teste
-                  className="sm:h-5 sm:w-5 lg:h-5 lg:w-5 cursor-pointer"
+                  className="cursor-pointer sm:h-5 sm:w-5 lg:h-5 lg:w-5 h-4.5 w-4.5"
                   id={`${subTitle}-${problem.problemId}`}
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
                   )}
                   onCheckedChange={() => {
-                    console.log('funcionou')
                     setSelectedProblems((prev) => {
                       const exists = prev.some(
                         (p) => p.problemId === problem.problemId
@@ -179,7 +178,7 @@ export default function PlaceCard({
                   }}
                 />
                 <FieldLabel
-                  className="text-md ml-1 font-normal cursor-pointer"
+                  className="text-md ml-1 min-w-0 flex-1 cursor-pointer font-normal wrap-break-word whitespace-normal"
                   onClick={() => {
                     setSelectedProblems((prev) => {
                       let updated: Problem[]
@@ -204,7 +203,7 @@ export default function PlaceCard({
             ))}
           </FieldSet>
 
-          <div className="mt-4">
+          <div className="mt-4 min-w-0 flex-1">
             <FileUploadCircularProgress
               onFileUploaded={handleFileUpload}
               initialPhotos={initialPhotos}
