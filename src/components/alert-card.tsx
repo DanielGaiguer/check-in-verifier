@@ -26,8 +26,8 @@ export const AlertCard: React.FC<AlertCardProps> = ({
 }) => {
   return (
     <Card className="border-yellow-200 bg-[#FFFFF0] p-5">
-      <CardHeader className="flex flex-row justify-between gap-2 p-0">
-        <div className="flex flex-row items-start gap-2 p-0">
+      <CardHeader className="flex md:flex-row md:justify-between gap-2 p-0 flex-col ">
+        <div className="flex flex-row md:items-start gap-2 p-0 ">
           <AlertCircle className="mt-3.5 mr-1 h-5 w-5 text-yellow-600 md:mt-2 md:mr-0" />
           <div>
             <CardTitle className="text-md font-sans leading-snug font-normal text-gray-900">
@@ -39,7 +39,7 @@ export const AlertCard: React.FC<AlertCardProps> = ({
           </div>
         </div>
 
-        <div className="mt-0 flex flex-row items-start gap-2 sm:mt-2">
+        <div className="ml-auto flex flex-row md:items-start gap-2 mt-2">
           <Link href={href}>
             <Button
               size="sm"
