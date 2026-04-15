@@ -178,7 +178,6 @@ export default function ReportsPage() {
     })
   })
 
-  console.log(placeProblemMap)
 
   const topPlaces = Object.entries(placeProblemMap)
     .map(([name, count]) => ({ name, count }))
@@ -244,7 +243,7 @@ export default function ReportsPage() {
                   <CardTitle className="text-3xl">
                     {percentOrganizedItems.toFixed(1)}%
                   </CardTitle>
-                  <CardDescription>Locais verificados</CardDescription>
+                  <CardDescription>Locais Organizados</CardDescription>
                 </CardContent>
               </Card>
             </div>
