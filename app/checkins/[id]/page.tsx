@@ -286,7 +286,7 @@ export default function DetailsCheckin() {
               className="animate-fadeIn absolute inset-0 bg-black/30 backdrop-blur-sm"
               onClick={() => setDialogOpen(false)}
             />
-            <div className="animate-modalIn relative z-10 w-full max-w-lg rounded-xl bg-white p-6 shadow-lg">
+            <div className="animate-modalIn relative z-10 w-[80%] max-w-[80%] rounded-xl bg-white p-6 shadow-lg">
               <h1 className="font-sans text-2xl font-semibold tracking-tight">
                 Registrar Alteração
               </h1>
