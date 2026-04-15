@@ -168,10 +168,18 @@ export default function ReportsPage() {
   // TOP PLACES
   const placeProblemMap: Record<string, number> = {}
   filteredCheckins.forEach((c) => {
-    const placeName = c.items[0]?.place.name || c.placeCount.toString()
-    placeProblemMap[placeName] =
-      (placeProblemMap[placeName] || 0) + c.items.length
+    c.items.forEach((item) => {
+      if (item.problems.length === 0) return
+
+      const placeName = item.place?.name || 'Sem local'
+
+      placeProblemMap[placeName] =
+        (placeProblemMap[placeName] || 0) + item.problems.length
+    })
   })
+
+  console.log(placeProblemMap)
+
   const topPlaces = Object.entries(placeProblemMap)
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
