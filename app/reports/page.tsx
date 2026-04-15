@@ -27,6 +27,7 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
 } from 'recharts'
 
 import { useCheckins } from '@/hooks/useQuerys/useCheckins'
@@ -69,6 +70,7 @@ function getStartDate(period: string): Date {
 
 export default function ReportsPage() {
   const [period, setPeriod] = useState('1m')
+  const isMobile = typeof window !== 'undefined' && window.innerWidth > 768
 
   const { data: checkins = [], isLoading, error } = useCheckins(period)
   const {
@@ -178,7 +180,6 @@ export default function ReportsPage() {
     })
   })
 
-
   const topPlaces = Object.entries(placeProblemMap)
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
@@ -254,6 +255,22 @@ export default function ReportsPage() {
                   <CardTitle>Status dos Lugares</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-3 flex flex-wrap justify-center gap-2">
+                    {pieData.map((item, i) => (
+                      <div
+                        key={item.name}
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        <div
+                          className="h-3 w-3 rounded-sm"
+                          style={{ backgroundColor: COLORS[i] }}
+                        />
+                        <span>
+                          {item.value} {item.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                   <ResponsiveContainer width="100%" height={250}>
                     <PieChart>
                       <Pie
@@ -261,7 +278,7 @@ export default function ReportsPage() {
                         dataKey="value"
                         nameKey="name"
                         outerRadius={80}
-                        label={({ name, value }) => `${value} ${name}`}
+                        label={isMobile ? ({ name, value }) => `${value} ${name}` : false}
                       >
                         {pieData.map((_, i) => (
                           <Cell key={i} fill={COLORS[i]} />
