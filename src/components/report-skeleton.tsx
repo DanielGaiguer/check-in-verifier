@@ -1,76 +1,60 @@
-'use client'
+"use client"
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function ReportsSkeleton() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col overflow-x-hidden rounded-t-xl bg-gray-50 md:mt-2">
-      {' '}
-      <div className="rounded-t-xl bg-gray-50 px-4 py-5 sm:px-5">
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col rounded-t-xl bg-gray-50 md:mt-2">
+      <div className="m-[3%] space-y-[3%] rounded-t-xl bg-gray-50">
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="flex flex-col gap-[2%] sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2">
-            <Skeleton className="h-7 w-40" />
-            <Skeleton className="h-4 w-60" />
+            <Skeleton className="h-6 w-[40%]" />
+            <Skeleton className="h-4 w-[60%]" />
           </div>
 
-          <Skeleton className="h-10 w-40" />
+          <Skeleton className="h-10 w-full sm:w-48" />
         </div>
 
-        {/* Cards métricas */}
-        <div className="mt-3 mb-4 grid-cols-2 gap-4 p-1 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i} className="flex min-h-30 w-full flex-col shadow-xs">
-              <CardContent className="flex h-full flex-col items-center justify-center gap-2">
-                <Skeleton className="h-8 w-16" />
-                <Skeleton className="h-4 w-32" />
-              </CardContent>
-            </Card>
-          ))}
+        {/* Empty state cards row */}
+        <div className="grid grid-cols-2 gap-[3%] sm:grid-cols-3">
+          <Skeleton className="h-28 w-full rounded-xl" />
+          <Skeleton className="h-28 w-full rounded-xl" />
+          <Skeleton className="col-span-2 h-28 w-full rounded-xl sm:col-span-1" />
         </div>
 
-        {/* Charts */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Pie Chart */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-5 w-48" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-62.5 w-full rounded-md" />
-            </CardContent>
-          </Card>
+        {/* Charts grid */}
+        <div className="grid grid-cols-1 gap-[4%] lg:grid-cols-2">
+          {/* Pie chart skeleton */}
+          <div className="rounded-xl border p-[4%] space-y-[4%]">
+            <Skeleton className="h-6 w-[50%]" />
 
-          {/* Top People */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-5 w-52" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-62.5 w-full rounded-md" />
-            </CardContent>
-          </Card>
+            <div className="flex flex-wrap gap-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-24" />
+            </div>
 
-          {/* Top Problems */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-5 w-56" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-100 w-full rounded-md" />
-            </CardContent>
-          </Card>
+            <Skeleton className="h-62.5 w-full rounded-xl" />
+          </div>
 
-          {/* Top Places */}
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-5 w-60" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-100 w-full rounded-md" />
-            </CardContent>
-          </Card>
+          {/* Top people */}
+          <div className="rounded-xl border p-[4%] space-y-[4%]">
+            <Skeleton className="h-6 w-[60%]" />
+            <Skeleton className="h-62.5 w-full rounded-xl" />
+          </div>
+
+          {/* Top problems */}
+          <div className="rounded-xl border p-[4%] space-y-[4%]">
+            <Skeleton className="h-6 w-[70%]" />
+            <Skeleton className="h-75 w-full rounded-xl" />
+          </div>
+
+          {/* Top places */}
+          <div className="rounded-xl border p-[4%] space-y-[4%]">
+            <Skeleton className="h-6 w-[65%]" />
+            <Skeleton className="h-75 w-full rounded-xl" />
+          </div>
         </div>
       </div>
     </main>
