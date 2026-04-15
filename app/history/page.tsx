@@ -27,7 +27,7 @@ export default function HistoryPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
-        <div className="flex flex-row justify-between">
+        <div className="flex md:flex-row md:justify-between flex-col">
           <div>
             <h1 className="font-sans text-2xl font-semibold tracking-tight">
               Histórico de Check-ins
@@ -36,7 +36,7 @@ export default function HistoryPage() {
               Vizualize todos os check-ins realizados
             </h4>
           </div>
-          <div>
+          <div className='md:mt-0 mt-5'>
             <Select
               value={dateSelect}
               onValueChange={(value) => setDateSelect(value)}
