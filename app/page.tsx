@@ -73,7 +73,7 @@ export default function Home() {
                 description={
                   <>
                     Nenhum check-in foi registrado para hoje.
-                    <span className="block md:inline">
+                    <span className="block sm:inline">
                       {' '}
                       Realize o check-in dos laboratórios.
                     </span>
