@@ -177,7 +177,7 @@ export default function DetailsCheckin() {
                       <CircleXIcon className="text-gray-400" />
                     )}
                     <div className="ml-3">
-                      <CardTitle className="font-normal">
+                      <CardTitle className="font-normal leading-relaxed wrap-break-word">
                         {item.place.name}
                       </CardTitle>
                       <CardDescription className="mt-1 text-sm">
