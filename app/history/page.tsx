@@ -44,7 +44,7 @@ export default function HistoryPage() {
               <SelectTrigger className="w-45">
                 <SelectValue
                   placeholder="Últimos 7 dias"
-                  className="font-sans font-extralight text-gray-600 font-stretch-150%"
+                  className="font-sans font-semibold text-gray-600 font-stretch-150%"
                 />
               </SelectTrigger>
               <SelectContent sideOffset={0}>
