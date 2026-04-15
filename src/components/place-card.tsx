@@ -98,14 +98,14 @@ export default function PlaceCard({
 
   return (
     <Card className="mt-2 gap-0">
-      <CardHeader className="flex flex-col justify-between sm:flex-row sm:justify-between md:flex-row md:justify-between">
+      <CardHeader className="flex flex-col justify-between sm:flex-row sm:justify-between">
         <div>
           <CardTitle>{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
-        <div className="md:mt-0 mt-1.5 flex flex-row items-center justify-center space-x-3 mr-3 md:items-end">
+        <div className="mt-1.5 flex w-full flex-row items-center justify-center space-x-[3%] md:mt-0 md:w-auto md:items-end sm:w-auto">
           <Button
-            className={`w-36 md:mr-4 md:w-45 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
+            className={`w-36 md:mr-4 md:w-40 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
             onClick={() => handleStatusChange('organized')}
           >
             <CircleCheckIcon />
@@ -113,7 +113,7 @@ export default function PlaceCard({
           </Button>
 
           <Button
-            className={`w-36 md:mr-4 md:w-45 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
+            className={`w-36 md:mr-4 md:w-40 ${status === 'disorganized' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-gray-100 text-black hover:bg-red-400 hover:text-white'}`}
             onClick={() => handleStatusChange('disorganized')}
           >
             <CircleXIcon />
@@ -157,7 +157,7 @@ export default function PlaceCard({
                 /> */}
                 <Checkbox
                   //Todo realizar teste
-                  className="cursor-pointer sm:h-5 sm:w-5 lg:h-5 lg:w-5 h-4.5 w-4.5"
+                  className="h-4.5 w-4.5 cursor-pointer sm:h-5 sm:w-5 lg:h-5 lg:w-5"
                   id={`${subTitle}-${problem.problemId}`}
                   checked={selectedProblems.some(
                     (p) => p.problemId === problem.problemId
