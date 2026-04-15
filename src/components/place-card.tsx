@@ -103,7 +103,7 @@ export default function PlaceCard({
           <CardTitle>{title}</CardTitle>
           <CardDescription className="mt-1">{subTitle}</CardDescription>
         </div>
-        <div className="md:mt-0 mt-1.5 flex flex-row items-center justify-center space-x-3">
+        <div className="md:mt-0 mt-1.5 flex flex-row items-center justify-center space-x-3 mr-3">
           <Button
             className={`w-36 md:mr-4 md:w-45 ${status === 'organized' ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 text-black hover:bg-green-400 hover:text-white'}`}
             onClick={() => handleStatusChange('organized')}
