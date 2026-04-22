@@ -12,22 +12,32 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useCheckins } from '@/hooks/useQuerys/useCheckins'
+import { useUnits } from '@/hooks/useQuerys/useUnits'
 import { ClipboardCheckIcon } from 'lucide-react'
-import { useState } from 'react'
-
+import { useEffect, useState } from 'react'
 
 export default function HistoryPage() {
   const [dateSelect, setDateSelect] = useState('7d')
+  const [unitSelect, setUnitSelect] = useState('')
 
   const { data: checkins, isLoading, error } = useCheckins(dateSelect)
+  const {
+    units,
+    isLoading: isLoadingUnits,
+    error: errorUnits,
+  } = useUnits({ active: true })
 
-  if (isLoading) return <SkeletonHistoryPage />
-  if (error) return  <ErrorPage />
+  const filteredCheckins = unitSelect
+    ? checkins?.filter((c) => c.unitId === unitSelect)
+    : checkins
+
+  if (isLoading || isLoadingUnits) return <SkeletonHistoryPage />
+  if (error || errorUnits) return <ErrorPage />
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
-        <div className="flex md:flex-row md:justify-between flex-col">
+        <div className="flex flex-col md:flex-row md:justify-between">
           <div>
             <h1 className="font-sans text-2xl font-semibold tracking-tight">
               Histórico de Check-ins
@@ -36,7 +46,7 @@ export default function HistoryPage() {
               Vizualize todos os check-ins realizados
             </h4>
           </div>
-          <div className='md:mt-0 mt-5'>
+          <div className="mt-5 space-y-3 md:mt-0">
             <Select
               value={dateSelect}
               onValueChange={(value) => setDateSelect(value)}
@@ -44,11 +54,11 @@ export default function HistoryPage() {
               <SelectTrigger className="w-45">
                 <SelectValue
                   placeholder="Últimos 7 dias"
-                  className="font-sans font-semibold text-gray-600 font-stretch-150%"
+                  className="font-sans font-semibold text-gray-600"
                 />
               </SelectTrigger>
               <SelectContent sideOffset={0}>
-                <SelectGroup className="font-sans font-extralight text-gray-800 font-stretch-150%">
+                <SelectGroup className="font-sans text-gray-800">
                   <SelectItem
                     value="7d"
                     className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
@@ -82,11 +92,34 @@ export default function HistoryPage() {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            <Select
+              value={unitSelect}
+              onValueChange={(value) => setUnitSelect(value)}
+            >
+              <SelectTrigger className="w-45">
+                <SelectValue
+                  placeholder="Todas as unidades"
+                  className="font-sans font-semibold text-gray-600"
+                />
+              </SelectTrigger>
+              <SelectContent sideOffset={0}>
+                <SelectGroup className="font-sans text-gray-800">
+                  {units.map((unit) => (
+                    <SelectItem
+                      value={unit.id}
+                      className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
+                    >
+                      {unit.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="mt-5">
-          {checkins && checkins.length > 0 ? (
-            checkins.map((oneData) => (
+          {filteredCheckins && filteredCheckins.length > 0 ? (
+            filteredCheckins.map((oneData) => (
               <CardCheckin data={oneData} key={oneData.checkinId} />
             ))
           ) : (

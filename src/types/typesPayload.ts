@@ -40,7 +40,8 @@ export interface Edits {
 
 export interface Checkin {
   checkinId: string
-  date: string // ou Date, se você fizer parse
+  unitId: string
+  date: string 
   createdAt: string
   people: People
   observation: string
