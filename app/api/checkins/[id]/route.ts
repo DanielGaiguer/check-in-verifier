@@ -4,7 +4,6 @@ import {
   checkinItems,
   checkinItemsProblems,
   checkins,
-  people,
 } from '@/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
@@ -45,6 +44,7 @@ export async function PATCH(
         .update(checkins)
         .set({
           peopleId: body.peopleId,
+          unitId: body.unitId,
           date: body.date,
           observation: body.observation,
         })
@@ -82,7 +82,6 @@ export async function PATCH(
           .delete(checkinItemsProblems)
           .where(eq(checkinItemsProblems.checkinItemId, checkinItemId))
 
-        // Insere os novos
         for (const problem of item.problems) {
           await tx.insert(checkinItemsProblems).values({
             checkinItemId,
@@ -95,7 +94,6 @@ export async function PATCH(
           .delete(checkinItemPhotos)
           .where(eq(checkinItemPhotos.checkinItemId, checkinItemId))
 
-        // Insere novas
         for (const photo of item.photos) {
           await tx.insert(checkinItemPhotos).values({
             checkinItemId,

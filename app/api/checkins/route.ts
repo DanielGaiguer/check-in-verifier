@@ -29,6 +29,7 @@ export async function GET(req: Request) {
     const checkinsFilter = await db
       .select({
         id: checkins.id,
+        unitId: checkins.unitId,
         peopleId: checkins.peopleId,
         peopleName: people.name,
         checkinsDate: checkins.date,
@@ -62,6 +63,7 @@ export async function POST(req: Request) {
       .insert(checkins)
       .values({
         peopleId: body.peopleId,
+        unitId: body.unitId,
         date: body.date,
         observation: body.observation ?? '',
       })
@@ -77,7 +79,7 @@ export async function POST(req: Request) {
         .insert(checkinItems)
         .values({
           checkinId: newCheckin.id,
-          placeId: item.place.id, // correto
+          placeId: item.place.id,
           status: item.status,
           observation: item.observation ?? '',
         })
@@ -95,7 +97,7 @@ export async function POST(req: Request) {
         const problemsToInsert = item.problems.map((problem: any) => ({
           checkinItemId: newItem.id,
           problemId: problem.problemId,
-          active: true, // somente campos existentes no schema
+          active: true, 
         }))
         await db.insert(checkinItemsProblems).values(problemsToInsert)
       }

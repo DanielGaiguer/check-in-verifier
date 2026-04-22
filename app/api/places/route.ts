@@ -1,11 +1,18 @@
 import { db } from '@/db'
-import { checkinItemPhotos, laboratories, placeProblems, places, problems } from '@/db/schema'
+import {
+  checkinItemPhotos,
+  laboratories,
+  placeProblems,
+  places,
+  problems,
+} from '@/db/schema'
 import { getActiveFilter } from '@/utils/getActiveFilter'
 import { and, eq, gte, max, sql } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
 interface PostPlaceProtocol {
   labId: string
+  unitId: string
   name: string
   sortOrder?: number
   problemIds?: string[]
@@ -22,6 +29,7 @@ export async function GET(req: Request) {
       .select({
         id: places.id,
         labId: places.labId,
+        unitId: places.unitId,
         name: places.name,
         order: places.sortOrder,
         createdAt: places.createdAt,
@@ -45,6 +53,7 @@ export async function GET(req: Request) {
         acc[row.id] = {
           id: row.id,
           labId: row.labId,
+          unitId: row.unitId,
           name: row.name,
           order: row.order,
           createdAt: row.createdAt,
@@ -53,7 +62,6 @@ export async function GET(req: Request) {
         }
       }
 
-    
       if (row.problemName && (!onlyActive || row.problemActive)) {
         acc[row.id].problems.push({
           id: row.problemId,
@@ -112,6 +120,7 @@ export async function POST(req: Request) {
         .insert(places)
         .values({
           labId: body.labId,
+          unitId: body.unitId,
           name: body.name,
           sortOrder,
         })
