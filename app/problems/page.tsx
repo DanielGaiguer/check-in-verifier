@@ -15,11 +15,11 @@ import { useDeleteProblem } from '@/hooks/useMutation/useDeleteProblem'
 
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import {
-  FlaskConicalIcon,
   AlertTriangleIcon,
   PencilIcon,
   PlusIcon,
   Trash2Icon,
+  TriangleAlertIcon,
 } from 'lucide-react'
 
 import { useState } from 'react'
@@ -123,7 +123,7 @@ export default function ProblemsPage() {
             ))
           ) : (
             <Card className="flex items-center justify-center">
-              <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
+              <TriangleAlertIcon className="mt-5 text-gray-300" size={55} />
               <h4 className="mb-5 font-light text-gray-500">
                 Ainda não foi cadastrado nenhum problema.
               </h4>

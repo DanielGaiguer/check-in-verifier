@@ -15,10 +15,10 @@ import { useDeletePeople } from '@/hooks/useMutation/useDeletePeople'
 
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import {
-  FlaskConicalIcon,
   PencilIcon,
   PlusIcon,
   Trash2Icon,
+  UsersRoundIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -125,7 +125,7 @@ export default function PeoplePage() {
             })
           ) : (
             <Card className="flex items-center justify-center">
-              <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
+              <UsersRoundIcon className="mt-5 text-gray-300" size={55} />
               <h4 className="mb-5 font-light text-gray-500">
                 Ainda não foi cadastrado nenhuma pessoa.
               </h4>

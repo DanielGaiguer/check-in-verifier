@@ -15,12 +15,7 @@ import {
 import { useDeletePeople } from '@/hooks/useMutation/useDeletePeople'
 import { useUnits } from '@/hooks/useQuerys/useUnits'
 
-import {
-  FlaskConicalIcon,
-  PencilIcon,
-  PlusIcon,
-  Trash2Icon,
-} from 'lucide-react'
+import { Building2, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -126,7 +121,7 @@ export default function PeoplePage() {
             })
           ) : (
             <Card className="flex items-center justify-center">
-              <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
+              <Building2 className="mt-5 text-gray-300" size={55} />
               <h4 className="mb-5 font-light text-gray-500">
                 Ainda não foi cadastrado nenhuma unidade.
               </h4>

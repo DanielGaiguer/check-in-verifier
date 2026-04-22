@@ -5,12 +5,12 @@ import DialogPlace from '@/components/dialog-place'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
-  FlaskConicalIcon,
   MapPin,
   GripVertical,
   Pencil,
   Trash2,
   PlusIcon,
+  MapPinIcon,
 } from 'lucide-react'
 
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
@@ -231,7 +231,7 @@ export default function PlacesPage() {
             </DndContext>
           ) : (
             <Card className="flex flex-col items-center justify-center py-10">
-              <FlaskConicalIcon className="mt-5 text-gray-300" size={55} />
+              <MapPinIcon className="mt-5 text-gray-300" size={55} />
               <h4 className="mb-5 font-light text-gray-500">
                 Ainda não foi cadastrado nenhum lugar.
               </h4>
