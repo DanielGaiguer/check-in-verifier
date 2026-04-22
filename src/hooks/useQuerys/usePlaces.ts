@@ -13,13 +13,11 @@ interface UsePlacesOptions {
   active?: boolean
 }
 
-const placesQueryKey = (active?: boolean) => [
-  'places',
-  active ?? null,
-]
+const placesQueryKey = (active?: boolean) => ['places', active ?? null]
 
 export function usePlaces(options?: UsePlacesOptions) {
-  const queryString = options?.active !== undefined ? `?active=${options.active}` : ''
+  const queryString =
+    options?.active !== undefined ? `?active=${options.active}` : ''
 
   const queryResult = useQuery({
     queryKey: placesQueryKey(options?.active),
@@ -32,7 +30,9 @@ export function usePlaces(options?: UsePlacesOptions) {
         .sort((a, b) => a.order - b.order)
         .map((place) => ({
           ...place,
-          createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', { locale: ptBR }),
+          createdAt: format(new Date(place.createdAt), 'dd/MM/yyyy', {
+            locale: ptBR,
+          }),
         }))
 
       return {

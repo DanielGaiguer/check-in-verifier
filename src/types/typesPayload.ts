@@ -11,6 +11,7 @@ export interface Problem {
 export interface Place {
   id: string
   name: string
+  unitId: string
   order: number
   labId: string
   labName: string

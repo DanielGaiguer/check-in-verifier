@@ -53,6 +53,10 @@ export default function CheckinsPage() {
       toast.error('Campo Responsável é obrigatório.')
       return
     }
+    if (!selectedUnitId) {
+      toast.error('Campo Unidade é obrigatório.')
+      return
+    }
 
     const unfilledPlaces = places.filter(
       (place) => placeStatus[place.id] === undefined
@@ -69,6 +73,7 @@ export default function CheckinsPage() {
       place: {
         id: place.id,
         name: place.name,
+        unitId: place.unitId,
         labName: place.labName,
         order: place.order,
         labId: place.labId,
