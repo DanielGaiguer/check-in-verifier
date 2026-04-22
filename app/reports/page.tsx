@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { format, subDays, subMonths } from 'date-fns'
+import { subDays, subMonths } from 'date-fns'
 import {
   Card,
   CardContent,
@@ -12,6 +12,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -27,18 +28,16 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from 'recharts'
 
 import { useCheckins } from '@/hooks/useQuerys/useCheckins'
 import { usePeople } from '@/hooks/useQuerys/usePeoples'
 import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
-import { Skeleton } from '@/components/ui/skeleton'
 import ReportsSkeleton from '@/components/report-skeleton'
 import ErrorPage from '@/components/error-page'
-import { AlertCard } from '@/components/alert-card'
 import { ClipboardCheckIcon } from 'lucide-react'
+import { useUnits } from '@/hooks/useQuerys/useUnits'
 
 const PERIOD_OPTIONS = [
   { label: 'Últimos 7 dias', value: '7d' },
@@ -70,6 +69,7 @@ function getStartDate(period: string): Date {
 
 export default function ReportsPage() {
   const [period, setPeriod] = useState('1m')
+  const [unitSelect, setUnitSelect] = useState('')
   const isMobile = typeof window !== 'undefined' && window.innerWidth > 768
 
   const { data: checkins = [], isLoading, error } = useCheckins(period)
@@ -92,16 +92,31 @@ export default function ReportsPage() {
     error: errorProblems,
   } = useProblems({ active: false })
 
+  const {
+    units,
+    isLoading: isLoadingUnits,
+    error: errorUnits,
+  } = useUnits({ active: false })
+
   const startDateObj = getStartDate(period)
 
-  if (isLoading || isLoadingPlaces || isLoadingPeople || isLoadingProblems)
-    return <ReportsSkeleton />
-  if (error || errorPlaces || errorPeople || errorProblems) return <ErrorPage />
-
-  // Filtra check-ins de acordo com o período
-  const filteredCheckins = checkins.filter(
-    (c) => new Date(c.date) >= startDateObj
+  if (
+    isLoading ||
+    isLoadingPlaces ||
+    isLoadingPeople ||
+    isLoadingProblems ||
+    isLoadingUnits
   )
+    return <ReportsSkeleton />
+  if (error || errorPlaces || errorPeople || errorProblems || errorUnits)
+    return <ErrorPage />
+
+  const filteredCheckins = checkins
+    .filter((c) => new Date(c.date) >= startDateObj)
+    .filter((c) => {
+      if (!unitSelect) return true
+      return c.unitId === unitSelect
+    })
 
   let organizedCount = 0
   let disorganizedCount = 0
@@ -126,8 +141,6 @@ export default function ReportsPage() {
       acc + c.items.filter((item) => item.status === 'organized').length,
     0
   )
-
-  const disorganizedItems = totalItems - organizedItems
 
   const pieData = [
     { name: 'Organizados', value: organizedCount },
@@ -167,7 +180,6 @@ export default function ReportsPage() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10)
 
-  // TOP PLACES
   const placeProblemMap: Record<string, number> = {}
   filteredCheckins.forEach((c) => {
     c.items.forEach((item) => {
@@ -188,7 +200,6 @@ export default function ReportsPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 rounded-t-xl bg-gray-50">
-        {/* Header + Período */}
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Relatórios</h1>
@@ -196,24 +207,49 @@ export default function ReportsPage() {
               Análise dos check-ins realizados
             </h4>
           </div>
-          <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PERIOD_OPTIONS.map((opt) => (
-                <SelectItem
-                  key={opt.value}
-                  value={opt.value}
-                  className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
-                >
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="space-y-3">
+            <Select value={period} onValueChange={setPeriod}>
+              <SelectTrigger className="w-45">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {PERIOD_OPTIONS.map((opt) => (
+                  <SelectItem
+                    key={opt.value}
+                    value={opt.value}
+                    className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
+                  >
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={unitSelect}
+              onValueChange={(value) => setUnitSelect(value)}
+            >
+              <SelectTrigger className="w-45">
+                <SelectValue
+                  placeholder="Todas as unidades"
+                  className="font-sans font-semibold text-gray-600"
+                />
+              </SelectTrigger>
+              <SelectContent sideOffset={0}>
+                <SelectGroup className="font-sans text-gray-800">
+                  {units.map((unit) => (
+                    <SelectItem
+                      value={unit.id}
+                      className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
+                    >
+                      {unit.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        {checkins.length === 0 ? (
+        {filteredCheckins.length === 0 ? (
           <Card className="flex items-center justify-center">
             <ClipboardCheckIcon className="mt-5 text-gray-300" size={55} />
             <h4 className="mb-5 font-light text-gray-500">
@@ -249,7 +285,6 @@ export default function ReportsPage() {
               </Card>
             </div>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* PIE CHART */}
               <Card>
                 <CardHeader>
                   <CardTitle>Status dos Lugares</CardTitle>
@@ -278,7 +313,11 @@ export default function ReportsPage() {
                         dataKey="value"
                         nameKey="name"
                         outerRadius={80}
-                        label={isMobile ? ({ name, value }) => `${value} ${name}` : false}
+                        label={
+                          isMobile
+                            ? ({ name, value }) => `${value} ${name}`
+                            : false
+                        }
                       >
                         {pieData.map((_, i) => (
                           <Cell key={i} fill={COLORS[i]} />
