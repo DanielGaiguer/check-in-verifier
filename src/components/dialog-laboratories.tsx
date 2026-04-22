@@ -8,10 +8,14 @@ import {
 import { Input } from '@/components/ui/input'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Button } from './ui/button'
-import { PlusIcon } from 'lucide-react'
 import { useCreateLab } from '@/hooks/useMutation/useCreateLab'
 import { useUpdateLab } from '@/hooks/useMutation/useUpdateLab'
 import { toast } from 'react-toastify'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { useUnits } from '@/hooks/useQuerys/useUnits'
+import SelectCardSkeleton from './skeleton-select-card'
+import ErrorPage from './error-page'
+import { CheckIcon } from 'lucide-react'
 
 interface DialogLaboratoriesProtocol {
   setName: Dispatch<SetStateAction<string>>
@@ -34,8 +38,12 @@ export default function DialogLaboratories({
   setInternalOpen,
   id,
 }: DialogLaboratoriesProtocol) {
+  const { units, isLoading, error} = useUnits()
   const createLabMutation = useCreateLab()
   const updateLabMutation = useUpdateLab()
+
+  if (isLoading) return <SelectCardSkeleton />
+  if (error) return <ErrorPage />
 
   function handleSubmit(e: { preventDefault: () => void }) {
     e.preventDefault()
@@ -47,13 +55,14 @@ export default function DialogLaboratories({
       })
       setInternalOpen?.(false)
       setName('')
+      setUnitId('')
       toast.success('Laboratorio atualizado com sucesso.')
       return
     }
 
     createLabMutation.mutate({
       name,
-      unitId
+      unitId,
     })
     setInternalOpen?.(false)
     setName('')
@@ -81,6 +90,28 @@ export default function DialogLaboratories({
             />
           </div>
 
+          <div>
+            <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md">
+                {units.map((unit) => (
+                  <li
+                    key={unit.id}
+                    onClick={() => setUnitId(unit.id)}
+                    className={`cursor-pointer rounded-md px-3 py-2 hover:bg-green-100 ${
+                      unitId === unit.id ? 'bg-green-200' : ''
+                    }`}
+                  >
+                    {unitId === unit.id ? (
+                      <div className="flex items-center gap-2">
+                        <CheckIcon className="h-4 w-4 text-gray-500" />
+                        {unit.name}
+                      </div>
+                    ) : (
+                      <span className="ml-6">{unit.name}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+          </div>
           {/* BOTÕES */}
           <div className="mt-4 flex justify-end gap-2">
             <Button
