@@ -17,6 +17,7 @@ export interface CheckinPayload {
   date: string
   createdAt: string
   peopleId: string
+  unitId: string
   observation?: string
   placeCount: number
   items: Item[]
@@ -27,6 +28,7 @@ export default function CheckinsPage() {
   const router = useRouter()
 
   const [selectedPersonId, setSelectedPersonId] = useState<string>('')
+  const [selectedUnitId, setSelectedUnitId] = useState('')
   const [generalObservation, setGeneralObservation] = useState<string>('')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -81,6 +83,7 @@ export default function CheckinsPage() {
       date: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       peopleId: selectedPersonId,
+      unitId: selectedUnitId,
       observation: generalObservation,
       placeCount: items.length,
       items,
@@ -103,6 +106,7 @@ export default function CheckinsPage() {
         setItemFiles({})
         setGeneralObservation('')
         setSelectedPersonId('')
+        setSelectedUnitId('')
         router.push('/')
       } else {
         toast.error('Erro ao salvar check-in: ' + data.error)
@@ -110,7 +114,7 @@ export default function CheckinsPage() {
     } catch (err) {
       toast.error('Erro na requisição: ' + err)
     } finally {
-      setIsSubmitting(false) // ✅ agora sim, só roda depois do fetch
+      setIsSubmitting(false)
     }
   }
 
@@ -129,6 +133,15 @@ export default function CheckinsPage() {
             textHeader="Responsável *"
             placeHolder="Selecione a pessoa"
             onChange={setSelectedPersonId}
+            param="people"
+          />
+        </div>
+        <div className="mt-3 mb-3">
+          <SelectCard
+            textHeader="Unidade *"
+            placeHolder="Selecione a unidade"
+            onChange={setSelectedUnitId}
+            param="unit"
           />
         </div>
 

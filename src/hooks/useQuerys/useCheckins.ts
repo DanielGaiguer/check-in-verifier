@@ -1,7 +1,7 @@
 // hooks/useQuerys/useCheckins.ts
 import { Checkin } from '@/types/typesPayload'
 import { useQuery } from '@tanstack/react-query'
-import { format, subDays, subMonths } from 'date-fns'
+import { format, subMonths } from 'date-fns'
 
 function getQueryParams(range: string) {
   const today = new Date()
@@ -42,10 +42,9 @@ export function useCheckins(range: string) {
       const res = await fetch(`/api/history-checkins?${reqParams}`)
       if (!res.ok) throw new Error('Erro ao buscar checkins')
       const json = await res.json()
-      // Garantir que 'date' seja do tipo Date
       return (json.data as Checkin[]).map((c) => ({
         ...c,
-        date: new Date(c.date).toISOString(), // mantém string mas parseável
+        date: new Date(c.date).toISOString(), 
       }))
     },
     select: (data) =>

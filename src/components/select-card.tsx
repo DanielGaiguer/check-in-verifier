@@ -13,12 +13,14 @@ import { Dispatch, SetStateAction } from 'react'
 import ErrorPage from './error-page'
 import SelectCardSkeleton from './skeleton-select-card'
 import { toast } from 'react-toastify'
+import { useUnits } from '@/hooks/useQuerys/useUnits'
 
 interface selectCardProps {
   textHeader: string
   placeHolder: string
   onChange: Dispatch<SetStateAction<string>>
   value?: string
+  param: 'people' | 'unit'
 }
 
 export default function SelectCard({
@@ -26,12 +28,17 @@ export default function SelectCard({
   placeHolder,
   onChange,
   value,
+  param,
 }: selectCardProps) {
-  const { people, isLoading, error } = usePeople({ active: true })
+  const { units, isLoading, error } = useUnits({ active: true })
+  const {
+    people,
+    isLoading: isLoadingPeople,
+    error: errorPeople,
+  } = usePeople({ active: true })
 
-  if (isLoading) return <SelectCardSkeleton />
-  if (error) return <ErrorPage />
-
+  if (isLoading || isLoadingPeople) return <SelectCardSkeleton />
+  if (error || errorPeople) return <ErrorPage />
 
   return (
     <Card className="mt-5">
@@ -41,8 +48,15 @@ export default function SelectCard({
           value={value}
           onValueChange={(value) => onChange(value)}
           onOpenChange={(open) => {
-            if (open && people.length === 0) {
-              toast.error('Nenhuma pessoa cadastrada.')
+            if (param == 'people') {
+              if (open && people.length === 0) {
+                toast.error('Nenhuma pessoa cadastrada.')
+              }
+            }
+            if (param == 'unit') {
+              if (open && units.length === 0) {
+                toast.error('Nenhuma unidade cadastrada.')
+              }
             }
           }}
         >
@@ -51,11 +65,18 @@ export default function SelectCard({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {people.map((person) => (
-                <SelectItem value={person.id} key={person.id}>
-                  {person.name}
-                </SelectItem>
-              ))}
+              {param == 'people' &&
+                people.map((person) => (
+                  <SelectItem value={person.id} key={person.id}>
+                    {person.name}
+                  </SelectItem>
+                ))}
+              {param == 'unit' &&
+                units.map((unit) => (
+                  <SelectItem value={unit.id} key={unit.id}>
+                    {unit.name}
+                  </SelectItem>
+                ))}
             </SelectGroup>
           </SelectContent>
         </Select>
