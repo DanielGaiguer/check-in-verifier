@@ -55,7 +55,7 @@ export default function DialogUnit({
 			<DialogContent className="z-9999 max-h-[85vh] w-[80%] max-w-[80%] overflow-y-auto p-6 md:w-full md:max-w-md">
 				<DialogHeader>
 					<DialogTitle className="text-lg font-semibold">
-						{name ? 'Editar Pessoa' : 'Nova Pessoa'}
+						{name ? 'Editar Unidade' : 'Nova Unidade'}
 					</DialogTitle>
 				</DialogHeader>
 
@@ -63,7 +63,7 @@ export default function DialogUnit({
 					<div>
 						<Input
 							id="name"
-							placeholder="Nome da Pessoa"
+							placeholder="Nome da Unidade"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							className="focus:border-2.5 flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-300 bg-gray-100! px-3 focus:border-blue-400!"
