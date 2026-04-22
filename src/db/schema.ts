@@ -32,12 +32,20 @@ export const places = pgTable(
     labId: uuid('lab_id').references(() => laboratories.id, {
       onDelete: 'cascade',
     }),
+    unitId: uuid('unit_id')
+      .references(() => units.id, {
+        onDelete: 'cascade',
+      })
+      .notNull(),
     name: text('name').notNull(),
     sortOrder: integer('sort_order').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     active: boolean('active').default(true).notNull(),
   },
-  (table) => [index('idx_places_lab').on(table.labId)]
+  (table) => [
+    index('idx_places_lab').on(table.labId),
+    index('idx_places_unit').on(table.unitId),
+  ]
 )
 
 export const problems = pgTable('problems', {
@@ -69,6 +77,11 @@ export const checkins = pgTable(
     peopleId: uuid('people_id')
       .references(() => people.id)
       .notNull(),
+    unitId: uuid('unit_id')
+      .references(() => units.id, {
+        onDelete: 'restrict',
+      })
+      .notNull(),
     date: date('date').notNull(),
     observation: text('observation'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -76,6 +89,7 @@ export const checkins = pgTable(
   (table) => [
     index('idx_checkins_date').on(table.date),
     index('idx_checkins_people').on(table.peopleId),
+    index('idx_checkins_unit').on(table.unitId),
   ]
 )
 
@@ -124,14 +138,12 @@ export const checkinItemPhotos = pgTable(
   {
     id: uuid('id').defaultRandom().primaryKey().notNull().unique(),
     checkinItemId: uuid('checkin_item_id')
-      .references(() => checkinItems.id, { onDelete: 'cascade' })
+      .references(() => checkinItems.id, { onDelete: 'restrict' })
       .notNull(),
     photoUrl: text('photo_url').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
-  (table) => [
-    index('idx_checkin_item_photos_problem').on(table.checkinItemId),
-  ]
+  (table) => [index('idx_checkin_item_photos_problem').on(table.checkinItemId)]
 )
 
 export const checkinEdits = pgTable('checkin_edits', {
@@ -140,4 +152,10 @@ export const checkinEdits = pgTable('checkin_edits', {
   editedBy: uuid('people_id').references(() => people.id),
   reason: text('reason'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export const units = pgTable('units', {
+  id: uuid('id').primaryKey().defaultRandom().notNull().unique(),
+  name: text('name').notNull(),
+  active: boolean('active').default(true).notNull(),
 })
