@@ -50,7 +50,7 @@ export default function DialogPeople({
 
     setInternalOpen?.(false)
     setName('')
-    setId?.('') // se quiser limpar
+    setId?.('') 
   }
   return (
     <Dialog open={internalOpen} onOpenChange={setInternalOpen}>

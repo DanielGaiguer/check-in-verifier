@@ -19,8 +19,7 @@ import { usePathname } from 'next/navigation'
 export default function SidebarSheet() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-
-  // Fecha o sheet quando a rota muda
+  
   useEffect(() => {
     setOpen(false)
   }, [pathname])

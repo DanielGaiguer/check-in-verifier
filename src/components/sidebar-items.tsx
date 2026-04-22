@@ -1,4 +1,5 @@
 import {
+  Building2,
   ChartColumn,
   ClipboardCheckIcon,
   FlaskConical,
@@ -49,5 +50,10 @@ export const sidebarItems = [
     title: 'Pessoas',
     href: '/people',
     icon: UsersRoundIcon,
+  },
+  {
+    title: 'Unidades',
+    href: '/units',
+    icon: Building2,
   },
 ]
