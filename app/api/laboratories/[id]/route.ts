@@ -23,7 +23,7 @@ export async function PATCH(
     )
   }
 
-  if (!body.name) {
+  if (!body.name || !body.unitId) {
     return NextResponse.json(
       {
         success: false,
@@ -36,7 +36,7 @@ export async function PATCH(
   try {
     await db
       .update(laboratories)
-      .set({ name: body.name })
+      .set({ name: body.name, unitId: body.unitId})
       .where(eq(laboratories.id, id))
   } catch (e) {
     NextResponse.json(

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-async function createLab(data: { name: string }) {
+async function createLab(data: { name: string, unitId: string }) {
   const response = await fetch('/api/laboratories', {
     method: 'POST',
     headers: {

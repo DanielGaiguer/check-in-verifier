@@ -28,7 +28,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json()
 
-  if (!body.name) {
+  if (!body.name || !body.unitId) {
     return NextResponse.json(
       { success: false, error: 'Nome do laboratório não informado' },
       { status: 400 }
@@ -38,7 +38,8 @@ export async function POST(req: Request) {
   try {
     await db.insert(laboratories).values({
       name: body.name,
-      active: true, // novo laboratório já vem como ativo
+      unitId: body.unitId,
+      active: true,
     })
   } catch (e) {
     return NextResponse.json({ success: false, error: e }, { status: 400 })
