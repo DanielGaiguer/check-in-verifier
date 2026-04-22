@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 export async function updatePlaceWithProblems(data: {
   id: string
   labId: string
+  unitId: string
   name: string
   sortOrder: number
   toAdd: string[]
@@ -13,6 +14,7 @@ export async function updatePlaceWithProblems(data: {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       labId: data.labId,
+      unitId: data.unitId,
       name: data.name,
       sortOrder: data.sortOrder,
     }),
@@ -25,12 +27,11 @@ export async function updatePlaceWithProblems(data: {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         placeId: data.id,
-        problemIds: data.toAdd, // ✅ agora o backend espera "problemIds"
+        problemIds: data.toAdd, 
       }),
     })
   }
 
-  // remove problems
   if (data.toRemove.length > 0) {
     await fetch(`/api/place-problems`, {
       method: 'DELETE',
