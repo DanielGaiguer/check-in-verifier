@@ -157,5 +157,6 @@ export const checkinEdits = pgTable('checkin_edits', {
 export const units = pgTable('units', {
   id: uuid('id').primaryKey().defaultRandom().notNull().unique(),
   name: text('name').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
   active: boolean('active').default(true).notNull(),
 })
