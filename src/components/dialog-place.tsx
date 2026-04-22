@@ -16,6 +16,7 @@ import { Problem } from '@/hooks/useQuerys/useProblems'
 import { useUpdatePlaces } from '@/hooks/useMutation/useUpdatePlace'
 import { useCreatePlace } from '@/hooks/useMutation/useCreatePlace'
 import { toast } from 'react-toastify'
+import { Unit } from '@/hooks/useQuerys/useUnits'
 
 interface DialogPlaceProtocol {
   dialogOpen: boolean
@@ -26,6 +27,11 @@ interface DialogPlaceProtocol {
   setLabId: Dispatch<SetStateAction<string>>
   labName: string
   setLabName: Dispatch<SetStateAction<string>>
+  unitId: string
+  setUnitId: Dispatch<SetStateAction<string>>
+  unitName: string
+  setUnitName: Dispatch<SetStateAction<string>>
+  units: Unit[]
   uniqueLabs: { id: string; name: string }[]
   problems: Problem[]
   isLoadingProblems: boolean
@@ -46,6 +52,11 @@ export default function DialogPlace({
   setLabId,
   labName,
   setLabName,
+  unitId,
+  setUnitId,
+  unitName,
+  setUnitName,
+  units,
   uniqueLabs,
   problems,
   isLoadingProblems,
@@ -59,6 +70,7 @@ export default function DialogPlace({
   const updatePlaceMutation = useUpdatePlaces()
   const createPlaceMutatation = useCreatePlace()
   const [labDropdownOpen, setLabDropdownOpen] = useState(false)
+  const [unitDropdownOpen, setUnitDropdownOpen] = useState(false)
 
   function closeDialog() {
     setDialogOpen(false)
@@ -81,6 +93,12 @@ export default function DialogPlace({
     setLabDropdownOpen(false)
   }
 
+  function selectUnit(unit: { id: string; name: string }) {
+    setUnitId(unit.id)
+    setUnitName(unit.name)
+    setUnitDropdownOpen(false)
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (edit) {
@@ -95,6 +113,7 @@ export default function DialogPlace({
         {
           id: placeId,
           labId,
+          unitId,
           name,
           sortOrder: placeSortOrder,
           toAdd,
@@ -109,6 +128,7 @@ export default function DialogPlace({
 
     createPlaceMutatation.mutate({
       labId: labId,
+      unitId: unitId,
       name: name,
       problemIds: selectedProblems,
     })
@@ -119,7 +139,7 @@ export default function DialogPlace({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className="max-h-[85vh] md:w-full w-[80%] md:max-w-md p-6 z-9999 max-w-[80%]">
+      <DialogContent className="z-9999 max-h-[85vh] w-[80%] max-w-[80%] p-6 md:w-full md:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {placeId ? 'Editar Lugar' : 'Novo Lugar'}
@@ -127,7 +147,6 @@ export default function DialogPlace({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* LABORATÓRIO */}
           <div className="relative">
             <Label htmlFor="lab" className="mb-1 block text-sm font-medium">
               Laboratório
@@ -179,7 +198,57 @@ export default function DialogPlace({
             )}
           </div>
 
-          {/* NOME DO LUGAR */}
+          <div className="relative">
+            <Label htmlFor="lab" className="mb-1 block text-sm font-medium">
+              Unidade
+            </Label>
+            <button
+              type="button"
+              onClick={() => {
+                setUnitDropdownOpen((prev) => !prev)
+              }}
+              className="flex h-10 w-full items-center justify-between rounded-md border-2 border-gray-400 bg-gray-100 px-3 focus:border-blue-400"
+            >
+              <span className={`${!unitId && 'text-gray-400'}`}>
+                {unitName || 'Selecione uma unidade'}
+              </span>
+              <svg
+                className="h-4 w-4 opacity-50"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.937a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+            {labDropdownOpen && (
+              <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md">
+                {units.map((unit) => (
+                  <li
+                    key={unit.id}
+                    onClick={() => selectLab(unit)}
+                    className={`cursor-pointer rounded-md px-3 py-2 hover:bg-green-100 ${
+                      unitId === unit.id ? 'bg-green-200' : ''
+                    }`}
+                  >
+                    {unitId === unit.id ? (
+                      <div className="flex items-center gap-2">
+                        <CheckIcon className="h-4 w-4 text-gray-500" />
+                        {unit.name}
+                      </div>
+                    ) : (
+                      <span className="ml-6">{unit.name}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
           <div>
             <Label htmlFor="name" className="mb-1 block text-sm font-medium">
               Nome do Lugar

@@ -59,7 +59,7 @@ export default function PeoplePage() {
               }}
             >
               <PlusIcon className="mr-1 mb-0.5" />
-              Nova Pessoa
+              Nova Unidade
             </Button>
           </div>
         </div>

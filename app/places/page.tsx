@@ -17,7 +17,7 @@ import { usePlaces } from '@/hooks/useQuerys/usePlaces'
 import { useProblems } from '@/hooks/useQuerys/useProblems'
 import { useUpdatePlacesOrder } from '@/hooks/useMutation/useUpdatePlacesOrder'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -40,14 +40,23 @@ import { toast } from 'react-toastify'
 import { SkeletonPlacesPage } from '@/components/place-skeleton'
 import ErrorPage from '@/components/error-page'
 import { useLaboratories } from '@/hooks/useQuerys/useLaboratories'
+import { useUnits } from '@/hooks/useQuerys/useUnits'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface Place {
   id: string
   name: string
+  unitId: string
   labId: string
   labName: string
   order: number
-  problems?: {id: string, name: string}[]
+  problems?: { id: string; name: string }[]
 }
 
 function SortablePlace({
@@ -108,14 +117,26 @@ function SortablePlace({
 
 export default function PlacesPage() {
   const { places, isLoading, error } = usePlaces()
-  const { problems, isLoading: isLoadingProblems, error: errorProblems } = useProblems()
-  const { laboratories, isLoading: isLoadingLaboratories, error: errorLaboratories} = useLaboratories()
+  const {
+    problems,
+    isLoading: isLoadingProblems,
+    error: errorProblems,
+  } = useProblems()
+  const {
+    laboratories,
+    isLoading: isLoadingLaboratories,
+    error: errorLaboratories,
+  } = useLaboratories()
+  const { units, isLoading: isLoadingUnits, error: errorUnits } = useUnits()
   const updateOrder = useUpdatePlacesOrder()
   const deletePlace = useDeletePlace()
 
   const [placeId, setPlaceId] = useState<string | null>(null)
   const [name, setName] = useState('')
   const [labId, setLabId] = useState('')
+  const [unitSelect, setUnitSelect] = useState('')
+  const [unitId, setUnitId] = useState('')
+  const [unitName, setUnitName] = useState('')
   const [labName, setLabName] = useState('')
   const [selectedProblems, setSelectedProblems] = useState<string[]>([])
   const [originalProblems, setOriginalProblems] = useState<string[]>([])
@@ -129,8 +150,14 @@ export default function PlacesPage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
-  if (isLoading || isLoadingProblems || isLoadingLaboratories) return <SkeletonPlacesPage />
-  if (error || errorProblems || errorLaboratories) return <ErrorPage />
+  const isLoadingPage =
+    isLoading || isLoadingProblems || isLoadingLaboratories || isLoadingUnits
+
+  const hasError = error || errorProblems || errorLaboratories || errorUnits
+
+  const filteredPlaces = unitSelect
+    ? places.filter((p) => p.unitId === unitSelect)
+    : places
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -142,7 +169,6 @@ export default function PlacesPage() {
     const reordered = arrayMove(places, oldIndex, newIndex)
     const updated = reordered.map((p, index) => ({ ...p, order: index }))
 
-    // Atualiza o backend (quando estiver pronto) e cache imediatamente
     updateOrder.mutate(updated)
   }
 
@@ -181,10 +207,19 @@ export default function PlacesPage() {
     })
     toast.success('Local deletado com sucesso.')
   }
+
+  useEffect(() => {
+    if (!unitSelect && units?.length > 0) {
+      setUnitSelect(units[0].id)
+    }
+  }, [units])
+
+  if (isLoadingPage) return <SkeletonPlacesPage />
+  if (hasError) return <ErrorPage />
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col rounded-t-xl bg-gray-50 md:mt-2">
       <div className="m-5 flex-1 rounded-t-xl bg-gray-50">
-        {/* HEADER */}
         <div className="flex flex-row justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Lugares</h1>
@@ -192,29 +227,42 @@ export default function PlacesPage() {
               Arraste para reordenar os lugares do check-in
             </h4>
           </div>
-          <Button
-            onClick={handleCreate}
-            className="w-40 cursor-pointer rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
-          >
-            <PlusIcon className="mr-1 mb-0.5" />
-            Novo Lugar
-          </Button>
+          <div className='space-y-3'>
+            <Button
+              onClick={handleCreate}
+              className="w-40 cursor-pointer rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+            >
+              <PlusIcon className="mr-1 mb-0.5" />
+              Novo Lugar
+            </Button>
+            <Select value={unitSelect} onValueChange={setUnitSelect}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {units.map((u) => (
+                  <SelectItem key={u.id} value={u.id}>
+                    {u.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* LIST */}
         <div className="mt-5">
-          {places.length > 0 ? (
+          {filteredPlaces.length > 0 ? (
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={places.map((p) => p.id)}
+                items={filteredPlaces.map((p) => p.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="space-y-2">
-                  {places.map((place) => (
+                  {filteredPlaces.map((place) => (
                     <SortablePlace
                       key={place.id}
                       place={place}
@@ -248,6 +296,11 @@ export default function PlacesPage() {
           labId={labId}
           labName={labName}
           setLabName={setLabName}
+          unitId={unitId}
+          unitName={unitName}
+          setUnitId={setUnitId}
+          setUnitName={setUnitName}
+          units={units}
           setLabId={setLabId}
           uniqueLabs={laboratories}
           problems={problems}
