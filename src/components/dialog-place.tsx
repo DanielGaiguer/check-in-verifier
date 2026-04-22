@@ -225,12 +225,12 @@ export default function DialogPlace({
                 />
               </svg>
             </button>
-            {labDropdownOpen && (
+            {unitDropdownOpen && (
               <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md">
                 {units.map((unit) => (
                   <li
                     key={unit.id}
-                    onClick={() => selectLab(unit)}
+                    onClick={() => selectUnit(unit)}
                     className={`cursor-pointer rounded-md px-3 py-2 hover:bg-green-100 ${
                       unitId === unit.id ? 'bg-green-200' : ''
                     }`}

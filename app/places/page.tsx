@@ -175,6 +175,7 @@ export default function PlacesPage() {
   function handleEdit(place: Place) {
     setPlaceId(place.id)
     setLabId(place.labId ?? '')
+    setUnitId(place.unitId ?? '')
     setLabName(place.labName ?? '')
     setName(place.name)
 
@@ -193,6 +194,7 @@ export default function PlacesPage() {
     setPlaceId(null)
     setLabId('')
     setLabName('')
+    setUnitId('')
     setName('')
     setSelectedProblems([])
     setOriginalProblems([])
@@ -230,13 +232,13 @@ export default function PlacesPage() {
           <div className='space-y-3'>
             <Button
               onClick={handleCreate}
-              className="w-40 cursor-pointer rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+              className="w-45 cursor-pointer rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
             >
               <PlusIcon className="mr-1 mb-0.5" />
               Novo Lugar
             </Button>
             <Select value={unitSelect} onValueChange={setUnitSelect}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-45">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

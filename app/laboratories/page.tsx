@@ -168,6 +168,8 @@ export default function LaboratoriesPage() {
         <DialogLaboratories
           setName={setName}
           name={name}
+          setUnitId={setUnitSelect}
+          unitId={unitSelect}
           forEdit={!!id}
           setInternalOpen={setInternalOpen}
           internalOpen={internalOpen}

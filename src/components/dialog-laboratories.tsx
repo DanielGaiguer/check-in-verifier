@@ -16,6 +16,8 @@ import { toast } from 'react-toastify'
 interface DialogLaboratoriesProtocol {
   setName: Dispatch<SetStateAction<string>>
   name: string
+  unitId: string
+  setUnitId: Dispatch<SetStateAction<string>>
   forEdit?: boolean
   internalOpen?: boolean
   setInternalOpen?: Dispatch<SetStateAction<boolean>>
@@ -25,6 +27,8 @@ interface DialogLaboratoriesProtocol {
 export default function DialogLaboratories({
   setName,
   name,
+  unitId,
+  setUnitId,
   forEdit,
   internalOpen,
   setInternalOpen,
@@ -38,6 +42,7 @@ export default function DialogLaboratories({
     if (forEdit) {
       updateLabMutation.mutate({
         id,
+        unitId,
         name,
       })
       setInternalOpen?.(false)
@@ -48,6 +53,7 @@ export default function DialogLaboratories({
 
     createLabMutation.mutate({
       name,
+      unitId
     })
     setInternalOpen?.(false)
     setName('')
