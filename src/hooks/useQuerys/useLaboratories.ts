@@ -4,6 +4,7 @@ import { ptBR } from 'date-fns/locale'
 
 export interface Laboratory {
   id: string
+  unitId: string
   name: string
   createdAt: string
 }

@@ -18,12 +18,19 @@ export const checkinStatusEnum = pgEnum('checkin_status', [
   'not_checked',
 ])
 
-export const laboratories = pgTable('laboratories', {
-  id: uuid('id').defaultRandom().primaryKey().notNull().unique(),
-  name: text('name').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  active: boolean('active').default(true).notNull(),
-})
+export const laboratories = pgTable(
+  'laboratories',
+  {
+    id: uuid('id').defaultRandom().primaryKey().notNull().unique(),
+    name: text('name').notNull(),
+    unitId: uuid('unit_id').references(() => units.id, {
+      onDelete: 'restrict',
+    }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    active: boolean('active').default(true).notNull(),
+  },
+  (table) => [index('idx_labs_unit').on(table.unitId)]
+)
 
 export const places = pgTable(
   'places',
