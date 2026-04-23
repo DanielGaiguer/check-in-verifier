@@ -281,7 +281,7 @@ export default function DetailsCheckin() {
         </div>
 
         {dialogOpen && (
-          <div className="fixed inset-0 z-9999 flex items-center justify-center">
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div
               className="animate-fadeIn absolute inset-0 bg-black/30 backdrop-blur-sm"
               onClick={() => setDialogOpen(false)}
