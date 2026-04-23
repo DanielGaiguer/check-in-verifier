@@ -8,6 +8,13 @@
       "when": 1772710717898,
       "tag": "0000_married_mad_thinker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776948792035,
+      "tag": "0001_mysterious_lady_deathstrike",
+      "breakpoints": true
     }
   ]
 }
