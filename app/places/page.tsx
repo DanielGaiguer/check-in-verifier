@@ -232,13 +232,13 @@ export default function PlacesPage() {
           <div className='space-y-3'>
             <Button
               onClick={handleCreate}
-              className="w-40 cursor-pointer rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+              className="md:w-40 w-35 cursor-pointer rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
             >
               <PlusIcon className="mr-1 mb-0.5" />
               Novo Lugar
             </Button>
             <Select value={unitSelect} onValueChange={setUnitSelect}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="md:w-40 w-35">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

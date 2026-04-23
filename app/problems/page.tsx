@@ -61,7 +61,7 @@ export default function ProblemsPage() {
 
           <div>
             <Button
-              className="w-40 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+              className="w-37 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
               onClick={() => {
                 setInternalOpen(true)
                 setName('')
