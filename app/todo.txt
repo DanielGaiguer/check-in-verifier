@@ -1,1 +1,0 @@
-- Eu adicionei o atributo no laboratorio, agora tenho que colocar ele na rota, e nos querys, e trocar aonde vai bugar no projeto
