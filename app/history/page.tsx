@@ -51,7 +51,7 @@ export default function HistoryPage() {
               value={dateSelect}
               onValueChange={(value) => setDateSelect(value)}
             >
-              <SelectTrigger className="w-45">
+              <SelectTrigger className="w-40">
                 <SelectValue
                   placeholder="Últimos 7 dias"
                   className="font-sans font-semibold text-gray-600"
@@ -96,7 +96,7 @@ export default function HistoryPage() {
               value={unitSelect}
               onValueChange={(value) => setUnitSelect(value)}
             >
-              <SelectTrigger className="w-45">
+              <SelectTrigger className="w-40">
                 <SelectValue
                   placeholder="Todas as unidades"
                   className="font-sans font-semibold text-gray-600"

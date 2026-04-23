@@ -214,7 +214,7 @@ export default function ReportsPage() {
           </div>
           <div className="space-y-3">
             <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="w-45">
+              <SelectTrigger className="w-40">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -233,7 +233,7 @@ export default function ReportsPage() {
               value={unitSelect}
               onValueChange={(value) => setUnitSelect(value)}
             >
-              <SelectTrigger className="w-45">
+              <SelectTrigger className="w-40">
                 <SelectValue
                   placeholder="Todas as unidades"
                   className="font-sans font-semibold text-gray-600"
