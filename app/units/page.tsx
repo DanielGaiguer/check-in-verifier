@@ -51,7 +51,7 @@ export default function PeoplePage() {
           </div>
           <div>
             <Button
-              className="w-36 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
+              className="w-36 md:w-45 rounded-md bg-blue-400 p-5 font-sans text-white hover:bg-blue-300"
               onClick={() => {
                 setInternalOpen?.(true)
                 setName('')

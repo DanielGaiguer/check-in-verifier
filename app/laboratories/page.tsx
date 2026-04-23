@@ -79,7 +79,7 @@ export default function LaboratoriesPage() {
 
           <div className="space-y-3">
             <Button
-              className="w-38 rounded-md bg-blue-400 p-5 text-white hover:bg-blue-300 text-sm"
+              className="w-38 md:w-45 rounded-md bg-blue-400 p-5 text-white hover:bg-blue-300 text-sm"
               onClick={() => {
                 setInternalOpen(true)
                 setName('')
@@ -90,7 +90,7 @@ export default function LaboratoriesPage() {
               Novo Laboratório
             </Button>
             <Select value={unitSelect} onValueChange={setUnitSelect}>
-              <SelectTrigger className="w-38">
+              <SelectTrigger className="w-38 md:w-45">
                 <SelectValue placeholder="Todas as unidades" />
               </SelectTrigger>
               <SelectContent>
