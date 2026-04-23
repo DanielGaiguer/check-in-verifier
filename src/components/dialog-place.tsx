@@ -26,8 +26,9 @@ interface DialogPlaceProtocol {
   labId: string
   setLabId: Dispatch<SetStateAction<string>>
   labName: string
+  selectedUnit: string
   setLabName: Dispatch<SetStateAction<string>>
-  uniqueLabs: { id: string; name: string }[]
+  uniqueLabs: { id: string; name: string; unitId: string }[]
   problems: Problem[]
   isLoadingProblems: boolean
   selectedProblems: string[]
@@ -47,6 +48,7 @@ export default function DialogPlace({
   setLabId,
   labName,
   setLabName,
+  selectedUnit,
   uniqueLabs,
   problems,
   isLoadingProblems,
@@ -117,6 +119,7 @@ export default function DialogPlace({
     toast.success('Local cadastrado com sucesso.')
     closeDialog()
   }
+  const filteredLabs = uniqueLabs.filter(lab => lab.unitId === selectedUnit)
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -157,7 +160,7 @@ export default function DialogPlace({
             </button>
             {labDropdownOpen && (
               <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md">
-                {uniqueLabs.map((lab) => (
+                {filteredLabs.map((lab) => (
                   <li
                     key={lab.id}
                     onClick={() => selectLab(lab)}

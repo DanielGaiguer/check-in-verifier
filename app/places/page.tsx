@@ -297,6 +297,7 @@ export default function PlacesPage() {
           setName={setName}
           labId={labId}
           labName={labName}
+          selectedUnit={unitSelect}
           setLabName={setLabName}
           setLabId={setLabId}
           uniqueLabs={laboratories}
