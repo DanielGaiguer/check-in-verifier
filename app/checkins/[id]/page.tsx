@@ -281,12 +281,12 @@ export default function DetailsCheckin() {
         </div>
 
         {dialogOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 z-9999 flex items-center justify-center">
             <div
               className="animate-fadeIn absolute inset-0 bg-black/30 backdrop-blur-sm"
               onClick={() => setDialogOpen(false)}
             />
-            <div className="animate-modalIn relative z-10 w-[80%] max-w-[80%] rounded-xl bg-white p-6 shadow-lg">
+            <div className="animate-modalIn relative z-10 w-[80%] max-w-[80%] md:w-[40%] rounded-xl bg-white p-6 shadow-lg">
               <h1 className="font-sans text-2xl font-semibold tracking-tight">
                 Registrar Alteração
               </h1>
@@ -295,6 +295,7 @@ export default function DetailsCheckin() {
                 placeHolder="Selecione a pessoa"
                 value={selectedPersonId}
                 onChange={setSelectedPersonId}
+                param='people'
               />
               <div className="mt-3 ml-1.5">
                 <Field>
@@ -308,16 +309,16 @@ export default function DetailsCheckin() {
                   />
                 </Field>
               </div>
-              <div className="mt-5 flex justify-end">
+              <div className="mt-6 flex justify-end">
                 <Button
                   onClick={() => setDialogOpen(false)}
-                  className="w-25"
+                  className="w-25 cursor-pointer"
                   variant={'outline'}
                 >
                   Cancelar
                 </Button>
                 <Button
-                  className="ml-5 w-25 bg-green-400 text-gray-800 hover:bg-green-300"
+                  className="ml-5 w-25 bg-green-400 text-gray-800 hover:bg-green-300 cursor-pointer"
                   onClick={handleEditCheckin}
                 >
                   Salvar

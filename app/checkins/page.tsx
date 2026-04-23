@@ -43,6 +43,8 @@ export default function CheckinsPage() {
   >({})
   const [itemFiles, setItemFiles] = useState<Record<string, Photo[]>>({})
 
+  const filteredPlaces = places.filter(place => place.unitId === selectedUnitId)
+
   if (isLoadingPlace) return <CheckinsSkeleton />
   if (errorPlace) return <ErrorPage />
 
@@ -58,7 +60,7 @@ export default function CheckinsPage() {
       return
     }
 
-    const unfilledPlaces = places.filter(
+    const unfilledPlaces = filteredPlaces.filter(
       (place) => placeStatus[place.id] === undefined
     )
     if (unfilledPlaces.length > 0) {
@@ -68,7 +70,7 @@ export default function CheckinsPage() {
 
     setIsSubmitting(true)
 
-    const items: Item[] = places.map((place) => ({
+    const items: Item[] = filteredPlaces.map((place) => ({
       itemId: place.id,
       place: {
         id: place.id,
@@ -150,7 +152,7 @@ export default function CheckinsPage() {
           />
         </div>
 
-        {places.map((place) => (
+        {filteredPlaces.map((place) => (
           <PlaceCard
             key={place.id}
             title={place.name}

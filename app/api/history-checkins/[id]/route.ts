@@ -30,6 +30,7 @@ export async function GET(req: Request) {
         checkinId: checkins.id,
         date: checkins.date,
         createdAt: checkins.createdAt,
+        unitId: checkins.unitId,
         observation: checkins.observation,
         peopleId: people.id,
         peopleName: people.name,
@@ -72,6 +73,7 @@ export async function GET(req: Request) {
       checkinId: rawData[0].checkinId,
       date: rawData[0].date,
       createdAt: rawData[0].createdAt,
+      unitId: rawData[0].unitId,
       observation: rawData[0].observation,
       people: {
         id: rawData[0].peopleId,

@@ -42,6 +42,7 @@ export async function GET(req: Request) {
         date: checkins.date,
         createdAt: checkins.createdAt,
         observation: checkins.observation,
+        unitId: checkins.unitId,
         peopleId: people.id,
         peopleName: people.name,
         itemId: checkinItems.id,
@@ -85,6 +86,7 @@ export async function GET(req: Request) {
           checkinId: row.checkinId,
           date: row.date,
           createdAt: row.createdAt,
+          unitId: row.unitId,
           observation: row.observation,
           people: {
             id: row.peopleId,

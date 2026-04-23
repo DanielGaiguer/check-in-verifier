@@ -166,7 +166,6 @@ export default function ReportsPage() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10)
 
-  // TOP PROBLEMS
   const problemCountMap: Record<string, number> = {}
   filteredCheckins.forEach((c) => {
     c.items.forEach((item) => {
@@ -196,6 +195,12 @@ export default function ReportsPage() {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 10)
+
+  console.log('unitSelect:', unitSelect)
+  console.log(
+    'checkin unitIds:',
+    checkins.map((c) => c.unitId)
+  )
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-start rounded-t-xl bg-gray-50 md:mt-2">
@@ -238,6 +243,7 @@ export default function ReportsPage() {
                 <SelectGroup className="font-sans text-gray-800">
                   {units.map((unit) => (
                     <SelectItem
+                      key={unit.id}
                       value={unit.id}
                       className="data-highlighted:bg-green-100 data-[state=checked]:bg-green-200"
                     >
@@ -329,7 +335,6 @@ export default function ReportsPage() {
                 </CardContent>
               </Card>
 
-              {/* TOP PEOPLE */}
               <Card>
                 <CardHeader>
                   <CardTitle>Quem mais fez Check-ins</CardTitle>
