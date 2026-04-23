@@ -3,13 +3,6 @@
   "dialect": "postgresql",
   "entries": [
     {
-      "idx": 0,
-      "version": "7",
-      "when": 1772710717898,
-      "tag": "0000_married_mad_thinker",
-      "breakpoints": true
-    },
-    {
       "idx": 1,
       "version": "7",
       "when": 1776948792035,
