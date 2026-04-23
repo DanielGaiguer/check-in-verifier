@@ -135,6 +135,7 @@ export default function EditCheckinPage() {
             textHeader="Responsável *"
             placeHolder="Selecione a pessoa"
             onChange={setSelectedPersonId}
+            param='people'
           />
         </div>
 

@@ -1,3 +1,14 @@
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_enum
+    WHERE enumlabel = 'not_checked'
+      AND enumtypid = 'checkin_status'::regtype
+  ) THEN
+    ALTER TYPE "public"."checkin_status"
+    ADD VALUE 'not_checked';
+  END IF;
+END $$;
 ALTER TYPE "public"."checkin_status" ADD VALUE 'not_checked';--> statement-breakpoint
 CREATE TABLE "checkin_edits" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
