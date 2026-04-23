@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 export async function updatePlaceWithProblems(data: {
   id: string
   labId: string
-  unitId: string
   name: string
   sortOrder: number
   toAdd: string[]
@@ -14,7 +13,6 @@ export async function updatePlaceWithProblems(data: {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       labId: data.labId,
-      unitId: data.unitId,
       name: data.name,
       sortOrder: data.sortOrder,
     }),

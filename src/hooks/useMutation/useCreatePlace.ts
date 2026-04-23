@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 async function createPlace(data: {
   labId: string
   name: string
-  unitId: string,
   sortOrder?: number
   problemIds: string[]
 }) {
@@ -14,7 +13,6 @@ async function createPlace(data: {
     },
     body: JSON.stringify({
       labId: data.labId,
-      unitId: data.unitId,
       name: data.name,
       sortOrder: data.sortOrder ?? 0,
       problemIds: data.problemIds,

@@ -39,11 +39,6 @@ export const places = pgTable(
     labId: uuid('lab_id').references(() => laboratories.id, {
       onDelete: 'cascade',
     }),
-    unitId: uuid('unit_id')
-      .references(() => units.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
     name: text('name').notNull(),
     sortOrder: integer('sort_order').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -51,7 +46,6 @@ export const places = pgTable(
   },
   (table) => [
     index('idx_places_lab').on(table.labId),
-    index('idx_places_unit').on(table.unitId),
   ]
 )
 

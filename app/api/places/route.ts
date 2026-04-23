@@ -29,7 +29,7 @@ export async function GET(req: Request) {
       .select({
         id: places.id,
         labId: places.labId,
-        unitId: places.unitId,
+        unitId: laboratories.unitId,
         name: places.name,
         order: places.sortOrder,
         createdAt: places.createdAt,
@@ -120,7 +120,6 @@ export async function POST(req: Request) {
         .insert(places)
         .values({
           labId: body.labId,
-          unitId: body.unitId,
           name: body.name,
           sortOrder,
         })

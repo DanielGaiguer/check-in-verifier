@@ -298,11 +298,6 @@ export default function PlacesPage() {
           labId={labId}
           labName={labName}
           setLabName={setLabName}
-          unitId={unitId}
-          unitName={unitName}
-          setUnitId={setUnitId}
-          setUnitName={setUnitName}
-          units={units}
           setLabId={setLabId}
           uniqueLabs={laboratories}
           problems={problems}
