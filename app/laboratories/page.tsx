@@ -43,6 +43,7 @@ export default function LaboratoriesPage() {
   const [openDelete, setOpenDelete] = useState(false)
 
   const [unitSelect, setUnitSelect] = useState('')
+  const [unitSelectDialog, setUnitSelectDialog] = useState('')
 
   useEffect(() => {
     if (units?.length && !unitSelect) {
@@ -103,7 +104,6 @@ export default function LaboratoriesPage() {
           </div>
         </div>
 
-        {/* LISTA */}
         <div className="mt-5">
           {filteredLabs.length > 0 ? (
             filteredLabs.map((lab) => (
@@ -113,7 +113,7 @@ export default function LaboratoriesPage() {
               >
                 <CardHeader className="flex items-center">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-                    <FlaskConicalIcon className="text-blue-400" size={22} />
+                    <FlaskConicalIcon className="text-blue-400 w-40" size={22} />
                   </div>
                 </CardHeader>
 
@@ -130,25 +130,28 @@ export default function LaboratoriesPage() {
                     )}
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 ">
                     <Button
+                    className='bg-white hover:bg-blue-50'
                       onClick={() => {
                         setInternalOpen(true)
                         setName(lab.name)
                         setId(lab.id)
+                        setUnitSelectDialog(lab.unitId)
                       }}
                     >
-                      <PencilIcon size={20} />
+                      <PencilIcon className='text-black' size={25} />
                     </Button>
 
                     <Button
+                    className='bg-white hover:bg-blue-50'
                       onClick={() => {
                         setOpenDelete(true)
                         setName(lab.name)
                         setId(lab.id)
                       }}
                     >
-                      <Trash2Icon className="text-red-400" size={20} />
+                      <Trash2Icon className="text-red-400" size={25} />
                     </Button>
                   </div>
                 </CardContent>
@@ -164,11 +167,10 @@ export default function LaboratoriesPage() {
           )}
         </div>
 
-        {/* MODAIS */}
         <DialogLaboratories
           setName={setName}
           name={name}
-          setUnitId={setUnitSelect}
+          setUnitId={setUnitSelectDialog}
           unitId={unitSelect}
           forEdit={!!id}
           setInternalOpen={setInternalOpen}

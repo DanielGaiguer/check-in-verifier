@@ -225,8 +225,8 @@ export default function DialogPlace({
                 />
               </svg>
             </button>
-            {unitDropdownOpen && (
-              <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md">
+                {unitDropdownOpen && (
+                  <ul className="absolute mt-1 w-full rounded-md border border-gray-200 bg-gray-50 shadow-md" >
                 {units.map((unit) => (
                   <li
                     key={unit.id}
