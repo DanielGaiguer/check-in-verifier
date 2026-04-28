@@ -53,8 +53,10 @@ export default function CardCheckin({ data }: CardCheckinProps) {
                 {data.people?.name || 'Indefinido'}
               </CardTitle>
               <CardDescription>
-                {format(parseISO(data.date), 'dd/MM/yyyy', { locale: ptBR })} • {' '}
-                {data.placeCount} lugares
+                {format(parseISO(data.createdAt), 'dd/MM/yyyy', {
+                  locale: ptBR,
+                })}{' '}
+                • {data.placeCount} lugares
               </CardDescription>
             </div>
           </div>
